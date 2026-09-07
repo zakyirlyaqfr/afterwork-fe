@@ -1,0 +1,275 @@
+@import "tailwindcss";
+
+@layer base {
+  /* Local Alte Haas Grotesk @font-face configuration */
+  @font-face {
+    font-family: 'Alte Haas Grotesk';
+    src: url('/fonts/AlteHaasGroteskBold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Alte Haas Grotesk';
+    src: url('/fonts/AlteHaasGroteskRegular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+}
+
+:root {
+  --color-black: #000000;
+  --color-orange: #E05D29;
+  --color-gray: #262626;
+  --color-white: #F5F5F5;
+
+  --font-editorial: var(--font-alte), 'Alte Haas Grotesk', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-display: var(--font-alte), 'Alte Haas Grotesk', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: var(--font-alte), 'Alte Haas Grotesk', monospace;
+
+  --page-padding: clamp(16px, 3.5vw, 64px);
+
+  /* Permanent Sidebar Width Token - Substantially widened and enlarged */
+  --sidebar-width: 110px;
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --sidebar-width: 132px;
+  }
+}
+
+@media (min-width: 1440px) {
+  :root {
+    --sidebar-width: 148px;
+  }
+}
+
+/* Dedicated Structural Sidebar & Main Content Classes */
+.sidebar-dock {
+  width: var(--sidebar-width);
+}
+
+.main-content-layout {
+  width: 100%;
+  margin-left: 0;
+  min-height: 100vh;
+}
+
+@media (min-width: 768px) {
+  .main-content-layout {
+    width: calc(100vw - var(--sidebar-width));
+    margin-left: var(--sidebar-width);
+    padding-left: clamp(40px, 5vw, 100px);
+  }
+}
+
+.nav-overlay-layout {
+  left: 0;
+  width: 100vw;
+}
+
+@media (min-width: 768px) {
+  .nav-overlay-layout {
+    left: var(--sidebar-width);
+    width: calc(100vw - var(--sidebar-width));
+    padding-left: clamp(40px, 5vw, 100px);
+  }
+}
+
+@theme inline {
+  --color-brand-black: #000000;
+  --color-brand-orange: #E05D29;
+  --color-brand-gray: #262626;
+  --color-brand-white: #F5F5F5;
+
+  --font-sans: var(--font-editorial);
+  --font-display: var(--font-display);
+  --font-mono: var(--font-mono);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  background-color: #000000;
+  color: #F5F5F5;
+  font-family: var(--font-editorial);
+  scroll-behavior: auto; /* Handled by Lenis */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: #000000;
+  color: #F5F5F5;
+  font-family: var(--font-editorial);
+  overflow-x: hidden;
+  min-height: 100vh;
+  position: relative;
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+}
+
+/* Lenis smooth scroll required styles */
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}
+
+/* Selection */
+::selection {
+  background-color: #E05D29;
+  color: #000000;
+}
+
+/* Custom hairline borders */
+.border-hairline {
+  border-width: 1px;
+  border-color: rgba(245, 245, 245, 0.15);
+}
+
+.border-hairline-dark {
+  border-width: 1px;
+  border-color: rgba(38, 38, 38, 0.8);
+}
+
+.border-hairline-orange {
+  border-width: 1px;
+  border-color: rgba(224, 93, 41, 0.35);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: #000000;
+}
+::-webkit-scrollbar-thumb {
+  background: #262626;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #E05D29;
+}
+
+/* Industrial label typography */
+.label-mono {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+/* ========================================================================== */
+/* HERO KINETIC LOOPING ANIMATION (Exact Lune Croissanterie Specification) */
+/* ========================================================================== */
+.hero-kinetic-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35em;
+  white-space: nowrap;
+  width: 100%;
+}
+
+.hero-kinetic-word {
+  font-family: var(--font-display), 'Alte Haas Grotesk', sans-serif;
+  font-weight: 700;
+  color: #ffffff;
+  font-size: clamp(3.75rem, 8.5vw, 8.5rem);
+  letter-spacing: -0.05em;
+  line-height: 0.68;
+  text-transform: uppercase;
+  will-change: transform, opacity;
+  animation-duration: 20s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+.hero-kinetic-word-order {
+  margin-left: 0;
+  animation-name: slideAnimationOrder;
+}
+
+.hero-kinetic-word-now {
+  margin-left: 1.73em;
+  animation-name: slideAnimationNow;
+}
+
+@keyframes slideAnimationOrder {
+  0% {
+    opacity: 0;
+    transform: translateX(1.5em);
+  }
+  3% {
+    opacity: 1;
+    transform: translateX(1.5em);
+  }
+  20% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  75% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  85% {
+    opacity: 0;
+    transform: translateX(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(1.5em);
+  }
+}
+
+@keyframes slideAnimationNow {
+  0% {
+    opacity: 0;
+    transform: translateX(-1em);
+  }
+  5% {
+    opacity: 1;
+    transform: translateX(-1em);
+  }
+  20% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  75% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  85% {
+    opacity: 0;
+    transform: translateX(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-1em);
+  }
+}
