@@ -1,3 +1,5 @@
+import { DEFAULT_IMAGE } from "@/data/assets";
+
 export interface NavItem {
   id: string;
   number: string;
@@ -14,7 +16,7 @@ export const navigationItems: NavItem[] = [
     number: "01",
     label: "ABOUT AFTERWORK",
     href: "/about",
-    previewImage: "/images/navigation/nav-about.jpg",
+    previewImage: DEFAULT_IMAGE,
     previewAlt: "Afterwork Brutalist interior architecture",
     subLabel: "CULTURE & ARCHITECTURE"
   },
@@ -23,7 +25,7 @@ export const navigationItems: NavItem[] = [
     number: "02",
     label: "MENUS",
     href: "/menus",
-    previewImage: "/images/navigation/nav-menu.jpg",
+    previewImage: DEFAULT_IMAGE,
     previewAlt: "Afterwork espresso tonic signature drink",
     subLabel: "SPECIALTY COFFEE & BOTTLED"
   },
@@ -32,7 +34,7 @@ export const navigationItems: NavItem[] = [
     number: "03",
     label: "DELIVERY",
     href: "/delivery",
-    previewImage: "/images/navigation/nav-delivery.jpg",
+    previewImage: DEFAULT_IMAGE,
     previewAlt: "Bottled drinks ready for instant dispatch",
     subLabel: "GOJEK & GRAB CHANNELS"
   },
@@ -41,7 +43,7 @@ export const navigationItems: NavItem[] = [
     number: "04",
     label: "GALLERY",
     href: "/gallery",
-    previewImage: "/images/navigation/nav-gallery.jpg",
+    previewImage: DEFAULT_IMAGE,
     previewAlt: "Atmospheric late night moments in Surabaya",
     subLabel: "VISUAL ARCHIVE 09:00—02:00"
   },
@@ -50,7 +52,7 @@ export const navigationItems: NavItem[] = [
     number: "05",
     label: "CONTACT",
     href: "/contact",
-    previewImage: "/images/navigation/nav-contact.jpg",
+    previewImage: DEFAULT_IMAGE,
     previewAlt: "Storefront entrance at midnight",
     subLabel: "LOCATION & HOURS"
   },
@@ -59,7 +61,7 @@ export const navigationItems: NavItem[] = [
     number: "06",
     label: "FAQs",
     href: "/faqs",
-    previewImage: "/images/navigation/nav-faq.jpg",
+    previewImage: DEFAULT_IMAGE,
     previewAlt: "Precision pour-over brewing apparatus",
     subLabel: "FREQUENT INQUIRIES"
   }

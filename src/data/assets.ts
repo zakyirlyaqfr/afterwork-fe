@@ -8,6 +8,10 @@ export interface AssetMeta {
   aspectRatio?: string;
 }
 
+export const DEFAULT_IMAGE = "/images/default.jpg";
+export const DEFAULT_PLACEHOLDER_WEBP = "/images/default.webp";
+export const DEFAULT_PLACEHOLDER_PNG = "/images/default.png";
+
 export const brandAssets = {
   // Primary brand logos
   logoWhitePng: {
@@ -42,14 +46,14 @@ export const brandAssets = {
 
 export const homeAssets = {
   hero: {
-    src: "/images/home/home-hero-01.jpg",
+    src: DEFAULT_IMAGE,
     alt: "Afterwork Barista preparing espresso under direct flash and industrial steel counter",
     width: 2400,
     height: 1600,
     category: "home" as const,
   },
   aboutTeaser: {
-    src: "/images/home/home-about-01.jpg",
+    src: DEFAULT_IMAGE,
     alt: "Raw brutalist concrete interior of Afterwork Caffeine Surabaya",
     width: 1600,
     height: 2000,
@@ -57,7 +61,7 @@ export const homeAssets = {
   },
   galleryPreview: [
     {
-      src: "/images/home/home-gallery-01.jpg",
+      src: DEFAULT_IMAGE,
       alt: "Espresso Tonic with citrus slice on black stone",
       width: 1200,
       height: 1600,
@@ -66,7 +70,7 @@ export const homeAssets = {
       aspectRatio: "3/4"
     },
     {
-      src: "/images/home/home-gallery-02.jpg",
+      src: DEFAULT_IMAGE,
       alt: "Signature Nitro Cold Brew amber bottle",
       width: 1400,
       height: 1000,
@@ -75,7 +79,7 @@ export const homeAssets = {
       aspectRatio: "7/5"
     },
     {
-      src: "/images/home/home-gallery-03.jpg",
+      src: DEFAULT_IMAGE,
       alt: "Midnight Cruffin warm pastry on steel plate",
       width: 1000,
       height: 1400,
@@ -84,7 +88,7 @@ export const homeAssets = {
       aspectRatio: "5/7"
     },
     {
-      src: "/images/home/home-gallery-04.jpg",
+      src: DEFAULT_IMAGE,
       alt: "Geisha Pour-Over manual brew precision station",
       width: 1600,
       height: 1100,
@@ -93,7 +97,7 @@ export const homeAssets = {
       aspectRatio: "16/11"
     },
     {
-      src: "/images/home/home-gallery-05.jpg",
+      src: DEFAULT_IMAGE,
       alt: "Freshly baked Kouign-Amann with caramelized crust",
       width: 1200,
       height: 1500,
@@ -106,28 +110,28 @@ export const homeAssets = {
 
 export const aboutAssets = {
   hero: {
-    src: "/images/about/about-hero.jpg",
+    src: DEFAULT_IMAGE,
     alt: "Afterwork Architecture and interior layout",
     width: 2000,
     height: 1300,
     category: "about" as const,
   },
   interior: {
-    src: "/images/about/about-interior.jpg",
+    src: DEFAULT_IMAGE,
     alt: "Barista dialing in seasonal beans",
     width: 1400,
     height: 1800,
     category: "about" as const,
   },
   detail: {
-    src: "/images/about/about-detail.jpg",
+    src: DEFAULT_IMAGE,
     alt: "Cold infusion laboratory and amber bottles",
     width: 1200,
     height: 1600,
     category: "about" as const,
   },
   night: {
-    src: "/images/about/about-night.jpg",
+    src: DEFAULT_IMAGE,
     alt: "Afterwork night atmosphere at 01:45 AM",
     width: 1800,
     height: 1200,
@@ -137,28 +141,28 @@ export const aboutAssets = {
 
 export const menuAssets = {
   coffee: {
-    src: "/images/menu/menu-coffee.jpg",
+    src: DEFAULT_IMAGE,
     alt: "Espresso Tonic on granite surface",
     width: 1200,
     height: 1200,
     category: "menu" as const,
   },
   bottle: {
-    src: "/images/menu/menu-bottle.jpg",
+    src: DEFAULT_IMAGE,
     alt: "Amber bottled cold brew with custom typography label",
     width: 1200,
     height: 1200,
     category: "menu" as const,
   },
   food: {
-    src: "/images/menu/menu-food.jpg",
+    src: DEFAULT_IMAGE,
     alt: "Savory pastry comfort food",
     width: 1200,
     height: 1200,
     category: "menu" as const,
   },
   noncoffee: {
-    src: "/images/menu/menu-noncoffee.jpg",
+    src: DEFAULT_IMAGE,
     alt: "Specialty non-coffee crafted drink",
     width: 1200,
     height: 1200,
@@ -168,42 +172,42 @@ export const menuAssets = {
 
 export const navigationAssets = {
   about: {
-    src: "/images/navigation/nav-about.jpg",
+    src: DEFAULT_IMAGE,
     alt: "About Afterwork navigation preview",
     width: 1000,
     height: 1400,
     category: "navigation" as const,
   },
   menus: {
-    src: "/images/navigation/nav-menu.jpg",
+    src: DEFAULT_IMAGE,
     alt: "Menus navigation preview",
     width: 1000,
     height: 1400,
     category: "navigation" as const,
   },
   delivery: {
-    src: "/images/navigation/nav-delivery.jpg",
+    src: DEFAULT_IMAGE,
     alt: "Delivery navigation preview",
     width: 1000,
     height: 1400,
     category: "navigation" as const,
   },
   gallery: {
-    src: "/images/navigation/nav-gallery.jpg",
+    src: DEFAULT_IMAGE,
     alt: "Gallery navigation preview",
     width: 1000,
     height: 1400,
     category: "navigation" as const,
   },
   contact: {
-    src: "/images/navigation/nav-contact.jpg",
+    src: DEFAULT_IMAGE,
     alt: "Contact navigation preview",
     width: 1000,
     height: 1400,
     category: "navigation" as const,
   },
   faqs: {
-    src: "/images/navigation/nav-faq.jpg",
+    src: DEFAULT_IMAGE,
     alt: "FAQs navigation preview",
     width: 1000,
     height: 1400,

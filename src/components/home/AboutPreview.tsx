@@ -70,7 +70,7 @@ export default function AboutPreview() {
                 alt={homeAssets.aboutTeaser.alt}
                 width={homeAssets.aboutTeaser.width}
                 height={homeAssets.aboutTeaser.height}
-                className="w-full h-full object-cover grayscale contrast-110 hover:grayscale-0 transition-all duration-700"
+                className="w-full h-full object-cover"
               />
             </ImageReveal>
 

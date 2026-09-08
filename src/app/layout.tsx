@@ -59,7 +59,7 @@ export const metadata: Metadata = {
     siteName: "Afterwork Caffeine",
     images: [
       {
-        url: "/images/home/home-hero-01.jpg",
+        url: "/images/default.jpg",
         width: 1200,
         height: 630,
         alt: "Afterwork Caffeine Surabaya",
@@ -100,7 +100,7 @@ export default function RootLayout({
 
           {/* Smooth Lenis + GSAP Scroll container */}
           <SmoothScroll>
-            <div className="main-content-layout flex-1 flex flex-col relative overflow-x-hidden min-h-screen bg-black">
+            <div className="main-content-layout flex-1 flex flex-col relative min-h-screen bg-black">
               {children}
               {/* Global bottom-of-page full-width centered footer */}
               <Footer />

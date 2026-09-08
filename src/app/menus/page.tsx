@@ -121,12 +121,11 @@ export default function MenusPage() {
             <div className="border border-[#262626] bg-[#111111] p-4 flex flex-col gap-4">
               <div className="aspect-square relative overflow-hidden bg-black border border-[#262626]">
                 <Image
-                  src={hoveredItem ? hoveredItem.previewImage : "/images/menu/menu-coffee.jpg"}
+                  src={hoveredItem ? hoveredItem.previewImage : "/images/default.jpg"}
                   alt={hoveredItem ? hoveredItem.name : "Afterwork Drink Preview"}
                   fill
-                  className="object-cover transition-all duration-500 ease-out"
+                  className="object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20" />
                 <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between font-mono text-[10px] tracking-[0.2em] text-[#F5F5F5]">
                   <span className="text-[#E05D29]">
                     {hoveredItem ? hoveredItem.category : "SPECIALTY"}

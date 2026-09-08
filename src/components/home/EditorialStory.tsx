@@ -10,8 +10,9 @@ import { useReducedMotion } from "@/hooks/useReducedMotion";
 export default function EditorialStory() {
   const sectionRef = useRef<HTMLElement>(null);
   const image1Ref = useRef<HTMLDivElement>(null);
-  const image2Ref = useRef<HTMLDivElement>(null);
+  const image3Ref = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
+  const bgTextRef = useRef<HTMLDivElement>(null);
   const prefersReduced = useReducedMotion();
 
   useEffect(() => {
@@ -21,44 +22,53 @@ export default function EditorialStory() {
     const section = sectionRef.current;
     if (!section) return;
 
-    // Abstract irregular parallax offsets
+    // Smooth subtle entrance scroll animations for Section 2 elements (no collision)
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: section,
+        start: "top 75%",
+        toggleActions: "play none none reverse",
+      },
+    });
+
     if (image1Ref.current) {
-      gsap.to(image1Ref.current, {
-        y: -60,
-        rotate: 1,
-        ease: "none",
-        scrollTrigger: {
-          trigger: section,
-          start: "top bottom",
-          end: "bottom top",
-          scrub: 1.4,
-        },
-      });
+      tl.fromTo(
+        image1Ref.current,
+        { opacity: 0, y: 35 },
+        { opacity: 1, y: 0, duration: 0.9, ease: "power2.out" },
+        0
+      );
     }
 
-    if (image2Ref.current) {
-      gsap.to(image2Ref.current, {
-        y: -110,
-        rotate: -2,
-        ease: "none",
-        scrollTrigger: {
-          trigger: section,
-          start: "top bottom",
-          end: "bottom top",
-          scrub: 1.8,
-        },
-      });
+    if (image3Ref.current) {
+      tl.fromTo(
+        image3Ref.current,
+        { opacity: 0, y: 20 },
+        { opacity: 0.75, y: 0, duration: 1.0, ease: "power2.out" },
+        0.15
+      );
     }
 
     if (textRef.current) {
-      gsap.to(textRef.current, {
-        y: -30,
+      const textElements = textRef.current.children;
+      tl.fromTo(
+        textElements,
+        { opacity: 0, y: 25 },
+        { opacity: 1, y: 0, duration: 0.8, stagger: 0.12, ease: "power2.out" },
+        0.2
+      );
+    }
+
+    // Ghosted background watermark subtle parallax
+    if (bgTextRef.current) {
+      gsap.to(bgTextRef.current, {
+        y: -90,
         ease: "none",
         scrollTrigger: {
           trigger: section,
           start: "top bottom",
           end: "bottom top",
-          scrub: 1.2,
+          scrub: 1.5,
         },
       });
     }
@@ -67,81 +77,97 @@ export default function EditorialStory() {
   return (
     <section
       ref={sectionRef}
-      className="relative w-full bg-black text-white pt-16 pb-40 px-6 sm:px-12 md:pl-16 md:pr-10 lg:pl-24 lg:pr-14 xl:pl-32 xl:pr-20 overflow-hidden select-none"
+      id="section-editorial"
+      className="relative w-full min-h-screen bg-black text-white flex items-center py-20 px-6 sm:px-12 md:pl-10 lg:pl-16 lg:pr-14 xl:pl-20 xl:pr-20 overflow-visible select-none z-30"
     >
-      {/* Abstract Asymmetric Composition (No lines/borders, irregular floating geometry) */}
-      <div className="relative z-10 w-full max-w-[1500px] mx-auto">
-        <div className="flex flex-col lg:flex-row items-start justify-between gap-16 lg:gap-12 relative">
-          
-          {/* Irregular Floating Image 1: Angled & Offset */}
-          <div className="w-full lg:w-5/12 flex flex-col items-start lg:pt-8">
-            <div
-              ref={image1Ref}
-              className="relative w-full max-w-[440px] aspect-[4/5] sm:aspect-[1/1.2] overflow-hidden bg-neutral-950 shadow-2xl -rotate-2 hover:rotate-0 transition-transform duration-700 will-change-transform"
-            >
-              <Image
-                src="/images/home/home-external.jpg"
-                alt="Afterwork store facade architecture"
-                fill
-                sizes="(max-width: 1024px) 90vw, 40vw"
-                className="object-cover object-center grayscale contrast-125 hover:grayscale-0 transition-all duration-700 scale-105"
-              />
-            </div>
-            
-            <p className="font-mono text-[10px] tracking-[0.25em] text-neutral-500 uppercase mt-4 pl-2">
-              ARCHITECTURAL FORM // 01
-            </p>
-          </div>
+      {/* Ghosted Background Industrial Watermark */}
+      <div
+        ref={bgTextRef}
+        aria-hidden="true"
+        className="absolute top-1/4 -right-16 pointer-events-none select-none text-[clamp(6rem,18vw,20rem)] font-black uppercase text-white/[0.025] tracking-tighter leading-none whitespace-nowrap z-0 will-change-transform"
+      >
+        AFTERWORK
+      </div>
 
-          {/* Right Column: Statement Typography & Irregular Floating Image 2 */}
-          <div className="w-full lg:w-7/12 flex flex-col justify-between space-y-16 lg:pl-4">
-            
-            {/* Irregular Floating Image 2: Staggered, elevated, rotated */}
-            <div className="w-full flex justify-end lg:-mr-6">
+      {/* Abstract Deconstructed Composition Container */}
+      <div className="relative z-10 w-full max-w-[1500px] mx-auto">
+        <div className="relative pt-6">
+
+          {/* Upper Tier: Interlocking Visuals & Staggered Statement */}
+          <div className="flex flex-col lg:flex-row items-start justify-between gap-16 lg:gap-12 relative">
+
+            {/* Left Column: Primary Card tilted left, positioned to overlap towards sidebar */}
+            <div className="w-full lg:w-5/12 flex flex-col items-start relative md:-ml-12 lg:-ml-20 xl:-ml-28 z-40">
+
+              {/* Primary Card 01: Authentic Afterwork Caffeine Table Setting - Maju ke layer depan (z-40) diatas sidebar */}
               <div
-                ref={image2Ref}
-                className="relative w-full max-w-[360px] sm:max-w-[420px] aspect-[1/1] sm:aspect-[4/5] overflow-hidden bg-neutral-950 shadow-2xl rotate-3 hover:rotate-0 transition-transform duration-700 will-change-transform"
+                ref={image1Ref}
+                className="relative w-full max-w-[460px] aspect-[3/4] sm:aspect-[4/5] overflow-hidden bg-neutral-950 shadow-2xl -rotate-2 z-40"
               >
                 <Image
-                  src="/images/home/home-cronut.jpg"
-                  alt="Artisanal layered pastry on dark ceramic plate"
+                  src="/images/afterwork-glutton-1.jpg"
+                  alt="Afterwork Caffeine Craft Serving"
                   fill
-                  sizes="(max-width: 1024px) 90vw, 35vw"
-                  className="object-cover object-center hover:scale-110 transition-transform duration-700"
+                  sizes="(max-width: 1024px) 90vw, 40vw"
+                  className="object-cover object-center"
                 />
               </div>
+
             </div>
 
-            {/* Typography Statement & Narrative: Organic Asymmetrical Drift */}
-            <div
-              ref={textRef}
-              className="w-full max-w-xl space-y-8 lg:pt-4 lg:-mt-12 will-change-transform"
-            >
-              <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black uppercase tracking-[-0.03em] leading-[1.05] text-white">
-                Afterwork is an
-                <br />
-                institution solely
-                <br />
-                dedicated to
-                <br />
-                the creation
-                <br />
-                of croissants.
-              </h2>
+            {/* Right Column: Statement Typography & Floating Companion Card BEHIND the text */}
+            <div className="w-full lg:w-7/12 relative flex flex-col justify-center lg:pl-6">
 
-              <p className="text-base sm:text-lg text-neutral-400 font-light leading-relaxed tracking-wide max-w-lg">
-                Welcome to Afterwork. Each creation is much more than the sum of its ingredients. It is a precise balance of science and craft. It takes patience and time, and is the result of experimentation, refinement, and physical hard work.
-              </p>
-
-              <div className="pt-2">
-                <Link
-                  href="/about"
-                  className="inline-flex items-center gap-3 px-6 py-3 bg-white/10 hover:bg-white text-white hover:text-black transition-all duration-300 tracking-[0.2em] uppercase text-xs font-mono font-bold"
-                >
-                  <span>Read More</span>
-                  <span>→</span>
-                </Link>
+              {/* Floating Asymmetric Landscape Card: Authentic Afterwork Bottled Formulas - BEHIND THE TEXT (z-0) */}
+              <div
+                ref={image3Ref}
+                className="absolute right-0 top-0 sm:-top-4 lg:-top-6 w-full max-w-[380px] sm:max-w-[460px] aspect-[16/10] overflow-hidden bg-neutral-950 shadow-2xl -rotate-1 z-0 pointer-events-none select-none opacity-60 sm:opacity-75"
+              >
+                <Image
+                  src="/images/afterwork-gofood.jpg"
+                  alt="Afterwork Signature Bottled Formulas"
+                  fill
+                  sizes="(max-width: 1024px) 90vw, 35vw"
+                  className="object-cover object-center"
+                />
+                <div className="absolute inset-0 bg-black/40 pointer-events-none" />
               </div>
+
+              {/* Avant-Garde Editorial Typography Statement & Narrative (Rendered in front at z-20) */}
+              <div
+                ref={textRef}
+                className="relative z-20 w-full max-w-xl space-y-8 py-6 sm:py-8 will-change-transform"
+              >
+                {/* Staggered Rhythm Statement */}
+                <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black uppercase tracking-[-0.03em] leading-[1.04] text-white">
+                  <span className="block">Afterwork is an</span>
+                  <span className="block text-neutral-300">institution</span>
+                  <span className="block italic font-light text-neutral-400 pl-4 sm:pl-8 border-l border-[#E05D29]/50 my-1">
+                    solely dedicated
+                  </span>
+                  <span className="block">to the creation</span>
+                  <span className="block text-white">of croissants.</span>
+                </h2>
+
+                {/* Narrative Text */}
+                <p className="text-base sm:text-lg text-neutral-400 font-light leading-relaxed tracking-wide max-w-lg">
+                  Welcome to Afterwork. Each creation is much more than the sum of its ingredients. It is a precise balance of science and craft. It takes patience and time, and is the result of experimentation, refinement, and physical hard work.
+                </p>
+
+                {/* Brutalist High-Contrast Action Button */}
+                <div className="pt-2">
+                  <Link
+                    href="/about"
+                    className="inline-flex items-center gap-4 px-8 py-4 bg-white hover:bg-[#E05D29] text-black hover:text-white border-2 border-white hover:border-[#E05D29] transition-all duration-300 tracking-[0.25em] uppercase text-xs sm:text-sm font-sans font-black shadow-2xl cursor-pointer"
+                  >
+                    <span>Read More</span>
+                    <span className="transform group-hover:translate-x-2 transition-transform duration-300 text-sm font-bold">
+                      →
+                    </span>
+                  </Link>
+                </div>
+              </div>
+
             </div>
 
           </div>

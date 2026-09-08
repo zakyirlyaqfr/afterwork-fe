@@ -1,3 +1,5 @@
+import { DEFAULT_IMAGE } from '@/data/assets';
+
 export interface MenuItem {
   id: string;
   name: string;
@@ -18,7 +20,7 @@ export const menuItems: MenuItem[] = [
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Seasonal washed Ethiopian Heirloom blend.",
     price: "28K",
     category: "COFFEE",
-    previewImage: "/images/menu/menu-coffee.jpg",
+    previewImage: DEFAULT_IMAGE,
     tag: "SIGNATURE BLEND"
   },
   {
@@ -27,7 +29,7 @@ export const menuItems: MenuItem[] = [
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Double ristretto over hot alkaline water.",
     price: "32K",
     category: "COFFEE",
-    previewImage: "/images/menu/menu-coffee.jpg",
+    previewImage: DEFAULT_IMAGE,
   },
   {
     id: "c3",
@@ -35,7 +37,7 @@ export const menuItems: MenuItem[] = [
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Velvety steamed dairy or oat milk balance.",
     price: "36K",
     category: "COFFEE",
-    previewImage: "/images/menu/menu-coffee.jpg",
+    previewImage: DEFAULT_IMAGE,
     tag: "DAILY DRIVER"
   },
   {
@@ -44,7 +46,7 @@ export const menuItems: MenuItem[] = [
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Double espresso, premium tonic, dehydrated citrus.",
     price: "42K",
     category: "COFFEE",
-    previewImage: "/images/menu/menu-coffee.jpg",
+    previewImage: DEFAULT_IMAGE,
     tag: "BESTSELLER"
   },
   {
@@ -53,7 +55,7 @@ export const menuItems: MenuItem[] = [
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Single origin floral notes with bergamot finish.",
     price: "55K",
     category: "COFFEE",
-    previewImage: "/images/home/home-gallery-04.jpg",
+    previewImage: DEFAULT_IMAGE,
     tag: "LIMITED LOT"
   },
 
@@ -64,7 +66,7 @@ export const menuItems: MenuItem[] = [
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. 24-hour cold immersion infused with nitrogen.",
     price: "38K",
     category: "BOTTLED",
-    previewImage: "/images/menu/menu-bottle.jpg",
+    previewImage: DEFAULT_IMAGE,
     tag: "READY TO DRINK"
   },
   {
@@ -73,7 +75,7 @@ export const menuItems: MenuItem[] = [
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Signature dark roast steeped with Swedish oat base.",
     price: "42K",
     category: "BOTTLED",
-    previewImage: "/images/menu/menu-bottle.jpg",
+    previewImage: DEFAULT_IMAGE,
     tag: "PLANT BASED"
   },
   {
@@ -82,7 +84,7 @@ export const menuItems: MenuItem[] = [
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Double batch cold white crafted for sharing.",
     price: "75K",
     category: "BOTTLED",
-    previewImage: "/images/menu/menu-bottle.jpg",
+    previewImage: DEFAULT_IMAGE,
     tag: "SHARING BOTTLE"
   },
   {
@@ -91,7 +93,7 @@ export const menuItems: MenuItem[] = [
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sparkling fermented coffee cherry tea tonic.",
     price: "35K",
     category: "BOTTLED",
-    previewImage: "/images/menu/menu-bottle.jpg",
+    previewImage: DEFAULT_IMAGE,
   },
 
   // FOOD
@@ -101,7 +103,7 @@ export const menuItems: MenuItem[] = [
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Flaky laminated dough with dark chocolate ganache.",
     price: "38K",
     category: "FOOD",
-    previewImage: "/images/menu/menu-food.jpg",
+    previewImage: DEFAULT_IMAGE,
     tag: "FRESH BAKE"
   },
   {
@@ -110,7 +112,7 @@ export const menuItems: MenuItem[] = [
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Caramelized salted butter layered pastry.",
     price: "35K",
     category: "FOOD",
-    previewImage: "/images/home/home-gallery-05.jpg",
+    previewImage: DEFAULT_IMAGE,
   },
   {
     id: "f3",
@@ -118,7 +120,7 @@ export const menuItems: MenuItem[] = [
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. House cured brisket, gruyère, dijon, sourdough toast.",
     price: "65K",
     category: "FOOD",
-    previewImage: "/images/menu/menu-food.jpg",
+    previewImage: DEFAULT_IMAGE,
     tag: "COMFORT FOOD"
   },
   {
@@ -127,7 +129,7 @@ export const menuItems: MenuItem[] = [
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Shaved aged parmigiano, truffle glaze, crusty pain de campagne.",
     price: "52K",
     category: "FOOD",
-    previewImage: "/images/menu/menu-food.jpg",
+    previewImage: DEFAULT_IMAGE,
   },
 
   // NON COFFEE
@@ -137,7 +139,7 @@ export const menuItems: MenuItem[] = [
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Hand-whisked Kyoto single-estate stone ground matcha.",
     price: "42K",
     category: "NON COFFEE",
-    previewImage: "/images/menu/menu-noncoffee.jpg",
+    previewImage: DEFAULT_IMAGE,
     tag: "CEREMONIAL"
   },
   {
@@ -146,7 +148,7 @@ export const menuItems: MenuItem[] = [
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Rich single origin dark cacao with smoked sea salt.",
     price: "40K",
     category: "NON COFFEE",
-    previewImage: "/images/menu/menu-noncoffee.jpg",
+    previewImage: DEFAULT_IMAGE,
   },
   {
     id: "nc3",
@@ -154,6 +156,6 @@ export const menuItems: MenuItem[] = [
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Wild silver needle, dried pear, and elderflower infusion.",
     price: "35K",
     category: "NON COFFEE",
-    previewImage: "/images/menu/menu-noncoffee.jpg",
+    previewImage: DEFAULT_IMAGE,
   }
 ];

@@ -10,17 +10,32 @@ export default function MenuTrigger() {
   return (
     <>
       {/* 
-        Sidebar Rail (Dedicated Fixed Left Column with border on >= md)
-        - Boundary: border-r border-[#222222]
-        - Width: var(--sidebar-width) via .sidebar-dock
-        - Content is completely partitioned from the main section
+        Penutup Bagian Bolong Sidebar Dock (HANYA saat sidebar terbuka):
+        - Saat isMenuOpen === true: transisi cepat/instan (0.08s) agar tidak ada delay saat membuka
+        - Saat isMenuOpen === false: transisi halus (0.55s) agar tidak terlalu cepat hilang saat ditutup
+      */}
+      <div
+        className="hidden md:block fixed left-0 top-0 bottom-0 sidebar-dock bg-black pointer-events-none select-none z-45"
+        style={{
+          opacity: isMenuOpen ? 1 : 0,
+          transition: isMenuOpen
+            ? "opacity 0.08s ease-out"
+            : "opacity 0.55s cubic-bezier(0.25, 1, 0.5, 1)",
+        }}
+        aria-hidden="true"
+      />
+
+      {/* 
+        Desktop Sidebar Dock Controls (Layer Paling Atas - z-50):
+        Sidebar dock transparent agar gambar konten bebas menimpa area rel sidebar,
+        sementara Logo dan Button Menu tetap melayang di layer paling atas (z-50)
       */}
       <aside
-        className="hidden md:flex fixed left-0 top-0 bottom-0 sidebar-dock z-50 flex-col justify-between items-center py-10 lg:py-12 bg-black select-none"
-        aria-label="Sidebar Navigation Dock"
+        className="hidden md:flex fixed left-0 top-0 bottom-0 sidebar-dock z-50 flex-col justify-between items-center py-10 lg:py-12 pointer-events-none select-none"
+        aria-label="Sidebar Navigation Controls"
       >
-        {/* Brand Logo at top of sidebar dock - Enlarged */}
-        <div className="w-full flex justify-center px-4">
+        {/* Brand Logo at top of sidebar dock - Lowered slightly */}
+        <div className="w-full flex justify-center px-4 relative z-50 translate-y-3 lg:translate-y-4 pointer-events-auto">
           <Link
             href="/"
             className="group block relative w-12 h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 xl:w-[72px] xl:h-[72px] focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
@@ -32,7 +47,7 @@ export default function MenuTrigger() {
               fill
               sizes="72px"
               priority
-              className="object-contain transition-transform duration-300 group-hover:scale-105"
+              className="object-contain"
             />
           </Link>
         </div>
@@ -43,7 +58,7 @@ export default function MenuTrigger() {
           onClick={toggleMenu}
           aria-expanded={isMenuOpen}
           aria-label={isMenuOpen ? "Close navigation menu" : "Open navigation menu"}
-          className="flex flex-col items-center gap-4 lg:gap-5 group cursor-pointer focus:outline-none p-3"
+          className="flex flex-col items-center gap-4 lg:gap-5 group cursor-pointer focus:outline-none p-3 relative z-50 pointer-events-auto"
         >
           {/* Diamond geometric icon - Enlarged */}
           <div className="w-10 h-10 lg:w-12 lg:h-12 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
@@ -85,7 +100,7 @@ export default function MenuTrigger() {
       </aside>
 
       {/* Mobile Logo (< md, fixed top-left) */}
-      <div className="md:hidden fixed left-6 top-6 z-50 select-none">
+      <div className="md:hidden fixed left-6 top-8 z-50 select-none">
         <Link
           href="/"
           className="group block relative w-10 h-10 focus:outline-none"

@@ -33,7 +33,7 @@ export default function AboutPage() {
               width={aboutAssets.hero.width}
               height={aboutAssets.hero.height}
               priority
-              className="w-full h-full object-cover grayscale contrast-125 hover:grayscale-0 transition-all duration-700"
+              className="w-full h-full object-cover"
             />
           </ImageReveal>
           <div className="flex items-center justify-between font-mono text-[10px] tracking-[0.2em] text-[#F5F5F5]/50 mt-3">
@@ -81,7 +81,7 @@ export default function AboutPage() {
                 alt={aboutAssets.interior.alt}
                 width={aboutAssets.interior.width}
                 height={aboutAssets.interior.height}
-                className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+                className="w-full h-full object-cover"
               />
             </ImageReveal>
             <div className="font-mono text-[10px] tracking-[0.2em] text-[#F5F5F5]/50 mt-3 flex justify-between">
@@ -100,7 +100,7 @@ export default function AboutPage() {
                 alt={aboutAssets.night.alt}
                 width={aboutAssets.night.width}
                 height={aboutAssets.night.height}
-                className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+                className="w-full h-full object-cover"
               />
             </ImageReveal>
             <div className="font-mono text-[10px] tracking-[0.2em] text-[#F5F5F5]/50 mt-3 flex justify-between">

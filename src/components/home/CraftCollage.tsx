@@ -2,15 +2,23 @@
 
 import { useEffect, useRef } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 
+const spoilerItems = [
+  { id: 1, label: "ARCHIVE // 01", alt: "Afterwork Visual Archive 01" },
+  { id: 2, label: "ARCHIVE // 02", alt: "Afterwork Visual Archive 02" },
+  { id: 3, label: "ARCHIVE // 03", alt: "Afterwork Visual Archive 03" },
+  { id: 4, label: "ARCHIVE // 04", alt: "Afterwork Visual Archive 04" },
+  { id: 5, label: "ARCHIVE // 05", alt: "Afterwork Visual Archive 05" },
+];
+
 export default function CraftCollage() {
   const sectionRef = useRef<HTMLElement>(null);
-  const card1Ref = useRef<HTMLDivElement>(null);
-  const card2Ref = useRef<HTMLDivElement>(null);
-  const card3Ref = useRef<HTMLDivElement>(null);
+  const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const buttonRef = useRef<HTMLDivElement>(null);
   const prefersReduced = useReducedMotion();
 
   useEffect(() => {
@@ -20,126 +28,95 @@ export default function CraftCollage() {
     const section = sectionRef.current;
     if (!section) return;
 
-    // Abstract organic parallax with gentle counter-rotations
-    if (card1Ref.current) {
-      gsap.to(card1Ref.current, {
-        y: -70,
-        rotate: -1,
-        ease: "none",
-        scrollTrigger: {
-          trigger: section,
-          start: "top bottom",
-          end: "bottom top",
-          scrub: 1.2,
-        },
-      });
+    const cards = cardsRef.current.filter(Boolean);
+    if (cards.length > 0) {
+      gsap.fromTo(
+        cards,
+        { opacity: 0, y: 25 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.75,
+          stagger: 0.08,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: section,
+            start: "top 75%",
+            toggleActions: "play none none reverse",
+          },
+        }
+      );
     }
 
-    if (card2Ref.current) {
-      gsap.to(card2Ref.current, {
-        y: -130,
-        rotate: 1,
-        ease: "none",
-        scrollTrigger: {
-          trigger: section,
-          start: "top bottom",
-          end: "bottom top",
-          scrub: 1.7,
-        },
-      });
-    }
-
-    if (card3Ref.current) {
-      gsap.to(card3Ref.current, {
-        y: -90,
-        rotate: -3,
-        ease: "none",
-        scrollTrigger: {
-          trigger: section,
-          start: "top bottom",
-          end: "bottom top",
-          scrub: 1.4,
-        },
-      });
+    if (buttonRef.current) {
+      gsap.fromTo(
+        buttonRef.current,
+        { opacity: 0, y: 20 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: buttonRef.current,
+            start: "top 85%",
+            toggleActions: "play none none reverse",
+          },
+        }
+      );
     }
   }, [prefersReduced]);
 
   return (
     <section
       ref={sectionRef}
-      className="relative w-full bg-black text-white pt-24 pb-48 px-6 sm:px-12 md:pl-16 md:pr-10 lg:pl-24 lg:pr-14 xl:pl-32 xl:pr-20 overflow-hidden select-none"
+      id="section-craft"
+      className="relative w-full min-h-[85vh] bg-black text-white flex flex-col justify-center py-20 px-6 sm:px-10 md:px-12 lg:px-16 overflow-visible select-none z-30"
     >
-      {/* Abstract Asymmetrical Scattered Art Collage (Completely borderless, irregular floating geometry) */}
-      <div className="relative z-10 w-full max-w-[1500px] mx-auto">
-        <div className="relative flex flex-col space-y-24 lg:space-y-0">
-          
-          {/* Top Row: Scattered Pair (Card 1 on left, Card 3 floating far right) */}
-          <div className="flex flex-col lg:flex-row items-start justify-between gap-12 lg:gap-8">
-            
-            {/* Item 1: Hand Kneading Dough (Tilted left, elongated aspect) */}
-            <div
-              ref={card1Ref}
-              className="w-full lg:w-5/12 flex flex-col space-y-3 -rotate-3 hover:rotate-0 transition-transform duration-700 will-change-transform z-10"
-            >
-              <div className="relative w-full max-w-[420px] aspect-[3/4] overflow-hidden bg-neutral-950 shadow-2xl group">
+      <div className="relative z-10 w-full max-w-[1500px] mx-auto flex flex-col space-y-10">
+        {/* Horizontal Scrolling Spoiler Gallery */}
+        <div className="w-full overflow-x-auto no-scrollbar scroll-smooth py-4">
+          <div className="flex flex-row items-center gap-6 sm:gap-8 pb-4 min-w-max">
+            {spoilerItems.map((item, idx) => (
+              <div
+                key={item.id}
+                ref={(el) => {
+                  cardsRef.current[idx] = el;
+                }}
+                className="group relative w-[260px] sm:w-[290px] md:w-[320px] aspect-[3/4] flex-shrink-0 overflow-hidden bg-neutral-950 border border-neutral-900 shadow-2xl transition-transform duration-500 hover:-translate-y-1"
+              >
                 <Image
-                  src="/images/home/home-craft-01.jpg"
-                  alt="Hand kneading artisanal pastry dough"
+                  src="/images/default.jpg"
+                  alt={item.alt}
                   fill
-                  sizes="(max-width: 768px) 100vw, 35vw"
-                  className="object-cover object-center group-hover:scale-105 transition-transform duration-700"
+                  sizes="(max-width: 768px) 260px, 320px"
+                  className="object-cover object-center transition-transform duration-700 group-hover:scale-105"
                 />
-              </div>
-              <div className="flex items-center gap-4 text-[10px] uppercase tracking-[0.25em] text-neutral-500 font-mono pl-2">
-                <span>01 // PREPARATION</span>
-                <span>LAMINATION</span>
-              </div>
-            </div>
+                {/* Subtle dark gradient overlay at bottom */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
 
-            {/* Item 3: Sugar Dusting Finishing (Floating high on the right, rotated slightly) */}
-            <div
-              ref={card3Ref}
-              className="w-full lg:w-5/12 flex flex-col items-end space-y-3 lg:pt-16 rotate-2 hover:rotate-0 transition-transform duration-700 will-change-transform z-10"
-            >
-              <div className="relative w-full max-w-[380px] aspect-[4/5] overflow-hidden bg-neutral-950 shadow-2xl group">
-                <Image
-                  src="/images/home/home-craft-03.jpg"
-                  alt="Delicate sugar powder dusting on golden croissant"
-                  fill
-                  sizes="(max-width: 768px) 100vw, 35vw"
-                  className="object-cover object-center group-hover:scale-105 transition-transform duration-700"
-                />
+                {/* Minimal Archive Number Tag */}
+                <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between pointer-events-none">
+                  <span className="font-mono text-[11px] tracking-[0.2em] text-white/70 uppercase">
+                    {item.label}
+                  </span>
+                </div>
               </div>
-              <div className="flex items-center gap-4 text-[10px] uppercase tracking-[0.25em] text-neutral-500 font-mono pr-2">
-                <span>03 // FINISHING</span>
-                <span>FINE DUSTING</span>
-              </div>
-            </div>
-
+            ))}
           </div>
+        </div>
 
-          {/* Bottom Floating Row: Item 2 Staggered and Off-Center (Overlapping middle depth) */}
-          <div className="w-full flex justify-center lg:justify-start lg:pl-32 lg:-mt-28 z-20">
-            <div
-              ref={card2Ref}
-              className="w-full max-w-[520px] flex flex-col space-y-3 rotate-[-1.5deg] hover:rotate-0 transition-transform duration-700 will-change-transform"
-            >
-              <div className="relative w-full aspect-[16/10] sm:aspect-[4/3] overflow-hidden bg-neutral-950 shadow-2xl group">
-                <Image
-                  src="/images/home/home-craft-02.jpg"
-                  alt="Cutting croissants on rolling workbench"
-                  fill
-                  sizes="(max-width: 768px) 100vw, 45vw"
-                  className="object-cover object-center group-hover:scale-105 transition-transform duration-700"
-                />
-              </div>
-              <div className="flex items-center gap-4 text-[10px] uppercase tracking-[0.25em] text-neutral-500 font-mono pl-2">
-                <span>02 // CRAFT</span>
-                <span>PRECISION CUT</span>
-              </div>
-            </div>
-          </div>
-
+        {/* Action Button to Full Gallery */}
+        <div ref={buttonRef} className="w-full flex justify-center pt-2">
+          <Link
+            href="/gallery"
+            className="group inline-flex items-center gap-4 px-8 py-4 bg-white hover:bg-[#E05D29] text-black hover:text-white border-2 border-white hover:border-[#E05D29] transition-all duration-300 tracking-[0.25em] uppercase text-xs sm:text-sm font-sans font-black shadow-2xl cursor-pointer"
+          >
+            <span>Explore Full Gallery</span>
+            <span className="transform group-hover:translate-x-2 transition-transform duration-300 text-sm font-bold">
+              →
+            </span>
+          </Link>
         </div>
       </div>
     </section>

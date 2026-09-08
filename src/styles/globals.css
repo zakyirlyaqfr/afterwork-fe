@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 @layer base {
+
   /* Local Alte Haas Grotesk @font-face configuration */
   @font-face {
     font-family: 'Alte Haas Grotesk';
@@ -62,7 +63,7 @@
   .main-content-layout {
     width: calc(100vw - var(--sidebar-width));
     margin-left: var(--sidebar-width);
-    padding-left: clamp(40px, 5vw, 100px);
+    padding-left: 0;
   }
 }
 
@@ -75,7 +76,7 @@
   .nav-overlay-layout {
     left: var(--sidebar-width);
     width: calc(100vw - var(--sidebar-width));
-    padding-left: clamp(40px, 5vw, 100px);
+    padding-left: 0;
   }
 }
 
@@ -100,7 +101,8 @@ html {
   background-color: #000000;
   color: #F5F5F5;
   font-family: var(--font-editorial);
-  scroll-behavior: auto; /* Handled by Lenis */
+  scroll-behavior: auto;
+  /* Handled by Lenis */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -114,12 +116,16 @@ body {
   position: relative;
 }
 
-button, input, select, textarea {
+button,
+input,
+select,
+textarea {
   font-family: inherit;
 }
 
 /* Lenis smooth scroll required styles */
-html.lenis, html.lenis body {
+html.lenis,
+html.lenis body {
   height: auto;
 }
 
@@ -165,12 +171,15 @@ html.lenis, html.lenis body {
 ::-webkit-scrollbar {
   width: 4px;
 }
+
 ::-webkit-scrollbar-track {
   background: #000000;
 }
+
 ::-webkit-scrollbar-thumb {
   background: #262626;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background: #E05D29;
 }
@@ -183,93 +192,108 @@ html.lenis, html.lenis body {
   text-transform: uppercase;
 }
 
-/* ========================================================================== */
-/* HERO KINETIC LOOPING ANIMATION (Exact Lune Croissanterie Specification) */
-/* ========================================================================== */
-.hero-kinetic-container {
+.hero-afterwork-brand {
   position: relative;
+  z-index: 10;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 0.35em;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  line-height: 0.9;
   white-space: nowrap;
+  cursor: default;
+  user-select: none;
+  overflow: visible;
+  padding: 0.25rem 0;
   width: 100%;
 }
 
-.hero-kinetic-word {
+.hero-word-primary {
   font-family: var(--font-display), 'Alte Haas Grotesk', sans-serif;
-  font-weight: 700;
+  font-weight: 900;
+  font-size: clamp(3.25rem, 6.8vw, 6.85rem);
+  letter-spacing: -0.04em;
   color: #ffffff;
-  font-size: clamp(3.75rem, 8.5vw, 8.5rem);
-  letter-spacing: -0.05em;
-  line-height: 0.68;
-  text-transform: uppercase;
-  will-change: transform, opacity;
-  animation-duration: 20s;
-  animation-timing-function: ease-in-out;
-  animation-iteration-count: infinite;
+  display: block;
+  line-height: 1;
+  text-align: center;
+  overflow: visible;
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, letter-spacing, -webkit-text-stroke;
 }
 
-.hero-kinetic-word-order {
+.hero-word-secondary {
+  font-family: var(--font-display), 'Alte Haas Grotesk', sans-serif;
+  font-weight: 900;
+  font-size: clamp(3.25rem, 6.8vw, 6.85rem);
+  letter-spacing: -0.04em;
+  color: transparent;
+  -webkit-text-stroke: 2.5px rgba(255, 255, 255, 0.88);
+  display: block;
+  line-height: 1;
   margin-left: 0;
-  animation-name: slideAnimationOrder;
+  text-align: center;
+  overflow: visible;
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, letter-spacing, color, -webkit-text-stroke, text-shadow;
 }
 
-.hero-kinetic-word-now {
-  margin-left: 1.73em;
-  animation-name: slideAnimationNow;
+/* Kinetic snap & counter-drift */
+.hero-anim-slide-a {
+  animation: heroKineticA 6s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  overflow: visible;
 }
 
-@keyframes slideAnimationOrder {
-  0% {
-    opacity: 0;
-    transform: translateX(1.5em);
-  }
-  3% {
-    opacity: 1;
-    transform: translateX(1.5em);
-  }
-  20% {
-    opacity: 1;
-    transform: translateX(0);
-  }
-  75% {
-    opacity: 1;
-    transform: translateX(0);
-  }
-  85% {
-    opacity: 0;
-    transform: translateX(0);
-  }
+.hero-anim-slide-b {
+  animation: heroKineticB 6s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  overflow: visible;
+}
+
+@keyframes heroKineticA {
+
+  0%,
   100% {
-    opacity: 0;
-    transform: translateX(1.5em);
+    transform: translateX(0) skewX(0deg);
+  }
+
+  35% {
+    transform: translateX(8px) skewX(-1.5deg);
+  }
+
+  70% {
+    transform: translateX(-6px) skewX(1deg);
   }
 }
 
-@keyframes slideAnimationNow {
-  0% {
-    opacity: 0;
-    transform: translateX(-1em);
-  }
-  5% {
-    opacity: 1;
-    transform: translateX(-1em);
-  }
-  20% {
-    opacity: 1;
-    transform: translateX(0);
-  }
-  75% {
-    opacity: 1;
-    transform: translateX(0);
-  }
-  85% {
-    opacity: 0;
-    transform: translateX(0);
-  }
+@keyframes heroKineticB {
+
+  0%,
   100% {
-    opacity: 0;
-    transform: translateX(-1em);
+    transform: translateX(0) skewX(0deg);
   }
+
+  35% {
+    transform: translateX(-8px) skewX(1.5deg);
+  }
+
+  70% {
+    transform: translateX(6px) skewX(-1deg);
+  }
+}
+
+/* Hover inversion: AFTER becomes outline, WORK becomes filled with luminous orange glow */
+.hero-afterwork-brand:hover .hero-word-primary {
+  color: transparent;
+  -webkit-text-stroke: 2px #ffffff;
+  letter-spacing: -0.01em;
+  transform: scale(1.02);
+}
+
+.hero-afterwork-brand:hover .hero-word-secondary {
+  color: #ffffff;
+  -webkit-text-stroke: 2.5px #e05d29;
+  letter-spacing: 0.01em;
+  text-shadow: 0 0 45px rgba(224, 93, 41, 0.7);
+  transform: scale(1.02);
 }

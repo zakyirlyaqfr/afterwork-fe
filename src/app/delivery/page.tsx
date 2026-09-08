@@ -50,10 +50,10 @@ export default function DeliveryPage() {
 
           <div className="lg:col-span-6 aspect-video sm:aspect-[16/9] relative border border-[#262626] overflow-hidden bg-[#111111]">
             <Image
-              src="/images/navigation/nav-delivery.jpg"
-              alt="Bottled drinks packaged for instant delivery"
+              src="/images/default.jpg"
+              alt="Default placeholder image"
               fill
-              className="object-cover grayscale contrast-125 hover:grayscale-0 transition-all duration-500"
+              className="object-cover"
             />
           </div>
         </div>

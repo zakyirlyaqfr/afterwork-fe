@@ -1,6 +1,5 @@
 import Hero from "@/components/home/Hero";
 import EditorialStory from "@/components/home/EditorialStory";
-import PanoramicBanner from "@/components/home/PanoramicBanner";
 import CraftCollage from "@/components/home/CraftCollage";
 import type { Metadata } from "next";
 
@@ -19,10 +18,7 @@ export default function HomePage() {
       {/* 02: Editorial Story (Module L & U) with dual floating cards & brand quote */}
       <EditorialStory />
 
-      {/* 03: Wide Cinematic Panoramic Pastry Banner (Module U) */}
-      <PanoramicBanner />
-
-      {/* 04: Craft Process Tri-Image Collage (Module E) */}
+      {/* 03: Craft Process Tri-Image Collage (Module E) */}
       <CraftCollage />
     </main>
   );

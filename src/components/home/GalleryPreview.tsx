@@ -50,7 +50,7 @@ export default function GalleryPreview() {
                   alt={images[0].alt}
                   width={images[0].width}
                   height={images[0].height}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  className="w-full h-full object-cover"
                 />
               </ImageReveal>
               <div className="flex items-center justify-between font-mono text-[10px] tracking-[0.2em] text-[#F5F5F5]/60 mt-3">
@@ -71,7 +71,7 @@ export default function GalleryPreview() {
                     alt={images[1].alt}
                     width={images[1].width}
                     height={images[1].height}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    className="w-full h-full object-cover"
                   />
                 </ImageReveal>
                 <div className="flex items-center justify-between font-mono text-[10px] tracking-[0.2em] text-[#F5F5F5]/60 mt-3">
@@ -92,7 +92,7 @@ export default function GalleryPreview() {
                       alt={images[2].alt}
                       width={images[2].width}
                       height={images[2].height}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      className="w-full h-full object-cover"
                     />
                   </ImageReveal>
                   <div className="flex items-center justify-between font-mono text-[10px] tracking-[0.2em] text-[#F5F5F5]/60 mt-2">
@@ -110,7 +110,7 @@ export default function GalleryPreview() {
                       alt={images[3].alt}
                       width={images[3].width}
                       height={images[3].height}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      className="w-full h-full object-cover"
                     />
                   </ImageReveal>
                   <div className="flex items-center justify-between font-mono text-[10px] tracking-[0.2em] text-[#F5F5F5]/60 mt-2">
