@@ -16,81 +16,81 @@ export const menuItems: MenuItem[] = [
   // COFFEE
   {
     id: "c1",
-    name: "DOUBLE ESPRESSO",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Seasonal washed Ethiopian Heirloom blend.",
+    name: "LOREM IPSUM",
+    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore.",
     price: "28K",
     category: "COFFEE",
     previewImage: DEFAULT_IMAGE,
-    tag: "SIGNATURE BLEND"
+    tag: "LOREM BLEND"
   },
   {
     id: "c2",
-    name: "LONG BLACK",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Double ristretto over hot alkaline water.",
+    name: "DOLOR SIT AMET",
+    description: "Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
     price: "32K",
     category: "COFFEE",
     previewImage: DEFAULT_IMAGE,
   },
   {
     id: "c3",
-    name: "WHITE / LATTE",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Velvety steamed dairy or oat milk balance.",
+    name: "CONSECTETUR ADIPIS",
+    description: "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
     price: "36K",
     category: "COFFEE",
     previewImage: DEFAULT_IMAGE,
-    tag: "DAILY DRIVER"
+    tag: "LOREM DAILY"
   },
   {
     id: "c4",
-    name: "ESPRESSO TONIC",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Double espresso, premium tonic, dehydrated citrus.",
+    name: "TEMPOR INCIDIDUNT",
+    description: "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
     price: "42K",
     category: "COFFEE",
     previewImage: DEFAULT_IMAGE,
-    tag: "BESTSELLER"
+    tag: "LOREM SIGNATURE"
   },
   {
     id: "c5",
-    name: "GEISHA POUR-OVER",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Single origin floral notes with bergamot finish.",
+    name: "MAGNA ALIQUA",
+    description: "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
     price: "55K",
     category: "COFFEE",
     previewImage: DEFAULT_IMAGE,
-    tag: "LIMITED LOT"
+    tag: "LOREM LOT"
   },
 
   // BOTTLED
   {
     id: "b1",
-    name: "NITRO COLD BREW 250ML",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. 24-hour cold immersion infused with nitrogen.",
+    name: "ENIM AD MINIM 250ML",
+    description: "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
     price: "38K",
     category: "BOTTLED",
     previewImage: DEFAULT_IMAGE,
-    tag: "READY TO DRINK"
+    tag: "LOREM BOTTLE"
   },
   {
     id: "b2",
-    name: "OAT MILK LATTE 250ML",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Signature dark roast steeped with Swedish oat base.",
+    name: "VENIAM QUIS NOSTRUD",
+    description: "Totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta.",
     price: "42K",
     category: "BOTTLED",
     previewImage: DEFAULT_IMAGE,
-    tag: "PLANT BASED"
+    tag: "LOREM PLANT"
   },
   {
     id: "b3",
-    name: "AFTERWORK COLD WHITE 500ML",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Double batch cold white crafted for sharing.",
+    name: "ULLAMCO LABORIS 500ML",
+    description: "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni.",
     price: "75K",
     category: "BOTTLED",
     previewImage: DEFAULT_IMAGE,
-    tag: "SHARING BOTTLE"
+    tag: "LOREM SHARING"
   },
   {
     id: "b4",
-    name: "CASCARA FIZZ 250ML",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sparkling fermented coffee cherry tea tonic.",
+    name: "ALIQUIP EX EA 250ML",
+    description: "Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit sed quia non.",
     price: "35K",
     category: "BOTTLED",
     previewImage: DEFAULT_IMAGE,
@@ -99,34 +99,34 @@ export const menuItems: MenuItem[] = [
   // FOOD
   {
     id: "f1",
-    name: "MIDNIGHT CRUFFIN",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Flaky laminated dough with dark chocolate ganache.",
+    name: "COMMODO CONSEQUAT",
+    description: "Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam nisi ut aliquid.",
     price: "38K",
     category: "FOOD",
     previewImage: DEFAULT_IMAGE,
-    tag: "FRESH BAKE"
+    tag: "LOREM BAKE"
   },
   {
     id: "f2",
-    name: "KOUIGN-AMANN",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Caramelized salted butter layered pastry.",
+    name: "DUIS AUTE IRURE",
+    description: "Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur.",
     price: "35K",
     category: "FOOD",
     previewImage: DEFAULT_IMAGE,
   },
   {
     id: "f3",
-    name: "AFTERWORK PASTRAMI MELT",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. House cured brisket, gruyère, dijon, sourdough toast.",
+    name: "DOLOR REPREHEND",
+    description: "Vel illum qui dolorem eum fugiat quo voluptas nulla pariatur at vero eos et accusamus et iusto odio.",
     price: "65K",
     category: "FOOD",
     previewImage: DEFAULT_IMAGE,
-    tag: "COMFORT FOOD"
+    tag: "LOREM COMFORT"
   },
   {
     id: "f4",
-    name: "TRUFFLE PARMESAN TOAST",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Shaved aged parmigiano, truffle glaze, crusty pain de campagne.",
+    name: "VOLUPTATE VELIT",
+    description: "Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime.",
     price: "52K",
     category: "FOOD",
     previewImage: DEFAULT_IMAGE,
@@ -135,25 +135,25 @@ export const menuItems: MenuItem[] = [
   // NON COFFEE
   {
     id: "nc1",
-    name: "CEREMONIAL UJI MATCHA",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Hand-whisked Kyoto single-estate stone ground matcha.",
+    name: "ESSE CILLUM",
+    description: "Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates.",
     price: "42K",
     category: "NON COFFEE",
     previewImage: DEFAULT_IMAGE,
-    tag: "CEREMONIAL"
+    tag: "LOREM INFUSION"
   },
   {
     id: "nc2",
-    name: "VALRHONA 70% CHOCOLATE",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Rich single origin dark cacao with smoked sea salt.",
+    name: "FUGIAT NULLA",
+    description: "Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur.",
     price: "40K",
     category: "NON COFFEE",
     previewImage: DEFAULT_IMAGE,
   },
   {
     id: "nc3",
-    name: "BOTANICAL WHITE TEA",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Wild silver needle, dried pear, and elderflower infusion.",
+    name: "EXCEPTEUR SINT",
+    description: "Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore cum soluta nobis est eligendi.",
     price: "35K",
     category: "NON COFFEE",
     previewImage: DEFAULT_IMAGE,

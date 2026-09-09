@@ -110,29 +110,29 @@ export const homeAssets = {
 
 export const aboutAssets = {
   hero: {
-    src: DEFAULT_IMAGE,
-    alt: "Afterwork Architecture and interior layout",
+    src: "/images/afterwork-glutton-1.jpg",
+    alt: "Artisanal Afterwork brew bar and craft table setting",
     width: 2000,
     height: 1300,
     category: "about" as const,
   },
   interior: {
-    src: DEFAULT_IMAGE,
-    alt: "Barista dialing in seasonal beans",
+    src: "/images/afterwork-seating.jpg",
+    alt: "Afterwork Exterior Portal and Seating Space",
     width: 1400,
     height: 1800,
     category: "about" as const,
   },
   detail: {
-    src: DEFAULT_IMAGE,
-    alt: "Cold infusion laboratory and amber bottles",
+    src: "/images/afterwork-interior-lounge.jpg",
+    alt: "Afterwork Lounge Architecture and Craft Atmosphere",
     width: 1200,
     height: 1600,
     category: "about" as const,
   },
   night: {
-    src: DEFAULT_IMAGE,
-    alt: "Afterwork night atmosphere at 01:45 AM",
+    src: "/images/afterwork-cafe-hall.jpg",
+    alt: "Afterwork High-Ceiling Architecture & Brewing Bar",
     width: 1800,
     height: 1200,
     category: "about" as const,

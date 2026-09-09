@@ -147,27 +147,13 @@ export default function EditorialStory() {
 
             </div>
 
-            {/* Right Column: Statement Typography & Floating Companion Card BEHIND the text */}
+            {/* Right Column: Statement Typography & Floating Companion Card */}
             <div className="w-full lg:w-7/12 relative flex flex-col justify-center lg:pl-6">
-
-              {/* Floating Asymmetric Landscape Card: Authentic Afterwork Bottled Formulas - ABOVE THE WATERMARK (z-10), BEHIND THE TEXT (z-20) */}
-              <div
-                ref={image3Ref}
-                className="absolute right-0 top-0 sm:-top-4 lg:-top-6 w-full max-w-[380px] sm:max-w-[460px] aspect-[16/10] overflow-hidden bg-neutral-950 shadow-2xl -rotate-1 z-10 pointer-events-none select-none opacity-100"
-              >
-                <Image
-                  src="/images/afterwork-gofood.jpg"
-                  alt="Afterwork Signature Bottled Formulas"
-                  fill
-                  sizes="(max-width: 1024px) 90vw, 35vw"
-                  className="object-cover object-center"
-                />
-              </div>
 
               {/* Avant-Garde Editorial Typography Statement & Narrative (Rendered in front at z-20) */}
               <div
                 ref={textRef}
-                className="relative z-20 w-full max-w-xl space-y-8 py-6 sm:py-8 will-change-transform"
+                className="relative z-20 w-full max-w-xl space-y-6 sm:space-y-8 py-2 sm:py-6 will-change-transform"
               >
                 {/* Staggered Rhythm Statement */}
                 <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black uppercase tracking-[-0.03em] leading-[1.04] text-white">
@@ -193,10 +179,24 @@ export default function EditorialStory() {
                   >
                     <span>Read More</span>
                     <span className="transform group-hover:translate-x-2 transition-transform duration-300 text-sm font-bold">
-                      →
+                      &rarr;
                     </span>
                   </Link>
                 </div>
+              </div>
+
+              {/* Companion Landscape Card: On mobile flows cleanly below the button; On desktop floats absolute behind text */}
+              <div
+                ref={image3Ref}
+                className="relative lg:absolute lg:right-0 lg:-top-6 w-full max-w-[340px] sm:max-w-[420px] lg:max-w-[460px] aspect-[16/10] overflow-hidden bg-neutral-950 shadow-2xl -rotate-1 z-10 select-none opacity-100 mt-10 lg:mt-0 mx-auto lg:mx-0"
+              >
+                <Image
+                  src="/images/afterwork-gofood.jpg"
+                  alt="Afterwork Signature Bottled Formulas"
+                  fill
+                  sizes="(max-width: 1024px) 90vw, 35vw"
+                  className="object-cover object-center"
+                />
               </div>
 
             </div>

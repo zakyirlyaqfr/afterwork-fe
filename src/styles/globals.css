@@ -72,11 +72,42 @@
   width: 100vw;
 }
 
+/* Dedicated responsive framing for Navigation Overlay */
+.nav-overlay-content {
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
 @media (min-width: 768px) {
-  .nav-overlay-layout {
-    left: var(--sidebar-width);
-    width: calc(100vw - var(--sidebar-width));
-    padding-left: 0;
+  .nav-overlay-content {
+    padding-left: calc(var(--sidebar-width) + 3rem);
+    padding-right: 3.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .nav-overlay-content {
+    padding-left: calc(var(--sidebar-width) + 4.5rem);
+    padding-right: 5rem;
+  }
+}
+
+@media (min-width: 1440px) {
+  .nav-overlay-content {
+    padding-left: calc(var(--sidebar-width) + 6rem);
+    padding-right: 6.5rem;
+  }
+}
+
+@layer utilities {
+  .nav-link-hover {
+    transition: color 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .nav-link-hover:hover,
+  .nav-link-hover:hover span,
+  .nav-link-hover.active,
+  .nav-link-hover.active span {
+    color: #E05D29 !important;
   }
 }
 
@@ -342,4 +373,209 @@ html.lenis body {
   padding-bottom: clamp(40px, 6vh, 80px);
   overflow-x: visible;
   overflow-y: clip;
+}
+
+/* ============================================
+   PUNK ABSTRACT PAGE UTILITIES
+   Shared animations and styles for sub-pages
+   ============================================ */
+
+/* Punk floating variations for page elements */
+@keyframes punkFloatA {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33% { transform: translateY(-7px) rotate(0.3deg); }
+  66% { transform: translateY(4px) rotate(-0.2deg); }
+}
+
+@keyframes punkFloatB {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  40% { transform: translateY(6px) rotate(-0.4deg); }
+  75% { transform: translateY(-5px) rotate(0.2deg); }
+}
+
+@keyframes punkFloatC {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-12px) rotate(0.5deg); }
+}
+
+.punk-float-a {
+  animation: punkFloatA 7s ease-in-out infinite;
+}
+
+.punk-float-b {
+  animation: punkFloatB 8.5s ease-in-out infinite;
+}
+
+.punk-float-c {
+  animation: punkFloatC 6s ease-in-out infinite;
+}
+
+/* Punk glow effect */
+.punk-glow {
+  box-shadow: 0 0 30px rgba(224, 93, 41, 0.2), 0 0 60px rgba(224, 93, 41, 0.1);
+}
+
+.punk-glow-strong {
+  box-shadow: 0 0 25px rgba(224, 93, 41, 0.35), 0 0 50px rgba(224, 93, 41, 0.15);
+}
+
+/* Optical Center relative to full viewport (including left sidebar) */
+.optical-center-viewport {
+  transform: translateX(0);
+}
+
+@media (min-width: 768px) {
+  .optical-center-viewport {
+    transform: translateX(calc(-0.5 * var(--sidebar-width)));
+  }
+}
+
+/* Tilted Punk Float Variations (Permanently preserving distinct tilts while floating) */
+@keyframes punkFloatTiltRight {
+  0%, 100% {
+    transform: translateY(0px) rotate(4deg);
+  }
+  50% {
+    transform: translateY(-14px) rotate(4.8deg);
+  }
+}
+
+.punk-float-tilt-right {
+  animation: punkFloatTiltRight 6.5s ease-in-out infinite;
+}
+
+@keyframes punkFloatTiltLeft {
+  0%, 100% {
+    transform: translateY(0px) rotate(-3.5deg);
+  }
+  50% {
+    transform: translateY(-12px) rotate(-4.2deg);
+  }
+}
+
+.punk-float-tilt-left {
+  animation: punkFloatTiltLeft 7s ease-in-out infinite;
+}
+
+/* Punk tilted card base */
+.punk-tilt-left {
+  transform: rotate(-2deg);
+}
+
+.punk-tilt-right {
+  transform: rotate(2deg);
+}
+
+.punk-tilt-slight-left {
+  transform: rotate(-1deg);
+}
+
+.punk-tilt-slight-right {
+  transform: rotate(1deg);
+}
+
+/* Lightbox animations */
+@keyframes lightboxEnter {
+  0% {
+    opacity: 0;
+    transform: scale(0.85) rotate(-2deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+@keyframes lightboxExit {
+  0% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.85) rotate(2deg);
+  }
+}
+
+@keyframes lightboxBackdropEnter {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+.lightbox-enter {
+  animation: lightboxEnter 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.lightbox-exit {
+  animation: lightboxExit 0.3s cubic-bezier(0.7, 0, 0.84, 0) forwards;
+}
+
+.lightbox-backdrop-enter {
+  animation: lightboxBackdropEnter 0.3s ease-out forwards;
+}
+
+/* Modal/popup entrance */
+@keyframes modalSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.modal-enter {
+  animation: modalSlideUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Punk page watermark */
+.punk-watermark {
+  position: absolute;
+  pointer-events: none;
+  user-select: none;
+  font-weight: 900;
+  text-transform: uppercase;
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.04);
+  letter-spacing: -0.04em;
+  line-height: 0.9;
+  white-space: nowrap;
+  will-change: transform;
+}
+
+/* Punk corner brackets utility */
+.punk-brackets::before,
+.punk-brackets::after {
+  content: '';
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  pointer-events: none;
+  z-index: 30;
+}
+
+.punk-brackets::before {
+  top: -8px;
+  left: -8px;
+  border-top: 2px solid rgba(255, 255, 255, 0.85);
+  border-left: 2px solid rgba(255, 255, 255, 0.85);
+}
+
+.punk-brackets::after {
+  bottom: -8px;
+  right: -8px;
+  border-bottom: 2px solid #E05D29;
+  border-right: 2px solid #E05D29;
+}
+
+/* Sub-page section spacing */
+.punk-section {
+  padding-top: clamp(80px, 10vh, 140px);
+  padding-bottom: clamp(60px, 8vh, 120px);
+}
+
+.punk-section + .punk-section {
+  padding-top: clamp(40px, 5vh, 80px);
 }

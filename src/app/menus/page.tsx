@@ -1,56 +1,123 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
-import SectionLabel from "@/components/ui/SectionLabel";
-import RevealText from "@/components/animation/RevealText";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { menuItems, menuCategories, MenuItem } from "@/data/menu";
+
+const tiltAngles = [-2.5, 1.5, -1, 2, -1.8, 0.8, -2, 1.2, -0.5, 2.5, -1.5, 1, -2, 1.8, -0.8, 2.2];
 
 export default function MenusPage() {
   const [activeCategory, setActiveCategory] = useState<string>("ALL");
-  const [hoveredItem, setHoveredItem] = useState<MenuItem | null>(null);
-  const [activeMobileItem, setActiveMobileItem] = useState<string | null>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+  const titleRef = useRef<HTMLDivElement>(null);
+  const filterRef = useRef<HTMLDivElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
+  const watermarkRef = useRef<HTMLDivElement>(null);
+  const prefersReduced = useReducedMotion();
 
   const filteredItems =
     activeCategory === "ALL"
       ? menuItems
       : menuItems.filter((item) => item.category === activeCategory);
 
+  useEffect(() => {
+    if (prefersReduced) return;
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Title entrance
+    if (titleRef.current) {
+      gsap.fromTo(
+        titleRef.current,
+        { opacity: 0, y: 55, filter: "blur(8px)" },
+        { opacity: 1, y: 0, filter: "blur(0px)", duration: 1.2, ease: "power3.out", delay: 0.1 }
+      );
+    }
+
+    // Filter entrance
+    if (filterRef.current) {
+      gsap.fromTo(
+        filterRef.current,
+        { opacity: 0, y: 30 },
+        { opacity: 1, y: 0, duration: 1, ease: "power2.out", delay: 0.3 }
+      );
+    }
+
+    // Watermark
+    if (watermarkRef.current) {
+      gsap.to(watermarkRef.current, {
+        y: -80, ease: "none",
+        scrollTrigger: { trigger: sectionRef.current, start: "top bottom", end: "bottom top", scrub: 1.6 },
+      });
+    }
+  }, [prefersReduced]);
+
+  // Animate grid items on filter change
+  useEffect(() => {
+    if (prefersReduced || !gridRef.current) return;
+
+    const cards = gridRef.current.querySelectorAll(".menu-card");
+    gsap.fromTo(
+      cards,
+      { opacity: 0, y: 40, scale: 0.94 },
+      {
+        opacity: 1, y: 0, scale: 1,
+        duration: 0.7, ease: "power2.out",
+        stagger: 0.06,
+      }
+    );
+  }, [activeCategory, prefersReduced]);
+
   return (
-    <main className="min-h-screen bg-black text-[#F5F5F5] pt-32 pb-24 px-8 sm:px-12 md:pl-20 md:pr-12 lg:pl-28 lg:pr-16 xl:pl-36 xl:pr-20 selection:bg-[#E05D29] selection:text-black relative">
-      <div className="w-full max-w-[1720px]">
-        {/* Header */}
-        <div className="border-b border-[#262626] pb-8 mb-12">
-          <SectionLabel label="CRAFT FORMULAS" index="02" theme="dark" className="mb-4" />
-          <RevealText as="h1" className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tighter uppercase leading-[0.9]">
+    <main
+      ref={sectionRef}
+      className="min-h-screen bg-black text-[#F5F5F5] pt-28 sm:pt-36 pb-24 px-6 sm:px-10 md:pl-10 md:pr-10 lg:pl-16 lg:pr-14 xl:pl-20 xl:pr-18 selection:bg-[#E05D29] selection:text-black overflow-visible relative"
+    >
+      {/* Watermark */}
+      <div
+        ref={watermarkRef}
+        aria-hidden="true"
+        className="punk-watermark top-[20%] -left-16 sm:-left-28 text-[clamp(6rem,18vw,20rem)] z-0"
+      >
+        MENUS
+      </div>
+
+      <div className="w-full max-w-[1720px] relative z-10">
+
+        {/* Title — overlaps sidebar */}
+        <div ref={titleRef} className="mb-14 sm:mb-18 md:-ml-12 lg:-ml-20 xl:-ml-28 relative z-40">
+          <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black tracking-tighter uppercase leading-[0.88]">
             MENUS &
             <br />
-            <span className="text-[#E05D29]">BOTTLED DRINKS.</span>
-          </RevealText>
+            <span className="text-[#E05D29]">BOTTLED.</span>
+          </h1>
         </div>
 
-        {/* Category Filters: Minimal Industrial Row */}
-        <div className="flex flex-wrap items-center gap-2 sm:gap-4 pb-8 mb-12 border-b border-[#262626] font-mono text-xs select-none">
+        {/* Category Filters — punk scattered style */}
+        <div ref={filterRef} className="flex flex-wrap items-center gap-3 sm:gap-4 mb-16 sm:mb-20 select-none">
           <button
             type="button"
             onClick={() => setActiveCategory("ALL")}
-            className={`px-4 py-2 uppercase tracking-[0.2em] border transition-colors ${
+            className={`px-5 py-2.5 text-xs font-black uppercase tracking-[0.15em] border-2 transition-all duration-300 -rotate-1 hover:rotate-0 hover:scale-105 ${
               activeCategory === "ALL"
-                ? "bg-[#E05D29] text-black border-[#E05D29] font-bold"
-                : "border-[#262626] text-[#F5F5F5]/60 hover:border-[#F5F5F5] hover:text-[#F5F5F5]"
+                ? "bg-[#E05D29] text-black border-[#E05D29] punk-glow"
+                : "border-[#333] text-[#F5F5F5]/60 hover:border-[#E05D29] hover:text-[#E05D29]"
             }`}
           >
-            [ ALL / {menuItems.length} ]
+            ALL ({menuItems.length})
           </button>
-          {menuCategories.map((cat) => (
+          {menuCategories.map((cat, idx) => (
             <button
               key={cat}
               type="button"
               onClick={() => setActiveCategory(cat)}
-              className={`px-4 py-2 uppercase tracking-[0.2em] border transition-colors ${
+              style={{ transform: `rotate(${idx % 2 === 0 ? '1' : '-1'}deg)` }}
+              className={`px-5 py-2.5 text-xs font-black uppercase tracking-[0.15em] border-2 transition-all duration-300 hover:rotate-0 hover:scale-105 ${
                 activeCategory === cat
-                  ? "bg-[#E05D29] text-black border-[#E05D29] font-bold"
-                  : "border-[#262626] text-[#F5F5F5]/60 hover:border-[#F5F5F5] hover:text-[#F5F5F5]"
+                  ? "bg-[#E05D29] text-black border-[#E05D29] punk-glow !rotate-0"
+                  : "border-[#333] text-[#F5F5F5]/60 hover:border-[#E05D29] hover:text-[#E05D29]"
               }`}
             >
               {cat}
@@ -58,95 +125,64 @@ export default function MenusPage() {
           ))}
         </div>
 
-        {/* Main Grid: Left Typography Rows, Right Hover Preview Panel */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-          {/* Menu Items List */}
-          <div className="lg:col-span-8 flex flex-col divide-y divide-[#262626]">
-            {filteredItems.map((item) => {
-              const isHovered = hoveredItem?.id === item.id;
-              const isMobileOpen = activeMobileItem === item.id;
+        {/* Menu Grid — punk tilted cards */}
+        <div
+          ref={gridRef}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10 lg:gap-12"
+        >
+          {filteredItems.map((item, idx) => {
+            const tilt = tiltAngles[idx % tiltAngles.length];
+            const shouldOverlap = idx === 0 || idx === 3;
 
-              return (
-                <div
-                  key={item.id}
-                  onMouseEnter={() => setHoveredItem(item)}
-                  onMouseLeave={() => setHoveredItem(null)}
-                  onClick={() =>
-                    setActiveMobileItem(isMobileOpen ? null : item.id)
-                  }
-                  className="group py-6 cursor-pointer transition-colors duration-200"
-                >
-                  <div className="flex items-baseline justify-between gap-4">
-                    <div className="flex items-baseline gap-3">
-                      <span className="font-mono text-xs text-[#E05D29] opacity-70 group-hover:opacity-100 transition-opacity">
-                        //
-                      </span>
-                      <h2 className="text-xl sm:text-2xl md:text-3xl font-black uppercase tracking-tight text-[#F5F5F5] group-hover:text-[#E05D29] transition-colors">
-                        {item.name}
-                      </h2>
-                      {item.tag && (
-                        <span className="hidden sm:inline px-2 py-0.5 border border-[#262626] text-[9px] font-mono text-[#E05D29] tracking-widest">
-                          {item.tag}
-                        </span>
-                      )}
-                    </div>
-
-                    <div className="font-mono text-base sm:text-lg font-bold text-[#F5F5F5] shrink-0">
-                      {item.price}
-                    </div>
+            return (
+              <div
+                key={item.id}
+                className={`menu-card relative group ${
+                  shouldOverlap ? "md:-ml-6 lg:-ml-12 z-40" : ""
+                } ${idx % 3 === 1 ? "sm:mt-8" : ""}`}
+                style={{ transform: `rotate(${tilt}deg)` }}
+              >
+                <div className="relative bg-[#0a0a0a] border border-[#262626] p-6 sm:p-8 transition-all duration-500 group-hover:rotate-0 group-hover:scale-[1.03] group-hover:border-[#E05D29]/50 group-hover:shadow-[0_0_30px_rgba(224,93,41,0.15)]">
+                  {/* Corner Brackets */}
+                  <div className="absolute -inset-2 pointer-events-none z-30 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-white/80" />
+                    <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-[#E05D29]" />
+                    <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-[#E05D29]" />
+                    <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-white/80" />
                   </div>
 
-                  <p className="mt-2 font-mono text-xs text-[#F5F5F5]/60 max-w-xl leading-relaxed">
+                  {/* Tag */}
+                  {item.tag && (
+                    <div className="inline-block px-3 py-1 mb-5 border border-[#E05D29]/40 text-[10px] font-bold tracking-[0.2em] text-[#E05D29] uppercase">
+                      {item.tag}
+                    </div>
+                  )}
+
+                  {/* Name */}
+                  <h2 className="text-xl sm:text-2xl font-black uppercase tracking-tight text-[#F5F5F5] group-hover:text-[#E05D29] transition-colors duration-300 mb-3">
+                    {item.name}
+                  </h2>
+
+                  {/* Description */}
+                  <p className="text-xs sm:text-sm text-[#F5F5F5]/55 leading-relaxed mb-6">
                     {item.description}
                   </p>
 
-                  {/* Inline Mobile Image Preview */}
-                  {isMobileOpen && (
-                    <div className="mt-4 lg:hidden aspect-video relative border border-[#262626] overflow-hidden">
-                      <Image
-                        src={item.previewImage}
-                        alt={item.name}
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Desktop Hover Floating/Sticky Preview Box */}
-          <div className="hidden lg:block lg:col-span-4 sticky top-36">
-            <div className="border border-[#262626] bg-[#111111] p-4 flex flex-col gap-4">
-              <div className="aspect-square relative overflow-hidden bg-black border border-[#262626]">
-                <Image
-                  src={hoveredItem ? hoveredItem.previewImage : "/images/default.jpg"}
-                  alt={hoveredItem ? hoveredItem.name : "Afterwork Drink Preview"}
-                  fill
-                  className="object-cover"
-                />
-                <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between font-mono text-[10px] tracking-[0.2em] text-[#F5F5F5]">
-                  <span className="text-[#E05D29]">
-                    {hoveredItem ? hoveredItem.category : "SPECIALTY"}
-                  </span>
-                  <span>AFTERWORK</span>
+                  {/* Price */}
+                  <div className="flex items-center justify-between border-t border-[#262626] pt-4">
+                    <span className="text-lg sm:text-xl font-black text-[#F5F5F5]">
+                      {item.price}
+                    </span>
+                    <span className="text-[10px] font-bold tracking-[0.2em] text-[#F5F5F5]/30 uppercase">
+                      {item.category}
+                    </span>
+                  </div>
                 </div>
               </div>
-
-              <div className="font-mono text-xs">
-                <div className="text-sm font-bold text-[#F5F5F5] uppercase mb-1">
-                  {hoveredItem ? hoveredItem.name : "HOVER OVER A DRINK"}
-                </div>
-                <div className="text-[#F5F5F5]/60 text-[11px] leading-relaxed">
-                  {hoveredItem
-                    ? hoveredItem.description
-                    : "Inspect craft single origins, cold-immersion nitro batches, and comfort pastries."}
-                </div>
-              </div>
-            </div>
-          </div>
+            );
+          })}
         </div>
+
       </div>
     </main>
   );

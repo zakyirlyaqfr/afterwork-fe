@@ -17,7 +17,6 @@ export default function GalleryPreview() {
         {/* Section Header */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between border-b border-[#262626] pb-6 mb-12 sm:mb-16 gap-4">
           <div>
-            <SectionLabel label="VISUAL ARCHIVE" index="002" theme="dark" className="mb-3" />
             <h2 className="text-3xl sm:text-5xl md:text-6xl font-black tracking-tight uppercase leading-none">
               MOMENTS
               <br />
@@ -125,13 +124,13 @@ export default function GalleryPreview() {
         {/* Bottom CTA bar */}
         <div className="mt-16 pt-8 border-t border-[#262626] flex flex-col sm:flex-row items-center justify-between gap-6 font-mono text-xs">
           <div className="text-[#F5F5F5]/50 tracking-[0.2em]">
-            EXHIBIT 01–05 OF 16 ARCHIVAL PHOTOGRAPHS
+            EXHIBIT 01–05 OF 16
           </div>
           <Link
             href="/gallery"
             className="px-6 py-3.5 bg-black border border-[#262626] hover:border-[#E05D29] text-[#F5F5F5] hover:text-[#E05D29] transition-colors tracking-[0.2em] uppercase font-bold inline-flex items-center gap-2"
           >
-            <span>ENTER ARCHIVE</span>
+            <span>VIEW GALLERY</span>
             <ArrowUpRight className="w-4 h-4" />
           </Link>
         </div>

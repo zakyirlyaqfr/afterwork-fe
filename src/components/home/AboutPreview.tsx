@@ -76,7 +76,7 @@ export default function AboutPreview() {
 
             {/* Micro editorial caption under image */}
             <div className="flex items-center justify-between font-mono text-[10px] tracking-[0.2em] text-[#F5F5F5]/50 pt-2 border-t border-[#262626]">
-              <span>FIG. 002 // BRUTALIST ARCHITECTURE</span>
+              <span>FIG. 002 BRUTALIST ARCHITECTURE</span>
               <span className="text-[#E05D29] font-bold">SURABAYA HQ</span>
             </div>
           </div>

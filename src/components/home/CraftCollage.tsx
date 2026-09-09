@@ -189,7 +189,7 @@ export default function CraftCollage() {
 
       <div
         ref={collageClusterRef}
-        className="relative z-10 w-full max-w-[1700px] mx-auto flex flex-col items-center -translate-x-5 sm:-translate-x-8 md:-translate-x-12 lg:-translate-x-16"
+        className="relative z-10 w-full max-w-[1700px] mx-auto flex flex-col items-center translate-x-0 md:-translate-x-8 lg:-translate-x-16"
       >
         {/* Viewport-Scale Abstract 3-Image Carousel Stage: exactly sized to center card aspect ratio */}
         <div
@@ -198,7 +198,7 @@ export default function CraftCollage() {
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
           onPointerLeave={handlePointerUp}
-          className="relative w-[72vw] sm:w-[50vw] md:w-[38vw] lg:w-[32vw] max-w-[480px] aspect-[3/4] flex items-center justify-center cursor-grab active:cursor-grabbing overflow-visible touch-pan-y"
+          className="relative w-[80vw] sm:w-[50vw] md:w-[38vw] lg:w-[32vw] max-w-[320px] sm:max-w-[420px] lg:max-w-[480px] aspect-[3/4] flex items-center justify-center cursor-grab active:cursor-grabbing overflow-visible touch-pan-y"
         >
           {galleryItems.map((item, idx) => {
             // Calculate circular offset from active index
@@ -268,9 +268,8 @@ export default function CraftCollage() {
                   if (isLeft) handlePrev();
                   if (isRight) handleNext();
                 }}
-                className={`absolute inset-0 w-full h-full transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-                  isCenter ? "cursor-default shadow-2xl" : "cursor-pointer hover:opacity-95"
-                }`}
+                className={`absolute inset-0 w-full h-full transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${isCenter ? "cursor-default shadow-2xl" : "cursor-pointer hover:opacity-95"
+                  }`}
                 style={{
                   transform: `translateX(${translateX}) translateY(${translateY}) scale(${scale}) rotate(${rotate}deg)`,
                   opacity,
@@ -280,9 +279,8 @@ export default function CraftCollage() {
               >
                 {/* Punk Industrial Corner Brackets Framing (highlighted on center card) */}
                 <div
-                  className={`absolute -inset-2 pointer-events-none z-30 transition-opacity duration-500 ${
-                    isCenter ? "opacity-100" : "opacity-0"
-                  }`}
+                  className={`absolute -inset-2 pointer-events-none z-30 transition-opacity duration-500 ${isCenter ? "opacity-100" : "opacity-0"
+                    }`}
                 >
                   <div className="absolute top-0 left-0 w-4 sm:w-5 h-4 sm:h-5 border-t-2 border-l-2 border-white/80" />
                   <div className="absolute top-0 right-0 w-4 sm:w-5 h-4 sm:h-5 border-t-2 border-r-2 border-white/80" />
@@ -292,9 +290,8 @@ export default function CraftCollage() {
 
                 {/* Pure Image Media Container (No Text Overlay) */}
                 <div
-                  className={`relative w-full h-full overflow-hidden bg-neutral-950 border transition-colors duration-300 ${
-                    isCenter ? "border-neutral-400 shadow-[0_25px_70px_rgba(0,0,0,0.95)]" : "border-neutral-800"
-                  }`}
+                  className={`relative w-full h-full overflow-hidden bg-neutral-950 border transition-colors duration-300 ${isCenter ? "border-neutral-400 shadow-[0_25px_70px_rgba(0,0,0,0.95)]" : "border-neutral-800"
+                    }`}
                 >
                   <Image
                     src={item.src}
@@ -307,9 +304,8 @@ export default function CraftCollage() {
 
                   {/* Subtle edge vignette */}
                   <div
-                    className={`absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/20 pointer-events-none transition-opacity duration-300 ${
-                      isCenter ? "opacity-30" : "opacity-65"
-                    }`}
+                    className={`absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/20 pointer-events-none transition-opacity duration-300 ${isCenter ? "opacity-30" : "opacity-65"
+                      }`}
                   />
                 </div>
               </div>

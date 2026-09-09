@@ -117,11 +117,10 @@ export default function SplashScreen() {
       {/* Top micro bar */}
       <div className="w-full flex items-center justify-between font-mono text-[11px] text-[#F5F5F5]/60 tracking-[0.25em]">
         <div className="flex items-center gap-2">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#E05D29] animate-ping" />
-          <span>AFTERWORK CAFFEINE // SYSTEM</span>
+          <span>AFTERWORK CAFFEINE</span>
         </div>
         <div>
-          <span>SURABAYA // 09:00 → 02:00</span>
+          <span>SURABAYA 09:00 → 02:00</span>
         </div>
       </div>
 

@@ -10,7 +10,7 @@ export const siteLinks = {
   social: {
     instagram: "https://www.instagram.com/afterworkcaffeine?stkn=djZoeWhnNWptcWFi",
     linktree: "https://linktr.ee/afterworkcaffeine",
-    whatsapp: "https://wa.me/6281234567890",
+    whatsapp: "https://wa.me/6281130887158",
   },
   location: {
     name: "Afterwork Caffeine — Surabaya",
