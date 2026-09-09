@@ -100,9 +100,11 @@ export default function RootLayout({
 
           {/* Smooth Lenis + GSAP Scroll container */}
           <SmoothScroll>
-            <div className="main-content-layout flex-1 flex flex-col relative min-h-screen bg-black">
-              {children}
-              {/* Global bottom-of-page full-width centered footer */}
+            <div className="flex-1 flex flex-col relative min-h-screen bg-black">
+              <div className="main-content-layout flex-1 flex flex-col relative bg-black">
+                {children}
+              </div>
+              {/* Global bottom-of-page full-width footer spanning edge-to-edge */}
               <Footer />
             </div>
           </SmoothScroll>

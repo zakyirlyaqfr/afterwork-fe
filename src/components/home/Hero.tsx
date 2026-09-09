@@ -5,6 +5,7 @@ import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { useUI } from "@/context/UIContext";
 
 export default function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -13,9 +14,13 @@ export default function Hero() {
   const wordAfterRef = useRef<HTMLDivElement>(null);
   const wordWorkRef = useRef<HTMLDivElement>(null);
   const prefersReduced = useReducedMotion();
+  const { hasSeenSplash } = useUI();
 
   useEffect(() => {
     if (prefersReduced) return;
+    // Synchronize: wait until splash screen has completed before launching the entrance sequence
+    if (!hasSeenSplash) return;
+
     gsap.registerPlugin(ScrollTrigger);
 
     const container = containerRef.current;
@@ -26,24 +31,26 @@ export default function Hero() {
 
     if (!container || !textContainer || !imageWrapper) return;
 
-    // Intro Entrance Animation Sequence:
-    // 1. Right image appears first with subtle scale/brightness reveal
-    // 2. Left typography "AFTER WORK" appears consecutively afterwards
-    const introTl = gsap.timeline();
+    // Cinematic & Tangible Entrance Sequence:
+    // 1. Right image curtain wipe reveal from RIGHT to LEFT, staying full size from start
+    // 2. Left typography "AFTER WORK" emerges boldly right as image opens
+    const introTl = gsap.timeline({ delay: 0.1 });
 
     introTl.fromTo(
       imageWrapper,
       {
         opacity: 0,
-        scale: 1.06,
-        filter: "brightness(0.6)",
+        clipPath: "polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%)",
+        x: 35,
+        filter: "brightness(0.55) contrast(1.15) blur(4px)",
       },
       {
         opacity: 1,
-        scale: 1,
-        filter: "brightness(1)",
-        duration: 0.85,
-        ease: "power2.out",
+        clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
+        x: 0,
+        filter: "brightness(1) contrast(1) blur(0px)",
+        duration: 1.25,
+        ease: "power3.inOut",
       },
       0
     );
@@ -52,16 +59,18 @@ export default function Hero() {
       introTl.fromTo(
         wordAfter,
         {
-          y: 45,
+          y: 50,
           opacity: 0,
+          scale: 0.96,
         },
         {
           y: 0,
           opacity: 1,
-          duration: 0.7,
+          scale: 1,
+          duration: 0.85,
           ease: "power3.out",
         },
-        0.5
+        0.65
       );
     }
 
@@ -69,29 +78,42 @@ export default function Hero() {
       introTl.fromTo(
         wordWork,
         {
-          y: 45,
+          y: 50,
           opacity: 0,
+          scale: 0.96,
         },
         {
           y: 0,
           opacity: 1,
-          duration: 0.7,
+          scale: 1,
+          duration: 0.85,
           ease: "power3.out",
         },
-        0.72
+        0.85
       );
     }
 
-    // Subtle scroll parallax for text
+    // Smooth & delicate bi-directional vertical floating scroll scrub (no scale jumping)
     gsap.to(textContainer, {
-      y: -50,
-      opacity: 0.7,
+      y: -65,
+      opacity: 0.75,
       ease: "none",
       scrollTrigger: {
         trigger: container,
         start: "top top",
         end: "bottom top",
-        scrub: 1,
+        scrub: 1.4,
+      },
+    });
+
+    gsap.to(imageWrapper, {
+      y: 40,
+      ease: "none",
+      scrollTrigger: {
+        trigger: container,
+        start: "top top",
+        end: "bottom top",
+        scrub: 1.4,
       },
     });
 
@@ -128,7 +150,7 @@ export default function Hero() {
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseleave", handleMouseLeave);
     };
-  }, [prefersReduced]);
+  }, [prefersReduced, hasSeenSplash]);
 
   return (
     <section
@@ -142,28 +164,31 @@ export default function Hero() {
           ref={textContainerRef}
           className="w-full lg:w-1/2 flex flex-col justify-center items-center z-40 px-6 sm:px-10 md:px-12 lg:px-16 py-16 lg:py-0 will-change-transform overflow-visible"
         >
-          <div className="hero-afterwork-brand w-full flex flex-col items-center justify-center text-center -translate-x-6 sm:-translate-x-10 lg:-translate-x-14">
-            {/* Line 1: AFTER */}
-            <div
-              ref={wordAfterRef}
-              className="will-change-transform py-1 px-1 overflow-visible flex justify-center w-full"
-            >
-              <div className="hero-anim-slide-a flex justify-center w-full">
-                <span className="hero-word-primary">
-                  AFTER
-                </span>
+          <div className="w-full flex flex-col items-center justify-center text-center -translate-x-6 sm:-translate-x-10 lg:-translate-x-14 pointer-events-none">
+            {/* Tightly bounded hover container: only triggers color inversion when cursor is directly over the words */}
+            <div className="hero-afterwork-brand inline-flex flex-col items-center justify-center pointer-events-auto cursor-default w-fit max-w-fit mx-auto p-0">
+              {/* Line 1: AFTER */}
+              <div
+                ref={wordAfterRef}
+                className="will-change-transform p-0 overflow-visible flex justify-center w-fit"
+              >
+                <div className="hero-anim-slide-a flex justify-center w-fit p-0">
+                  <span className="hero-word-primary">
+                    AFTER
+                  </span>
+                </div>
               </div>
-            </div>
 
-            {/* Line 2: WORK */}
-            <div
-              ref={wordWorkRef}
-              className="will-change-transform py-1 px-1 overflow-visible flex justify-center w-full"
-            >
-              <div className="hero-anim-slide-b flex justify-center w-full">
-                <span className="hero-word-secondary">
-                  WORK
-                </span>
+              {/* Line 2: WORK */}
+              <div
+                ref={wordWorkRef}
+                className="will-change-transform p-0 overflow-visible flex justify-center w-fit"
+              >
+                <div className="hero-anim-slide-b flex justify-center w-fit p-0">
+                  <span className="hero-word-secondary">
+                    WORK
+                  </span>
+                </div>
               </div>
             </div>
           </div>

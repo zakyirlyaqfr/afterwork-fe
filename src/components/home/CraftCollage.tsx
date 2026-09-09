@@ -1,25 +1,84 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 
-const spoilerItems = [
-  { id: 1, label: "ARCHIVE // 01", alt: "Afterwork Visual Archive 01" },
-  { id: 2, label: "ARCHIVE // 02", alt: "Afterwork Visual Archive 02" },
-  { id: 3, label: "ARCHIVE // 03", alt: "Afterwork Visual Archive 03" },
-  { id: 4, label: "ARCHIVE // 04", alt: "Afterwork Visual Archive 04" },
-  { id: 5, label: "ARCHIVE // 05", alt: "Afterwork Visual Archive 05" },
+const galleryItems = [
+  {
+    id: "01",
+    src: "/images/afterwork-seating.jpg",
+    alt: "Afterwork Caffeine Exterior Portal & Graffiti",
+  },
+  {
+    id: "02",
+    src: "/images/afterwork-glutton-1.jpg",
+    alt: "Afterwork Custom Wood Board Craft Serving",
+  },
+  {
+    id: "03",
+    src: "/images/afterwork-cafe-hall.jpg",
+    alt: "Afterwork High-Ceiling Cafe Hall & Bar",
+  },
+  {
+    id: "04",
+    src: "/images/afterwork-gofood.jpg",
+    alt: "Afterwork Signature Bottled Formulas Series",
+  },
+  {
+    id: "05",
+    src: "/images/afterwork-glutton-menu.jpg",
+    alt: "Afterwork Authentic Acrylic Graffiti Menu",
+  },
 ];
 
 export default function CraftCollage() {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const startXRef = useRef(0);
+  const currentDragXRef = useRef(0);
   const sectionRef = useRef<HTMLElement>(null);
-  const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const collageClusterRef = useRef<HTMLDivElement>(null);
+  const carouselTrackRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLDivElement>(null);
+  const watermarkRef = useRef<HTMLDivElement>(null);
   const prefersReduced = useReducedMotion();
+
+  const total = galleryItems.length;
+
+  const handleNext = useCallback(() => {
+    setActiveIndex((prev) => (prev + 1) % total);
+  }, [total]);
+
+  const handlePrev = useCallback(() => {
+    setActiveIndex((prev) => (prev - 1 + total) % total);
+  }, [total]);
+
+  // Pointer drag / swipe handlers
+  const handlePointerDown = (e: React.PointerEvent) => {
+    setIsDragging(true);
+    startXRef.current = e.clientX;
+    currentDragXRef.current = e.clientX;
+  };
+
+  const handlePointerMove = (e: React.PointerEvent) => {
+    if (!isDragging) return;
+    currentDragXRef.current = e.clientX;
+  };
+
+  const handlePointerUp = () => {
+    if (!isDragging) return;
+    const diff = currentDragXRef.current - startXRef.current;
+    if (diff < -40) {
+      handleNext();
+    } else if (diff > 40) {
+      handlePrev();
+    }
+    setIsDragging(false);
+  };
 
   useEffect(() => {
     if (prefersReduced) return;
@@ -28,42 +87,88 @@ export default function CraftCollage() {
     const section = sectionRef.current;
     if (!section) return;
 
-    const cards = cardsRef.current.filter(Boolean);
-    if (cards.length > 0) {
+    // 1. Watermark reveals visibly as section arrives, spanning across sidebar
+    if (watermarkRef.current) {
       gsap.fromTo(
-        cards,
-        { opacity: 0, y: 25 },
+        watermarkRef.current,
+        { opacity: 0, y: 40 },
         {
           opacity: 1,
           y: 0,
-          duration: 0.75,
-          stagger: 0.08,
+          duration: 1.6,
           ease: "power2.out",
           scrollTrigger: {
             trigger: section,
-            start: "top 75%",
+            start: "top 85%",
+            toggleActions: "play none none reverse",
+          },
+        }
+      );
+
+      // Delicate parallax float on scroll
+      gsap.to(watermarkRef.current, {
+        y: -70,
+        ease: "none",
+        scrollTrigger: {
+          trigger: section,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 1.6,
+        },
+      });
+    }
+
+    // 2. Carousel Track Cards emerge gracefully with buttery motion
+    if (carouselTrackRef.current) {
+      gsap.fromTo(
+        carouselTrackRef.current,
+        { opacity: 0, y: 45, filter: "blur(4px)" },
+        {
+          opacity: 1,
+          y: 0,
+          filter: "blur(0px)",
+          duration: 1.4,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: carouselTrackRef.current,
+            start: "top 82%",
             toggleActions: "play none none reverse",
           },
         }
       );
     }
 
+    // 3. EXPLORE button emerges smoothly following the cards
     if (buttonRef.current) {
       gsap.fromTo(
         buttonRef.current,
-        { opacity: 0, y: 20 },
+        { opacity: 0, y: 18 },
         {
           opacity: 1,
           y: 0,
-          duration: 0.8,
+          duration: 1.2,
           ease: "power2.out",
           scrollTrigger: {
             trigger: buttonRef.current,
-            start: "top 85%",
+            start: "top 92%",
             toggleActions: "play none none reverse",
           },
         }
       );
+    }
+
+    // Continuous bi-directional vertical floating scroll scrub (buttery smooth sync for cards and button)
+    if (collageClusterRef.current) {
+      gsap.to(collageClusterRef.current, {
+        y: 32,
+        ease: "none",
+        scrollTrigger: {
+          trigger: section,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 2.0,
+        },
+      });
     }
   }, [prefersReduced]);
 
@@ -71,48 +176,158 @@ export default function CraftCollage() {
     <section
       ref={sectionRef}
       id="section-craft"
-      className="relative w-full min-h-[85vh] bg-black text-white flex flex-col justify-center py-20 px-6 sm:px-10 md:px-12 lg:px-16 overflow-visible select-none z-30"
+      className="relative w-full min-h-screen bg-black text-white flex flex-col justify-center items-center px-4 sm:px-6 md:px-10 overflow-visible select-none z-30"
     >
-      <div className="relative z-10 w-full max-w-[1500px] mx-auto flex flex-col space-y-10">
-        {/* Horizontal Scrolling Spoiler Gallery */}
-        <div className="w-full overflow-x-auto no-scrollbar scroll-smooth py-4">
-          <div className="flex flex-row items-center gap-6 sm:gap-8 pb-4 min-w-max">
-            {spoilerItems.map((item, idx) => (
+      {/* Ghosted Giant Background Industrial Watermark - Spans over sidebar row like Section 2 */}
+      <div
+        ref={watermarkRef}
+        aria-hidden="true"
+        className="absolute top-1/2 -translate-y-1/2 -left-20 sm:-left-32 md:-left-48 lg:-left-64 pointer-events-none select-none text-[clamp(7rem,21vw,24rem)] font-black uppercase text-white/[0.07] tracking-tighter leading-none whitespace-nowrap z-0 will-change-transform"
+      >
+        AFTERWORK
+      </div>
+
+      <div
+        ref={collageClusterRef}
+        className="relative z-10 w-full max-w-[1700px] mx-auto flex flex-col items-center -translate-x-5 sm:-translate-x-8 md:-translate-x-12 lg:-translate-x-16"
+      >
+        {/* Viewport-Scale Abstract 3-Image Carousel Stage: exactly sized to center card aspect ratio */}
+        <div
+          ref={carouselTrackRef}
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerUp}
+          onPointerLeave={handlePointerUp}
+          className="relative w-[72vw] sm:w-[50vw] md:w-[38vw] lg:w-[32vw] max-w-[480px] aspect-[3/4] flex items-center justify-center cursor-grab active:cursor-grabbing overflow-visible touch-pan-y"
+        >
+          {galleryItems.map((item, idx) => {
+            // Calculate circular offset from active index
+            let offset = (idx - activeIndex) % total;
+            if (offset > 2) offset -= total;
+            if (offset < -2) offset += total;
+
+            const isCenter = offset === 0;
+            const isLeft = offset === -1;
+            const isRight = offset === 1;
+
+            // Reverted back to previous rectangular card geometry:
+            // Center is proud, tall rectangle in front.
+            // Left & Right cards flanking with subtle organic tilt and elevation offset (non-parallel abstract).
+            let translateX = "0%";
+            let translateY = "0px";
+            let scale = 1;
+            let rotate = 0;
+            let opacity = 0;
+            let zIndex = 10;
+            let pointerEvents = "none";
+
+            if (isCenter) {
+              translateX = "0%";
+              translateY = "0px";
+              scale = 1;
+              rotate = 0;
+              opacity = 1;
+              zIndex = 30;
+              pointerEvents = "auto";
+            } else if (isLeft) {
+              translateX = "-85%";
+              translateY = "14px";
+              scale = 0.88;
+              rotate = -2;
+              opacity = 0.78;
+              zIndex = 20;
+              pointerEvents = "auto";
+            } else if (isRight) {
+              translateX = "85%";
+              translateY = "-12px";
+              scale = 0.88;
+              rotate = 2;
+              opacity = 0.78;
+              zIndex = 20;
+              pointerEvents = "auto";
+            } else if (offset === -2) {
+              translateX = "-165%";
+              translateY = "0px";
+              scale = 0.7;
+              rotate = -4;
+              opacity = 0;
+              zIndex = 5;
+            } else if (offset === 2) {
+              translateX = "165%";
+              translateY = "0px";
+              scale = 0.7;
+              rotate = 4;
+              opacity = 0;
+              zIndex = 5;
+            }
+
+            return (
               <div
                 key={item.id}
-                ref={(el) => {
-                  cardsRef.current[idx] = el;
+                onClick={() => {
+                  if (isLeft) handlePrev();
+                  if (isRight) handleNext();
                 }}
-                className="group relative w-[260px] sm:w-[290px] md:w-[320px] aspect-[3/4] flex-shrink-0 overflow-hidden bg-neutral-950 border border-neutral-900 shadow-2xl transition-transform duration-500 hover:-translate-y-1"
+                className={`absolute inset-0 w-full h-full transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                  isCenter ? "cursor-default shadow-2xl" : "cursor-pointer hover:opacity-95"
+                }`}
+                style={{
+                  transform: `translateX(${translateX}) translateY(${translateY}) scale(${scale}) rotate(${rotate}deg)`,
+                  opacity,
+                  zIndex,
+                  pointerEvents: pointerEvents as any,
+                }}
               >
-                <Image
-                  src="/images/default.jpg"
-                  alt={item.alt}
-                  fill
-                  sizes="(max-width: 768px) 260px, 320px"
-                  className="object-cover object-center transition-transform duration-700 group-hover:scale-105"
-                />
-                {/* Subtle dark gradient overlay at bottom */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
+                {/* Punk Industrial Corner Brackets Framing (highlighted on center card) */}
+                <div
+                  className={`absolute -inset-2 pointer-events-none z-30 transition-opacity duration-500 ${
+                    isCenter ? "opacity-100" : "opacity-0"
+                  }`}
+                >
+                  <div className="absolute top-0 left-0 w-4 sm:w-5 h-4 sm:h-5 border-t-2 border-l-2 border-white/80" />
+                  <div className="absolute top-0 right-0 w-4 sm:w-5 h-4 sm:h-5 border-t-2 border-r-2 border-white/80" />
+                  <div className="absolute bottom-0 left-0 w-4 sm:w-5 h-4 sm:h-5 border-b-2 border-l-2 border-white/80" />
+                  <div className="absolute bottom-0 right-0 w-4 sm:w-5 h-4 sm:h-5 border-b-2 border-r-2 border-white/80" />
+                </div>
 
-                {/* Minimal Archive Number Tag */}
-                <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between pointer-events-none">
-                  <span className="font-mono text-[11px] tracking-[0.2em] text-white/70 uppercase">
-                    {item.label}
-                  </span>
+                {/* Pure Image Media Container (No Text Overlay) */}
+                <div
+                  className={`relative w-full h-full overflow-hidden bg-neutral-950 border transition-colors duration-300 ${
+                    isCenter ? "border-neutral-400 shadow-[0_25px_70px_rgba(0,0,0,0.95)]" : "border-neutral-800"
+                  }`}
+                >
+                  <Image
+                    src={item.src}
+                    alt={item.alt}
+                    fill
+                    sizes="(max-width: 768px) 80vw, 480px"
+                    priority={isCenter}
+                    className="object-cover object-center transition-transform duration-700 hover:scale-105"
+                  />
+
+                  {/* Subtle edge vignette */}
+                  <div
+                    className={`absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/20 pointer-events-none transition-opacity duration-300 ${
+                      isCenter ? "opacity-30" : "opacity-65"
+                    }`}
+                  />
                 </div>
               </div>
-            ))}
-          </div>
+            );
+          })}
         </div>
 
-        {/* Action Button to Full Gallery */}
-        <div ref={buttonRef} className="w-full flex justify-center pt-2">
+        {/* Action Button: strictly "EXPLORE" positioned snug right under Section 3 content (close, but not touching) */}
+        <div
+          ref={buttonRef}
+          className="w-full flex justify-center z-30"
+          style={{ marginTop: "38px" }}
+        >
           <Link
             href="/gallery"
-            className="group inline-flex items-center gap-4 px-8 py-4 bg-white hover:bg-[#E05D29] text-black hover:text-white border-2 border-white hover:border-[#E05D29] transition-all duration-300 tracking-[0.25em] uppercase text-xs sm:text-sm font-sans font-black shadow-2xl cursor-pointer"
+            className="group inline-flex items-center justify-center gap-4 px-10 sm:px-12 py-3 sm:py-3.5 bg-white hover:bg-[#E05D29] text-black hover:text-white border-2 border-white hover:border-[#E05D29] transition-all duration-300 tracking-[0.25em] uppercase text-xs sm:text-sm font-sans font-black shadow-2xl cursor-pointer"
           >
-            <span>Explore Full Gallery</span>
+            <span>EXPLORE</span>
             <span className="transform group-hover:translate-x-2 transition-transform duration-300 text-sm font-bold">
               →
             </span>

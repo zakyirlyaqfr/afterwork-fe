@@ -148,7 +148,7 @@ export default function NavigationOverlay() {
       aria-modal="true"
       aria-label="Site Navigation"
       data-lenis-prevent
-      className="fixed inset-y-0 right-0 nav-overlay-layout z-[60] bg-black text-[#F5F5F5] opacity-0 invisible flex flex-col justify-center overflow-hidden"
+      className="fixed inset-y-0 right-0 nav-overlay-layout z-[70] bg-black text-[#F5F5F5] opacity-0 invisible flex flex-col justify-center overflow-hidden"
       style={{ height: "100dvh" }}
     >
       {/* 

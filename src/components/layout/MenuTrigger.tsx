@@ -15,7 +15,7 @@ export default function MenuTrigger() {
         - Saat isMenuOpen === false: transisi halus (0.55s) agar tidak terlalu cepat hilang saat ditutup
       */}
       <div
-        className="hidden md:block fixed left-0 top-0 bottom-0 sidebar-dock bg-black pointer-events-none select-none z-45"
+        className="hidden md:block fixed left-0 top-0 bottom-0 sidebar-dock bg-black pointer-events-none select-none z-[75]"
         style={{
           opacity: isMenuOpen ? 1 : 0,
           transition: isMenuOpen
@@ -26,16 +26,16 @@ export default function MenuTrigger() {
       />
 
       {/* 
-        Desktop Sidebar Dock Controls (Layer Paling Atas - z-50):
-        Sidebar dock transparent agar gambar konten bebas menimpa area rel sidebar,
-        sementara Logo dan Button Menu tetap melayang di layer paling atas (z-50)
+        Desktop Sidebar Dock Controls (Layer Paling Atas - z-[80]):
+        Sidebar dock transparent agar gambar konten bebas menimpa area rel sidebar saat tertutup,
+        sementara Logo dan Button Menu tetap melayang di layer paling atas (z-[80])
       */}
       <aside
-        className="hidden md:flex fixed left-0 top-0 bottom-0 sidebar-dock z-50 flex-col justify-between items-center py-10 lg:py-12 pointer-events-none select-none"
+        className="hidden md:block fixed left-0 top-0 bottom-0 sidebar-dock z-[80] pointer-events-none select-none"
         aria-label="Sidebar Navigation Controls"
       >
-        {/* Brand Logo at top of sidebar dock - Lowered slightly */}
-        <div className="w-full flex justify-center px-4 relative z-50 translate-y-3 lg:translate-y-4 pointer-events-auto">
+        {/* Brand Logo at top of sidebar dock */}
+        <div className="w-full flex justify-center px-4 absolute top-10 lg:top-12 z-50 pointer-events-auto">
           <Link
             href="/"
             className="group block relative w-12 h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 xl:w-[72px] xl:h-[72px] focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
@@ -52,13 +52,13 @@ export default function MenuTrigger() {
           </Link>
         </div>
 
-        {/* Menu / Close Button centered vertically in sidebar dock - Enlarged */}
+        {/* Menu / Close Button mathematically centered vertically in sidebar dock */}
         <button
           type="button"
           onClick={toggleMenu}
           aria-expanded={isMenuOpen}
           aria-label={isMenuOpen ? "Close navigation menu" : "Open navigation menu"}
-          className="flex flex-col items-center gap-4 lg:gap-5 group cursor-pointer focus:outline-none p-3 relative z-50 pointer-events-auto"
+          className="flex flex-col items-center gap-4 lg:gap-5 group cursor-pointer focus:outline-none p-3 absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 z-50 pointer-events-auto"
         >
           {/* Diamond geometric icon - Enlarged */}
           <div className="w-10 h-10 lg:w-12 lg:h-12 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
@@ -94,9 +94,6 @@ export default function MenuTrigger() {
             {isMenuOpen ? "Close" : "Menu"}
           </span>
         </button>
-
-        {/* Bottom invisible spacer to maintain vertical center alignment of Menu trigger */}
-        <div className="w-12 h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 xl:w-[72px] xl:h-[72px] pointer-events-none" aria-hidden="true" />
       </aside>
 
       {/* Mobile Logo (< md, fixed top-left) */}

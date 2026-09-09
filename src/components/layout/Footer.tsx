@@ -1,57 +1,47 @@
 "use client";
 
-import Link from "next/link";
+import { useUI } from "@/context/UIContext";
 
 export default function Footer() {
+  const { isMenuOpen } = useUI();
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="w-full bg-black text-white border-t border-white/10 select-none z-30">
-      <div className="w-full max-w-[1500px] mx-auto px-6 sm:px-10 md:px-12 lg:px-16 py-12 md:py-16 flex flex-col space-y-12">
-        {/* Top Tier: Wordmark & Vital Operating Details */}
+    <footer
+      className="relative w-full z-40 bg-black text-white border-t border-white/15 select-none overflow-hidden transition-opacity duration-200"
+      style={{
+        opacity: isMenuOpen ? 0 : 1,
+        visibility: isMenuOpen ? "hidden" : "visible",
+        pointerEvents: isMenuOpen ? "none" : "auto",
+      }}
+    >
+      <div className="w-full px-6 sm:px-10 md:px-14 lg:px-20 py-12 md:py-16 relative z-10 flex flex-col space-y-12">
+        {/* Top Tier: Wordmark & Operating Details Spanning Entire Width Above Sidebar */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
-          <div>
-            <div className="font-sans text-2xl sm:text-3xl font-black tracking-tight uppercase text-white">
+          <div className="space-y-2">
+            <div className="font-sans text-3xl sm:text-5xl md:text-6xl font-black tracking-tight uppercase text-white leading-none">
               AFTERWORK CAFFEINE
             </div>
-            <p className="font-mono text-xs tracking-[0.2em] text-neutral-500 uppercase mt-2">
-              Specialty Bottled Formulas & Artisanal Viennoiserie
+            <p className="font-mono text-xs sm:text-sm tracking-[0.25em] text-neutral-400 uppercase pt-1">
+              Specialty Bottled Formulas & Artisanal Coffee // Surabaya
             </p>
           </div>
 
-          <div className="font-mono text-xs tracking-[0.2em] text-neutral-400 uppercase space-y-1.5 md:text-right">
+          <div className="font-mono text-xs sm:text-[13px] tracking-[0.2em] text-neutral-400 uppercase space-y-2 md:text-right">
             <div>G-Walk Citraland & Downtown Surabaya</div>
-            <div className="text-white/90">09:00 — 02:00 Everyday</div>
+            <div className="text-white font-medium text-sm">09:00 — 02:00 Everyday</div>
+            <div className="text-neutral-500 text-[11px]">7°17&apos;08.2&quot;S 112°38&apos;41.5&quot;E</div>
           </div>
         </div>
 
-        {/* Bottom Tier: Minimal Links & Fine Print */}
-        <div className="pt-8 border-t border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-          <nav className="flex flex-wrap items-center gap-6 sm:gap-8 text-xs font-sans uppercase tracking-[0.2em] text-neutral-400">
-            <Link href="/about" className="hover:text-white transition-colors duration-200">
-              About
-            </Link>
-            <Link href="/menus" className="hover:text-white transition-colors duration-200">
-              Menus
-            </Link>
-            <Link href="/delivery" className="hover:text-white transition-colors duration-200">
-              Delivery
-            </Link>
-            <Link href="/gallery" className="hover:text-white transition-colors duration-200">
-              Gallery
-            </Link>
-            <a
-              href="https://www.instagram.com/afterworkcaffeine"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-white transition-colors duration-200"
-            >
-              Instagram
-            </a>
-          </nav>
+        {/* Bottom Tier: Pure Minimal Brand Line & Fine Print (No List Menu) */}
+        <div className="pt-8 border-t border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="font-mono text-xs tracking-[0.25em] text-neutral-400 uppercase">
+            DAMNGOOD COFFEE CULTURE
+          </div>
 
-          <div className="font-mono text-[11px] tracking-[0.2em] text-neutral-600 uppercase">
-            © {currentYear} AFTERWORK. ALL RIGHTS RESERVED.
+          <div className="font-mono text-xs tracking-[0.2em] text-neutral-500 uppercase">
+            © {currentYear} AFTERWORK CAFFEINE. ALL RIGHTS RESERVED.
           </div>
         </div>
       </div>
