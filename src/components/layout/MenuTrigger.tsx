@@ -15,11 +15,11 @@ export default function MenuTrigger() {
         Logo dan Button Menu tetap berada di layer z-[80].
       */}
       <aside
-        className="hidden md:block fixed left-0 top-0 bottom-0 sidebar-dock z-[80] pointer-events-none select-none"
+        className="hidden md:block fixed left-0 top-0 bottom-0 sidebar-dock z-[20] pointer-events-none select-none"
         aria-label="Sidebar Navigation Controls"
       >
         {/* Brand Logo at top of sidebar dock */}
-        <div className="w-full flex justify-center px-4 absolute top-10 lg:top-12 z-50 pointer-events-auto">
+        <div className="w-full flex justify-center px-4 absolute top-10 lg:top-12 z-[90] pointer-events-auto">
           <Link
             href="/"
             className="group block relative w-12 h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 xl:w-[72px] xl:h-[72px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#E05D29]"
@@ -42,7 +42,7 @@ export default function MenuTrigger() {
           onClick={toggleMenu}
           aria-expanded={isMenuOpen}
           aria-label={isMenuOpen ? "Close navigation menu" : "Open navigation menu"}
-          className="flex flex-col items-center gap-4 lg:gap-5 group cursor-pointer focus:outline-none p-3 absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 z-50 pointer-events-auto"
+          className="flex flex-col items-center gap-4 lg:gap-5 group cursor-pointer focus:outline-none p-3 absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 z-[90] pointer-events-auto"
         >
           {/* Visual Icon with concentric double circles matching user reference */}
           {isMenuOpen ? (

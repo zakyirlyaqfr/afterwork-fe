@@ -67,6 +67,72 @@
   }
 }
 
+/* Perfectly center odd bottom menu card across the viewport accounting for the sidebar offset */
+.menu-card-odd-center {
+  position: relative;
+  left: 0;
+}
+
+@media (min-width: 768px) {
+  .menu-card-odd-center {
+    left: calc(-1 * var(--sidebar-width) / 2);
+  }
+}
+
+/* Clear, guaranteed separation between filter buttons and menu cards */
+.menu-grid-spacing {
+  margin-top: 48px;
+  padding-top: 24px;
+}
+
+/* Sticky transparent header for Menus page: stays pinned when scrolling, cards slide underneath */
+.menu-sticky-header {
+  position: sticky;
+  top: 32px;
+  z-index: 40;
+  background: transparent;
+  pointer-events: none;
+  margin-top: 4px; /* Posisi sedikit lebih ke atas */
+}
+
+@media (min-width: 768px) {
+  .menu-grid-spacing {
+    margin-top: 64px;
+    padding-top: 40px;
+  }
+
+  .menu-sticky-header {
+    top: 38px;
+    margin-top: 6px; /* Posisi sedikit lebih ke atas */
+  }
+
+  .menu-card-left-shift {
+    margin-left: 120px !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .menu-sticky-header {
+    top: 42px;
+    margin-top: 8px; /* Posisi sedikit lebih ke atas pada layar lebar */
+  }
+
+  .menu-card-left-shift {
+    margin-left: 140px !important;
+  }
+}
+
+.menu-sticky-interactive {
+  pointer-events: auto;
+}
+
+@media (min-width: 1440px) {
+  .menu-card-left-shift {
+    margin-left: 160px !important;
+  }
+}
+
+
 .nav-overlay-layout {
   left: 0;
   width: 100vw;
@@ -133,7 +199,7 @@ html {
   color: #F5F5F5;
   font-family: var(--font-editorial);
   scroll-behavior: auto;
-  overflow-x: hidden;
+  overflow-x: clip;
   /* Handled by Lenis */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -143,7 +209,7 @@ body {
   background-color: #000000;
   color: #F5F5F5;
   font-family: var(--font-editorial);
-  overflow-x: hidden;
+  overflow-x: clip;
   min-height: 100vh;
   position: relative;
 }
