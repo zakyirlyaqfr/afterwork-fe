@@ -9,7 +9,7 @@ import { useUI } from "@/context/UIContext";
 
 export default function SmoothScroll({ children }: { children: React.ReactNode }) {
   const prefersReduced = useReducedMotion();
-  const { isMenuOpen, isLocationModalOpen } = useUI();
+  const { isMenuOpen, isLocationModalOpen, isDetailModalOpen } = useUI();
   const lenisRef = useRef<Lenis | null>(null);
 
   useEffect(() => {
@@ -49,7 +49,7 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
   // Lock scroll completely when menu or modal is open
   useEffect(() => {
     const lenis = lenisRef.current;
-    if (isMenuOpen || isLocationModalOpen) {
+    if (isMenuOpen || isLocationModalOpen || isDetailModalOpen) {
       if (lenis) lenis.stop();
       document.documentElement.style.overflow = "hidden";
       document.body.style.overflow = "hidden";
@@ -58,7 +58,7 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
       document.documentElement.style.overflow = "";
       document.body.style.overflow = "";
     }
-  }, [isMenuOpen, isLocationModalOpen]);
+  }, [isMenuOpen, isLocationModalOpen, isDetailModalOpen]);
 
   return <>{children}</>;
 }

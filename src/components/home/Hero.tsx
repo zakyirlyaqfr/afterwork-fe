@@ -18,11 +18,6 @@ export default function Hero() {
 
   useEffect(() => {
     if (prefersReduced) return;
-    // Synchronize: wait until splash screen has completed before launching the entrance sequence
-    if (!hasSeenSplash) return;
-
-    gsap.registerPlugin(ScrollTrigger);
-
     const container = containerRef.current;
     const textContainer = textContainerRef.current;
     const imageWrapper = imageWrapperRef.current;
@@ -31,10 +26,24 @@ export default function Hero() {
 
     if (!container || !textContainer || !imageWrapper) return;
 
+    // Pre-initialize elements to their starting state before splash completes to prevent any blink/flash
+    if (!hasSeenSplash) {
+      gsap.set(imageWrapper, {
+        opacity: 0,
+        clipPath: "polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%)",
+        x: 35,
+        filter: "brightness(0.55) contrast(1.15) blur(4px)",
+      });
+      if (wordAfter) gsap.set(wordAfter, { y: 50, opacity: 0, scale: 0.96 });
+      if (wordWork) gsap.set(wordWork, { y: 50, opacity: 0, scale: 0.96 });
+      return;
+    }
+
+    gsap.registerPlugin(ScrollTrigger);
+
     // Cinematic & Tangible Entrance Sequence:
-    // 1. Right image curtain wipe reveal from RIGHT to LEFT, staying full size from start
-    // 2. Left typography "AFTER WORK" emerges boldly right as image opens
-    const introTl = gsap.timeline({ delay: 0.1 });
+    // Starts immediately as the splash screen overlay begins dissolving
+    const introTl = gsap.timeline();
 
     introTl.fromTo(
       imageWrapper,
@@ -170,6 +179,7 @@ export default function Hero() {
               {/* Line 1: AFTER */}
               <div
                 ref={wordAfterRef}
+                style={{ opacity: hasSeenSplash ? undefined : 0 }}
                 className="will-change-transform p-0 overflow-visible flex justify-center w-fit"
               >
                 <div className="hero-anim-slide-a flex justify-center w-fit p-0">
@@ -182,6 +192,7 @@ export default function Hero() {
               {/* Line 2: WORK */}
               <div
                 ref={wordWorkRef}
+                style={{ opacity: hasSeenSplash ? undefined : 0 }}
                 className="will-change-transform p-0 overflow-visible flex justify-center w-fit"
               >
                 <div className="hero-anim-slide-b flex justify-center w-fit p-0">
@@ -197,6 +208,7 @@ export default function Hero() {
         {/* Right: Full-height architectural container with image shifted down slightly */}
         <div
           ref={imageWrapperRef}
+          style={{ opacity: hasSeenSplash ? undefined : 0 }}
           className="w-full lg:w-1/2 h-[50vh] sm:h-[60vh] lg:h-screen relative pointer-events-none select-none will-change-transform flex items-center justify-center overflow-hidden border-t lg:border-t-0 lg:border-l border-[#222222]/50 z-40 pt-6 sm:pt-8 lg:pt-14"
         >
           <div className="relative w-full h-full">

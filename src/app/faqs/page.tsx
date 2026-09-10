@@ -87,17 +87,15 @@ export default function FaqsPage() {
             return (
               <div
                 key={item.id}
-                className={`faq-item relative transition-all duration-500 ${
-                  shouldOverlap ? "md:-ml-6 lg:-ml-12 z-40" : ""
-                }`}
+                className={`faq-item relative transition-all duration-500 ${shouldOverlap ? "md:-ml-6 lg:-ml-12 z-40" : ""
+                  }`}
                 style={{ transform: isOpen ? "rotate(0deg)" : `rotate(${tilt}deg)` }}
               >
                 <div
-                  className={`relative bg-[#0a0a0a] border-2 transition-all duration-500 ${
-                    isOpen
+                  className={`relative bg-[#0a0a0a] border-2 transition-all duration-500 ${isOpen
                       ? "border-[#E05D29]/50 punk-glow"
                       : "border-[#1a1a1a] hover:border-[#333]"
-                  }`}
+                    }`}
                 >
                   {/* Corner brackets on active */}
                   {isOpen && (
@@ -116,21 +114,19 @@ export default function FaqsPage() {
                     className="w-full text-left p-6 sm:p-8 flex items-start justify-between gap-6 group focus:outline-none"
                   >
                     <h2
-                      className={`text-lg sm:text-xl md:text-2xl font-black uppercase tracking-tight transition-colors duration-300 leading-tight ${
-                        isOpen
+                      className={`text-lg sm:text-xl md:text-2xl font-black uppercase tracking-tight transition-colors duration-300 leading-tight ${isOpen
                           ? "text-[#E05D29]"
                           : "text-[#F5F5F5] group-hover:text-[#E05D29]"
-                      }`}
+                        }`}
                     >
                       {item.question}
                     </h2>
 
                     <div
-                      className={`shrink-0 w-8 h-8 flex items-center justify-center border-2 transition-all duration-300 ${
-                        isOpen
+                      className={`shrink-0 w-8 h-8 flex items-center justify-center border-2 transition-all duration-300 ${isOpen
                           ? "border-[#E05D29] text-[#E05D29] rotate-45"
                           : "border-[#333] text-[#F5F5F5]/50 group-hover:border-[#E05D29] group-hover:text-[#E05D29]"
-                      }`}
+                        }`}
                     >
                       <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
                         <path d="M8 2V14M2 8H14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />

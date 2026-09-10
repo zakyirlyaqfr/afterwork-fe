@@ -4,6 +4,7 @@ import { useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 import gsap from "gsap";
 import { MenuItem } from "@/data/menu";
+import { useUI } from "@/context/UIContext";
 
 interface MenuDetailModalProps {
   item: MenuItem | null;
@@ -16,12 +17,57 @@ export default function MenuDetailModal({
   isOpen,
   onClose,
 }: MenuDetailModalProps) {
+  const { setDetailModalOpen } = useUI();
   const backdropRef = useRef<HTMLDivElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
-  const textContentRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
 
-  // Close handler with exit animation
+  // Synchronize modal state with UIContext so SmoothScroll freezes background Lenis
+  useEffect(() => {
+    if (typeof setDetailModalOpen === "function") {
+      setDetailModalOpen(isOpen);
+    }
+    return () => {
+      if (typeof setDetailModalOpen === "function") {
+        setDetailModalOpen(false);
+      }
+    };
+  }, [isOpen, setDetailModalOpen]);
+
+  // Reset scroll position to top (resting 2/5 state) each time modal opens
+  useEffect(() => {
+    if (isOpen && scrollContainerRef.current) {
+      scrollContainerRef.current.scrollTop = 0;
+    }
+  }, [isOpen, item]);
+
+  // Lock background page scroll, but allow inner scroll on the modal's text container
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const preventBackgroundScroll = (e: WheelEvent | TouchEvent) => {
+      // If event is inside the modal's scroll container, allow scrolling the sheet!
+      if (
+        scrollContainerRef.current &&
+        scrollContainerRef.current.contains(e.target as Node)
+      ) {
+        return;
+      }
+      e.preventDefault();
+    };
+
+    window.addEventListener("wheel", preventBackgroundScroll, { passive: false });
+    window.addEventListener("touchmove", preventBackgroundScroll, { passive: false });
+
+    return () => {
+      window.removeEventListener("wheel", preventBackgroundScroll);
+      window.removeEventListener("touchmove", preventBackgroundScroll);
+    };
+  }, [isOpen]);
+
+  // Close handler with smooth exit animation
   const handleClose = useCallback(() => {
     if (!modalRef.current || !backdropRef.current) {
       onClose();
@@ -35,62 +81,65 @@ export default function MenuDetailModal({
     tl.to(modalRef.current, {
       opacity: 0,
       scale: 0.94,
-      y: 20,
-      duration: 0.22,
+      y: 14,
+      duration: 0.2,
       ease: "power2.in",
     }).to(
       backdropRef.current,
       {
         opacity: 0,
-        duration: 0.18,
+        duration: 0.16,
         ease: "power2.in",
       },
-      "-=0.1"
+      "-=0.08"
     );
   }, [onClose]);
 
-  // Entrance animation
+  // Smooth entrance animation sequence
   useEffect(() => {
     if (!isOpen || !item) return;
 
-    // Lock body scroll
     const originalOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
 
     const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
 
+    // 1. Backdrop fade in
     if (backdropRef.current) {
       tl.fromTo(
         backdropRef.current,
         { opacity: 0 },
-        { opacity: 1, duration: 0.3 }
+        { opacity: 1, duration: 0.25 }
       );
     }
 
+    // 2. Modal card spring-scale and slide up
     if (modalRef.current) {
       tl.fromTo(
         modalRef.current,
-        { opacity: 0, scale: 0.92, y: 30 },
-        { opacity: 1, scale: 1, y: 0, duration: 0.4 },
+        { opacity: 0, scale: 0.92, y: 24 },
+        { opacity: 1, scale: 1, y: 0, duration: 0.42 },
         "-=0.15"
       );
     }
 
+    // 3. Image subtle zoom settle
     if (imageRef.current) {
       tl.fromTo(
         imageRef.current,
-        { opacity: 0, scale: 1.06 },
-        { opacity: 1, scale: 1, duration: 0.4 },
-        "-=0.2"
+        { scale: 1.06 },
+        { scale: 1, duration: 0.45, ease: "power2.out" },
+        "-=0.3"
       );
     }
 
-    if (textContentRef.current) {
-      const children = textContentRef.current.children;
+    // 4. Content elements staggered reveal
+    if (contentRef.current) {
+      const elements = contentRef.current.children;
       tl.fromTo(
-        children,
-        { opacity: 0, y: 14 },
-        { opacity: 1, y: 0, duration: 0.35, stagger: 0.05 },
+        elements,
+        { opacity: 0, y: 10 },
+        { opacity: 1, y: 0, duration: 0.32, stagger: 0.05 },
         "-=0.25"
       );
     }
@@ -115,6 +164,25 @@ export default function MenuDetailModal({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, handleClose]);
 
+  // Toggle expand/collapse when clicking the handle/top row
+  const toggleSheetExpand = () => {
+    if (!scrollContainerRef.current) return;
+    const currentScroll = scrollContainerRef.current.scrollTop;
+    // 3/5 spacer is ~348px (desktop 372px)
+    const spacerHeight = window.innerWidth >= 640 ? 372 : 348;
+    if (currentScroll < 60) {
+      scrollContainerRef.current.scrollTo({
+        top: spacerHeight,
+        behavior: "smooth",
+      });
+    } else {
+      scrollContainerRef.current.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    }
+  };
+
   if (!isOpen || !item) return null;
 
   return (
@@ -122,38 +190,60 @@ export default function MenuDetailModal({
       ref={backdropRef}
       role="dialog"
       aria-modal="true"
-      aria-labelledby="modal-keterangan-title"
-      className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6"
+      aria-labelledby="modal-item-title"
+      data-lenis-prevent
+      className="fixed inset-0 z-[85] flex items-center justify-center p-4 sm:p-6 select-none cursor-pointer"
       style={{
-        backgroundColor: "rgba(0, 0, 0, 0.88)",
+        backgroundColor: "rgba(0, 0, 0, 0.78)",
         backdropFilter: "blur(8px)",
+        WebkitBackdropFilter: "blur(8px)",
       }}
       onClick={handleClose}
     >
-      {/* Centered Vertical Modal matching 'contoh pop up.jpeg' */}
+      {/* 
+        Sederhana & Elegan — True Portrait Modal Card:
+        - Rasio Portrait: max-w-[390px] sm:max-w-[420px], tinggi tetap h-[580px] sm:h-[620px]
+        - Awalnya: Keterangan teks mengisi 2/5 (40%) bagian bawah, Foto terlihat 3/5 (60%) di atas
+        - Bisa di-scroll: Scroll mengangkat kotak teks menutupi foto secara penuh
+        - Jika teks lebih panjang lagi: Teks di dalam kotak teks terus bisa di-scroll
+        - Tanpa scrollbar (.no-scrollbar)
+        - Harga dipindahkan rapi ke bawah judul menu (bukan di pojok atas)
+        - Ujung tumpul aman: Padding horizontal & vertikal luas (px-7 sm:px-8, pb-12 sm:pb-14) agar tidak ada teks terpotong
+      */}
       <div
         ref={modalRef}
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-md sm:max-w-lg max-h-[88vh] bg-[#0c0c0c] border border-[#2a2a2a] text-[#F5F5F5] overflow-hidden shadow-[0_25px_80px_rgba(0,0,0,0.95)] punk-glow flex flex-col"
+        data-lenis-prevent
+        className="relative z-[90] w-full max-w-[380px] sm:max-w-[420px] h-[580px] sm:h-[620px] bg-[#0D0D0D] border border-white/10 rounded-3xl overflow-hidden shadow-[0_25px_80px_rgba(0,0,0,0.9),0_0_0_1px_rgba(255,255,255,0.06)] flex flex-col cursor-default select-text"
       >
-        {/* Corner Brackets */}
-        <div className="absolute -inset-2 pointer-events-none z-30 hidden sm:block">
-          <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-white/80" />
-          <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-[#E05D29]" />
-          <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-[#E05D29]" />
-          <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-white/80" />
+        {/* Layer 1: Foto Produk di Balik Kotak Teks */}
+        <div
+          ref={imageRef}
+          className="absolute inset-0 w-full h-[65%] sm:h-[68%] bg-[#141414] overflow-hidden z-0 pointer-events-none"
+        >
+          <Image
+            src={item.previewImage || "/images/default.jpg"}
+            alt={item.name}
+            fill
+            sizes="(max-width: 640px) 100vw, 420px"
+            className="object-cover object-center contrast-105"
+            priority
+          />
+
+          {/* Gradien gelap halus di bagian bawah foto */}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0D0D0D] via-transparent to-black/30 pointer-events-none" />
         </div>
 
-        {/* Close Button */}
+        {/* Tombol Tutup Bulat Frosted Glass (Selalu aktif di z-40) */}
         <button
           type="button"
           onClick={handleClose}
-          aria-label="Close modal"
-          className="absolute top-3 right-3 z-50 w-9 h-9 flex items-center justify-center bg-black/90 border border-[#333] text-[#F5F5F5] hover:text-[#E05D29] hover:border-[#E05D29] transition-colors cursor-pointer focus:outline-none"
+          aria-label="Tutup pop up"
+          className="absolute top-4 right-4 z-40 w-9 h-9 rounded-full bg-black/55 backdrop-blur-md border border-white/20 text-white/80 hover:text-white hover:bg-black/85 hover:scale-105 active:scale-95 flex items-center justify-center transition-all duration-200 cursor-pointer focus:outline-none shadow-lg"
         >
           <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
             <path
-              d="M2 2L14 14M14 2L2 14"
+              d="M3 3L13 13M13 3L3 13"
               stroke="currentColor"
               strokeWidth="2"
               strokeLinecap="round"
@@ -161,115 +251,70 @@ export default function MenuDetailModal({
           </svg>
         </button>
 
-        {/* Top Half: Image as sketched */}
+        {/* Layer 2: Wadah Scroll Interaktif (Tanpa Scrollbar)
+            - Spacer transparan 3/5 di atas membuat foto terlihat saat resting state
+            - Kotak teks 2/5 di bawah
+            - Scroll mengangkat kotak teks menutupi foto, dan bisa terus scroll teks jika panjang */}
         <div
-          ref={imageRef}
-          className="relative w-full h-[200px] sm:h-[240px] bg-[#141414] overflow-hidden shrink-0 border-b border-[#262626]"
+          ref={scrollContainerRef}
+          data-lenis-prevent
+          className="absolute inset-0 z-20 overflow-y-auto no-scrollbar scroll-smooth flex flex-col"
         >
-          <Image
-            src={item.previewImage || "/images/default.jpg"}
-            alt={item.name}
-            fill
-            sizes="(max-width: 640px) 100vw, 500px"
-            className="object-cover object-center contrast-105"
-            priority
+          {/* Spacer Transparan 3/5 (60% tinggi pop up) */}
+          <div
+            className="w-full h-[348px] sm:h-[372px] shrink-0 pointer-events-none bg-transparent"
+            aria-hidden="true"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20" />
-          
-          {/* Subtle image corner watermark */}
-          <div className="absolute bottom-3 left-4 flex items-center gap-2 z-10 font-mono text-[9px] tracking-widest text-[#F5F5F5]/60 uppercase">
-            <span>AFTERWORK</span>
-            <span className="text-[#E05D29]">· {item.category}</span>
-          </div>
-        </div>
 
-        {/* Bottom Half: Keterangan (`ket`) — scroll adjusts dynamically to text length */}
-        <div
-          ref={textContentRef}
-          className="p-5 sm:p-7 overflow-y-auto max-h-[calc(88vh-240px)] flex flex-col justify-between"
-          style={{
-            scrollbarWidth: "thin",
-            scrollbarColor: "#E05D29 #1a1a1a",
-          }}
-        >
-          <div>
-            {/* Meta Tags & Price */}
-            <div className="flex flex-wrap items-center gap-2 mb-3">
-              <span className="px-2.5 py-0.5 text-[9px] font-mono font-bold tracking-[0.2em] bg-[#E05D29]/15 text-[#E05D29] border border-[#E05D29]/40 uppercase">
-                {item.category}
-              </span>
-              {item.tag && (
-                <span className="px-2.5 py-0.5 text-[9px] font-mono font-bold tracking-[0.2em] text-[#F5F5F5]/70 border border-[#333] uppercase">
-                  {item.tag}
+          {/* Kotak Teks Keterangan (Mengisi 2/5 bagian bawah saat awal, meluncur naik saat di-scroll) */}
+          <div
+            ref={contentRef}
+            className="w-full min-h-full bg-[#0E0E0E] rounded-t-3xl border-t border-white/15 shadow-[0_-20px_40px_rgba(0,0,0,0.9)] px-7 sm:px-8 pt-3 pb-12 sm:pb-14 flex flex-col gap-3 pointer-events-auto"
+          >
+            {/* Handle Bar Interaktif (Bisa ditarik / diklik untuk expand) */}
+            <div
+              onClick={toggleSheetExpand}
+              className="w-full py-1.5 flex justify-center cursor-pointer group"
+              title="Klik atau scroll untuk membuka keterangan penuh"
+            >
+              <div className="w-10 h-1 rounded-full bg-white/25 group-hover:bg-[#E05D29] group-hover:w-14 transition-all duration-300" />
+            </div>
+
+            {/* Blok Kategori & Judul + Harga (Jarak dekat dan harga di kanan judul) */}
+            <div className="flex flex-col gap-1">
+              {/* Kategori Menu */}
+              <div>
+                <span className="text-[11px] font-mono font-bold tracking-[0.25em] text-[#E05D29] uppercase">
+                  {item.category}
                 </span>
-              )}
-              <span className="px-2.5 py-0.5 text-[11px] font-mono font-black tracking-wider text-black bg-[#E05D29] border border-[#E05D29] ml-auto">
-                {item.price}
-              </span>
+              </div>
+
+              {/* Baris Judul Menu & Harga di Sebelah Kanan */}
+              <div className="flex items-baseline justify-between gap-3">
+                <h2
+                  id="modal-item-title"
+                  className="text-2xl sm:text-[28px] font-black uppercase tracking-tight text-white leading-tight"
+                >
+                  {item.name}
+                </h2>
+                <span className="text-xl sm:text-2xl font-mono font-black text-[#E05D29] tracking-wider shrink-0">
+                  {item.price}
+                </span>
+              </div>
             </div>
 
-            {/* Menu Name */}
-            <h2
-              id="modal-keterangan-title"
-              className="text-2xl sm:text-3xl font-black uppercase tracking-tight text-[#F5F5F5] leading-tight mb-3"
-            >
-              {item.name}
-            </h2>
+            {/* Garis Aksen Halus */}
+            <div className="w-full h-px bg-white/10 my-0.5" />
 
-            {/* Keterangan Description */}
-            <div className="mb-5">
-              <div className="text-[9px] font-mono uppercase tracking-[0.25em] text-[#F5F5F5]/40 mb-1.5">
-                KETERANGAN
-              </div>
-              <p className="text-xs sm:text-sm text-[#F5F5F5]/85 leading-relaxed font-normal">
-                {item.description}
-              </p>
-            </div>
-
-            {/* Detailed Craft Specs if present */}
-            {item.details && (
-              <div className="space-y-2 pt-3 border-t border-[#262626] text-[11px] font-mono">
-                {item.details.notes && (
-                  <div className="flex items-start justify-between gap-2 text-[#F5F5F5]/70">
-                    <span className="text-[#F5F5F5]/40 tracking-wider text-[10px]">NOTES</span>
-                    <span className="text-right text-[#F5F5F5]/90 font-medium max-w-[65%]">
-                      {item.details.notes}
-                    </span>
-                  </div>
-                )}
-                {item.details.craft && (
-                  <div className="flex items-start justify-between gap-2 text-[#F5F5F5]/70">
-                    <span className="text-[#F5F5F5]/40 tracking-wider text-[10px]">METHOD</span>
-                    <span className="text-right text-[#F5F5F5]/90 font-medium max-w-[65%]">
-                      {item.details.craft}
-                    </span>
-                  </div>
-                )}
-                {item.details.temperature && (
-                  <div className="flex items-center justify-between gap-2 text-[#F5F5F5]/70">
-                    <span className="text-[#F5F5F5]/40 tracking-wider text-[10px]">TEMP</span>
-                    <span className="text-right text-[#E05D29] font-medium">
-                      {item.details.temperature}
-                    </span>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-
-          {/* Action Button at bottom of Keterangan */}
-          <div className="pt-5 mt-4 border-t border-[#262626]">
-            <button
-              type="button"
-              onClick={handleClose}
-              className="w-full py-2.5 bg-[#E05D29] hover:bg-[#F5F5F5] text-black font-black text-xs uppercase tracking-[0.18em] transition-colors flex items-center justify-center gap-2 cursor-pointer"
-            >
-              <span>CLOSE</span>
-              <span>✓</span>
-            </button>
+            {/* Deskripsi Menu: Keterangan Panjang dengan Ruang Baca Nyaman */}
+            <p className="text-xs sm:text-sm text-neutral-300 leading-relaxed font-normal">
+              {item.description}
+            </p>
           </div>
         </div>
       </div>
     </div>
   );
 }
+
+

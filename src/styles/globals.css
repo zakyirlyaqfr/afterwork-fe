@@ -20,6 +20,24 @@
   }
 }
 
+/* Prevent initial homepage and chrome flash before splash screen loads */
+html.showing-splash .page-chrome-wrapper,
+html.showing-splash footer,
+html.showing-splash .main-content-layout,
+html.showing-splash .sidebar-dock,
+html.showing-splash aside,
+html.showing-splash header,
+html.showing-splash .site-chrome,
+html.showing-splash [aria-label="Sidebar Navigation Controls"],
+html.showing-splash #main-sidebar-trigger,
+html.showing-splash #menu-trigger-btn,
+html.showing-splash #custom-cursor {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
 :root {
   --color-black: #000000;
   --color-orange: #E05D29;
@@ -79,6 +97,16 @@
   }
 }
 
+/* Hide scrollbars completely across all browsers */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 /* Clear, guaranteed separation between filter buttons and menu cards */
 .menu-grid-spacing {
   margin-top: 48px;
@@ -92,7 +120,8 @@
   z-index: 40;
   background: transparent;
   pointer-events: none;
-  margin-top: 4px; /* Posisi sedikit lebih ke atas */
+  margin-top: 4px;
+  /* Posisi sedikit lebih ke atas */
 }
 
 @media (min-width: 768px) {
@@ -103,7 +132,8 @@
 
   .menu-sticky-header {
     top: 38px;
-    margin-top: 6px; /* Posisi sedikit lebih ke atas */
+    margin-top: 6px;
+    /* Posisi sedikit lebih ke atas */
   }
 
   .menu-card-left-shift {
@@ -114,7 +144,8 @@
 @media (min-width: 1024px) {
   .menu-sticky-header {
     top: 42px;
-    margin-top: 8px; /* Posisi sedikit lebih ke atas pada layar lebar */
+    margin-top: 8px;
+    /* Posisi sedikit lebih ke atas pada layar lebar */
   }
 
   .menu-card-left-shift {
@@ -169,6 +200,7 @@
   .nav-link-hover {
     transition: color 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   }
+
   .nav-link-hover:hover,
   .nav-link-hover:hover span,
   .nav-link-hover.active,
@@ -400,18 +432,24 @@ html.lenis body {
 
 /* Organic Floating Levitation Utilities */
 @keyframes floatGentleA {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0px);
   }
+
   50% {
     transform: translateY(-9px);
   }
 }
 
 @keyframes floatGentleB {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0px);
   }
+
   50% {
     transform: translateY(8px);
   }
@@ -448,20 +486,47 @@ html.lenis body {
 
 /* Punk floating variations for page elements */
 @keyframes punkFloatA {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  33% { transform: translateY(-7px) rotate(0.3deg); }
-  66% { transform: translateY(4px) rotate(-0.2deg); }
+
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+
+  33% {
+    transform: translateY(-7px) rotate(0.3deg);
+  }
+
+  66% {
+    transform: translateY(4px) rotate(-0.2deg);
+  }
 }
 
 @keyframes punkFloatB {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  40% { transform: translateY(6px) rotate(-0.4deg); }
-  75% { transform: translateY(-5px) rotate(0.2deg); }
+
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+
+  40% {
+    transform: translateY(6px) rotate(-0.4deg);
+  }
+
+  75% {
+    transform: translateY(-5px) rotate(0.2deg);
+  }
 }
 
 @keyframes punkFloatC {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  50% { transform: translateY(-12px) rotate(0.5deg); }
+
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-12px) rotate(0.5deg);
+  }
 }
 
 .punk-float-a {
@@ -498,9 +563,12 @@ html.lenis body {
 
 /* Tilted Punk Float Variations (Permanently preserving distinct tilts while floating) */
 @keyframes punkFloatTiltRight {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0px) rotate(4deg);
   }
+
   50% {
     transform: translateY(-14px) rotate(4.8deg);
   }
@@ -511,9 +579,12 @@ html.lenis body {
 }
 
 @keyframes punkFloatTiltLeft {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0px) rotate(-3.5deg);
   }
+
   50% {
     transform: translateY(-12px) rotate(-4.2deg);
   }
@@ -546,6 +617,7 @@ html.lenis body {
     opacity: 0;
     transform: scale(0.85) rotate(-2deg);
   }
+
   100% {
     opacity: 1;
     transform: scale(1) rotate(0deg);
@@ -557,6 +629,7 @@ html.lenis body {
     opacity: 1;
     transform: scale(1) rotate(0deg);
   }
+
   100% {
     opacity: 0;
     transform: scale(0.85) rotate(2deg);
@@ -564,8 +637,13 @@ html.lenis body {
 }
 
 @keyframes lightboxBackdropEnter {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
 }
 
 .lightbox-enter {
@@ -586,6 +664,7 @@ html.lenis body {
     opacity: 0;
     transform: translateY(30px) scale(0.96);
   }
+
   100% {
     opacity: 1;
     transform: translateY(0) scale(1);
@@ -642,6 +721,23 @@ html.lenis body {
   padding-bottom: clamp(60px, 8vh, 120px);
 }
 
-.punk-section + .punk-section {
+.punk-section+.punk-section {
   padding-top: clamp(40px, 5vh, 80px);
+}
+
+/* Page transition loader bar animation */
+@keyframes pageLoaderBar {
+  0% {
+    width: 20%;
+    margin-left: 0;
+  }
+
+  100% {
+    width: 60%;
+    margin-left: 40%;
+  }
+}
+
+.page-loader-bar {
+  animation: pageLoaderBar 0.8s ease-in-out infinite alternate;
 }

@@ -246,7 +246,7 @@ export default function AboutPage() {
         >
           {/* Centered Image & Overlaid Title Container — Perfectly centered top & bottom */}
           <div className="relative w-full max-w-[320px] sm:max-w-[380px] md:max-w-[440px] lg:max-w-[490px] mx-auto flex items-center justify-center optical-center-viewport">
-            
+
             {/* Centered Portrait Image */}
             <div
               ref={sec1ImgRef}

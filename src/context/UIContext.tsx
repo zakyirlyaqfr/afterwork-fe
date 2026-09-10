@@ -12,6 +12,11 @@ interface UIContextType {
   openLocationModal: () => void;
   closeLocationModal: () => void;
 
+  isDetailModalOpen: boolean;
+  openDetailModal: () => void;
+  closeDetailModal: () => void;
+  setDetailModalOpen: (open: boolean) => void;
+
   hasSeenSplash: boolean;
   completeSplash: () => void;
 
@@ -24,18 +29,25 @@ const UIContext = createContext<UIContextType | undefined>(undefined);
 export function UIProvider({ children }: { children: React.ReactNode }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
-  const [hasSeenSplash, setHasSeenSplash] = useState(true); // Default true until checked in client
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [hasSeenSplash, setHasSeenSplash] = useState(false); // Default false so hero waits for splash
   const [currentSectionTheme, setCurrentSectionTheme] = useState<"dark" | "light">("dark");
 
   useEffect(() => {
-    // Check sessionStorage
+    // Check sessionStorage on client
     try {
+      const urlParams = new URLSearchParams(window.location.search);
+      const forceSplash = urlParams.get("splash") === "1" || urlParams.get("splash") === "true";
       const seen = sessionStorage.getItem("afterwork_splash_seen");
-      if (!seen) {
+      if (seen && !forceSplash) {
+        setHasSeenSplash(true);
+        document.documentElement.classList.remove("showing-splash");
+      } else {
         setHasSeenSplash(false);
       }
     } catch {
       setHasSeenSplash(true);
+      document.documentElement.classList.remove("showing-splash");
     }
   }, []);
 
@@ -44,6 +56,9 @@ export function UIProvider({ children }: { children: React.ReactNode }) {
       sessionStorage.setItem("afterwork_splash_seen", "true");
     } catch {
       // ignore
+    }
+    if (typeof document !== "undefined") {
+      document.documentElement.classList.remove("showing-splash");
     }
     setHasSeenSplash(true);
   };
@@ -58,9 +73,13 @@ export function UIProvider({ children }: { children: React.ReactNode }) {
   const openLocationModal = () => setIsLocationModalOpen(true);
   const closeLocationModal = () => setIsLocationModalOpen(false);
 
+  const openDetailModal = () => setIsDetailModalOpen(true);
+  const closeDetailModal = () => setIsDetailModalOpen(false);
+  const setDetailModalOpen = (open: boolean) => setIsDetailModalOpen(open);
+
   // Lock body scroll when menu or modal is open
   useEffect(() => {
-    if (isMenuOpen || isLocationModalOpen) {
+    if (isMenuOpen || isLocationModalOpen || isDetailModalOpen) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "";
@@ -68,7 +87,7 @@ export function UIProvider({ children }: { children: React.ReactNode }) {
     return () => {
       document.body.style.overflow = "";
     };
-  }, [isMenuOpen, isLocationModalOpen]);
+  }, [isMenuOpen, isLocationModalOpen, isDetailModalOpen]);
 
   // Handle ESC key to close open overlays
   useEffect(() => {
@@ -92,6 +111,10 @@ export function UIProvider({ children }: { children: React.ReactNode }) {
         isLocationModalOpen,
         openLocationModal,
         closeLocationModal,
+        isDetailModalOpen,
+        openDetailModal,
+        closeDetailModal,
+        setDetailModalOpen,
         hasSeenSplash,
         completeSplash,
         currentSectionTheme,

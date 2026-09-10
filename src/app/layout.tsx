@@ -4,6 +4,7 @@ import "@/styles/globals.css";
 import { UIProvider } from "@/context/UIContext";
 import SmoothScroll from "@/components/animation/SmoothScroll";
 import SplashScreen from "@/components/animation/SplashScreen";
+import PageLoader from "@/components/animation/PageLoader";
 import MenuTrigger from "@/components/layout/MenuTrigger";
 import NavigationOverlay from "@/components/layout/NavigationOverlay";
 import Footer from "@/components/layout/Footer";
@@ -82,12 +83,50 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={`${alteHaasGrotesk.variable} bg-black text-[#F5F5F5] antialiased`}
     >
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var seen = sessionStorage.getItem("afterwork_splash_seen");
+                  var isForce = window.location.search.indexOf("splash=1") !== -1 || window.location.search.indexOf("splash=true") !== -1;
+                  if (!seen || isForce) {
+                    document.documentElement.classList.add("showing-splash");
+                  }
+                } catch(e) {}
+              })();
+            `,
+          }}
+        />
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `
+              html.showing-splash .page-chrome-wrapper,
+              html.showing-splash footer,
+              html.showing-splash .main-content-layout,
+              html.showing-splash aside,
+              html.showing-splash .sidebar-dock,
+              html.showing-splash .site-chrome,
+              html.showing-splash #custom-cursor {
+                display: none !important;
+                visibility: hidden !important;
+                opacity: 0 !important;
+              }
+            `,
+          }}
+        />
+      </head>
       <body className="min-h-screen bg-black text-[#F5F5F5] flex flex-col selection:bg-[#E05D29] selection:text-black">
         <UIProvider>
-          {/* Initial 3-second sequence animated splash screen */}
+          {/* Initial 3-second splash screen (first visit only) */}
           <SplashScreen />
+
+          {/* Page transition loader (route changes) */}
+          <PageLoader />
 
           {/* Desktop contextual cursor */}
           <CustomCursor />
@@ -100,7 +139,7 @@ export default function RootLayout({
 
           {/* Smooth Lenis + GSAP Scroll container */}
           <SmoothScroll>
-            <div className="flex-1 flex flex-col relative min-h-screen bg-black">
+            <div className="page-chrome-wrapper flex-1 flex flex-col relative min-h-screen bg-black">
               <div className="main-content-layout flex-1 flex flex-col relative bg-black">
                 {children}
               </div>

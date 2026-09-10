@@ -23,7 +23,7 @@ export const menuItems: MenuItem[] = [
   {
     id: "c1",
     name: "LOREM IPSUM",
-    description: "Signature double-shot espresso extraction over chilled textured milk with subtle notes of roasted hazelnut and dark cacao.",
+    description: "Signature double-shot espresso extraction over chilled textured milk with subtle notes of roasted hazelnut and dark cacao. Crafted using our in-house roasted blend of Ethiopian and Sumatran beans, pulled at a precise 93°C water temperature to maximize sweetness without astringency. Served chilled over hand-cut artisan ice cubes for an exceptionally smooth, velvety mouthfeel that lingers with a sweet molasses finish.",
     price: "28K",
     category: "COFFEE",
     previewImage: "/images-original/menu/menu-coffee.jpg",
@@ -38,7 +38,7 @@ export const menuItems: MenuItem[] = [
   {
     id: "c2",
     name: "DOLOR SIT AMET",
-    description: "Single-origin washed beans pulled with high precision, balancing bright citrus acidity and lingering floral sweetness.",
+    description: "Single-origin washed beans pulled with high precision, balancing bright bergamot acidity, delicate jasmine florals, and lingering dried apricot sweetness. Hand-poured using the Japanese V60 dripper with continuous spiral agitation at a 1:16 brew ratio. Each sip reveals nuanced layers of candied citrus and honeyed peach as the cup cools, creating an immaculate and reflective tasting journey.",
     price: "32K",
     category: "COFFEE",
     previewImage: "/images-original/product-geisha-pourover.jpg",
@@ -53,7 +53,7 @@ export const menuItems: MenuItem[] = [
   {
     id: "c3",
     name: "CONSECTETUR ADIPIS",
-    description: "Slow cold-drip extraction steeped over 18 hours, finished with a whisper of local citrus essence for a velvet mouthfeel.",
+    description: "Slow cold-drip extraction steeped drop-by-drop over 18 continuous hours using our architectural Kyoto glass towers. Finished with a gentle whisper of hand-expressed local citrus peel to awaken the deep molasses and dark stone-fruit undertones. Poured over crystal-clear artisan cubes, delivering a rich, syrupy body with near-zero bitterness and an enduring dark plum aftertaste.",
     price: "36K",
     category: "COFFEE",
     previewImage: "/images-original/menu/menu-bottle.jpg",
@@ -68,7 +68,7 @@ export const menuItems: MenuItem[] = [
   {
     id: "c4",
     name: "TEMPOR INCIDIDUNT",
-    description: "Bold espresso shaken over clear artisan ice cubes and infused with roasted almond syrup and sea salt flakes.",
+    description: "Bold double ristretto flash-shaken over hand-carved ice cubes and infused with house-roasted almond reduction and flakes of Balinese sea salt. Aerated vigorously in an ice-cold tin to produce a fine golden crema crown. The result is a harmonious contrast between salted caramel sweetness, toasted nut aromatics, and vibrant espresso bitterness.",
     price: "42K",
     category: "COFFEE",
     previewImage: "/images-original/product-espresso-tonic.jpg",
@@ -83,7 +83,7 @@ export const menuItems: MenuItem[] = [
   {
     id: "c5",
     name: "MAGNA ALIQUA",
-    description: "Rare micro-lot natural anaerobic geisha roasted lightly to elevate sparkling passion fruit and wild berry aromatics.",
+    description: "Rare micro-lot natural anaerobic Geisha beans roasted exceptionally light to celebrate sparkling passionfruit, wild field strawberries, and delicate lavender blossoms. Brewed meticulously on a flat-bottom Kalita Wave 155 with zero bypass for maximum clarity and floral preservation. An extraordinary reserve offering reserved for discerning palate explorers.",
     price: "55K",
     category: "COFFEE",
     previewImage: "/images-original/home/home-craft-01.jpg",
@@ -98,7 +98,7 @@ export const menuItems: MenuItem[] = [
   {
     id: "c6",
     name: "ENIM AD MINIM",
-    description: "Rich dark espresso layered over bittersweet house chocolate ganache and velvety microfoam.",
+    description: "Rich dark espresso layered over 70% single-origin Belgian chocolate ganache, infused with Tahitian bourbon vanilla and silky textured whole microfoam. Hand-melted in small batches each morning, the bittersweet cocoa harmonizes seamlessly with the espresso's deep roasted nut profile, creating an indulgent yet refined nightcap experience.",
     price: "38K",
     category: "COFFEE",
     previewImage: "/images-original/home/home-craft-02.jpg",
@@ -113,7 +113,7 @@ export const menuItems: MenuItem[] = [
   {
     id: "c7",
     name: "QUIS NOSTRUD",
-    description: "Aerated nitro-infused cold brew poured under high pressure for a cascading Guinness-like creamy head.",
+    description: "Aerated nitro-infused cold brew poured under high nitrogen pressure directly from our refrigerated keg draft tap. The cascading micro-bubbles settle into a dense, velvety Guinness-like creamy head. Naturally sweet with pronounced notes of malted chocolate, black tea, and honeycomb, delivering a luxuriously smooth draft coffee without dairy.",
     price: "45K",
     category: "COFFEE",
     previewImage: "/images-original/product-nitro-coldbrew.jpg",
@@ -130,7 +130,7 @@ export const menuItems: MenuItem[] = [
   {
     id: "f1",
     name: "COMMODO CONSEQUAT",
-    description: "Artisanal butter pastry baked freshly each midnight with caramelized honey glaze and flakey golden laminated layers.",
+    description: "Artisanal French butter pastry laminated with 84% Normandy cultured butter, baked fresh twice daily and glazed with caramelized wild forest honey. The paper-thin golden layers shatter into delicate, buttery flakes with every bite, revealing a tender, honeycomb-structured interior seasoned with fleur de sel. The quintessential pairing for any pour-over or cortado.",
     price: "38K",
     category: "FOOD",
     previewImage: "/images-original/product-kouign-amann.jpg",
@@ -145,7 +145,7 @@ export const menuItems: MenuItem[] = [
   {
     id: "f2",
     name: "DUIS AUTE IRURE",
-    description: "Sourdough toast layered with smoked beef, melted sharp cheddar, and house mustard emulsion.",
+    description: "House-baked artisanal wild sourdough toast stacked generously with 14-hour smoked beef brisket, melted mature cheddar, caramelized balsamic onions, and stone-ground Dijon mustard emulsion. Pressed on cast iron until blistered golden and crisp, delivering a smoky, savory, and tangy bite that satisfies late-night cravings.",
     price: "35K",
     category: "FOOD",
     previewImage: "/images-original/menu/menu-food.jpg",
@@ -160,7 +160,7 @@ export const menuItems: MenuItem[] = [
   {
     id: "f3",
     name: "DOLOR REPREHEND",
-    description: "Crisp golden potato churros dusted with smoked paprika and served alongside dark spicy espresso dipping reduction.",
+    description: "Crisp hand-cut Russet potato churros double-fried to golden perfection, lightly dusted with Spanish smoked paprika, grated parmesan, and dried herbs. Accompanied by a house-crafted espresso balsamic reduction dip with black truffle oil that provides an unexpected, addictive balance of savory umami and roasted coffee depth.",
     price: "65K",
     category: "FOOD",
     previewImage: "/images/afterwork-glutton-2.jpg",
@@ -175,7 +175,7 @@ export const menuItems: MenuItem[] = [
   {
     id: "f4",
     name: "VOLUPTATE VELIT",
-    description: "Warm skillet dark chocolate brownie paired with Madagascar vanilla bean gelato and crushed roasted hazelnuts.",
+    description: "Freshly baked cast iron skillet brownie made from molten 70% Valrhona dark chocolate and browned butter, crowned with Madagascar bourbon vanilla bean gelato and crushed roasted hazelnuts. Served piping hot so the creamy gelato slowly melts into the warm fudgy core, creating a decadent interplay of temperatures and bittersweet cacao textures.",
     price: "52K",
     category: "FOOD",
     previewImage: "/images/afterwork-gwalk-dessert.jpg",
@@ -190,7 +190,7 @@ export const menuItems: MenuItem[] = [
   {
     id: "f5",
     name: "CILUM DOLORE",
-    description: "Crispy grilled sourdough sandwich packed with truffle scrambled egg, melted gruyere, and caramelized shallots.",
+    description: "Thick slices of grilled artisanal sourdough filled with fluffy truffle-scented scrambled eggs, melted Swiss Gruyère, and sweet caramelized shallots. Torch-finished with fresh chives and cracked black peppercorn. A rich, comforting savory melt designed to complement both morning black coffees and evening milk beverages.",
     price: "48K",
     category: "FOOD",
     previewImage: "/images/afterwork-gwalk-temanmakan.jpg",
@@ -205,7 +205,7 @@ export const menuItems: MenuItem[] = [
   {
     id: "f6",
     name: "FUGIAT PARIATUR",
-    description: "Golden fried French toast cubes coated in cinnamon sugar, drizzled with salted caramel and espresso cream.",
+    description: "Golden brioche French toast cubes flash-fried and tossed in aromatic Ceylon cinnamon sugar, then drizzled with warm salted butterscotch caramel and espresso mascarpone whip. Crisp on the exterior and custard-soft within, offering a comforting sweet indulgence that pairs divinely with our cold-drip brews.",
     price: "40K",
     category: "FOOD",
     previewImage: "/images-original/product-midnight-cruffin.jpg",
@@ -222,7 +222,7 @@ export const menuItems: MenuItem[] = [
   {
     id: "nc1",
     name: "ESSE CILLUM",
-    description: "Ceremonial grade Uji matcha whisked systematically with silky oat milk and raw organic wildflower honey.",
+    description: "Ceremonial grade stone-ground Uji matcha whisked systematically with traditional bamboo chasen, blended with steamed silky oat milk and a drizzle of raw organic wildflower honey. Deep emerald in color with rich vegetal umami and sweet toasted rice notes, rounded out by the natural sweetness of premium barista oat milk without any dairy bitterness.",
     price: "42K",
     category: "NON COFFEE",
     previewImage: "/images-original/menu/menu-noncoffee.jpg",
@@ -237,7 +237,7 @@ export const menuItems: MenuItem[] = [
   {
     id: "nc2",
     name: "FUGIAT NULLA",
-    description: "Artisanal sparkling botanical infusion of dried hibiscus petals, crushed juniper berries, and fragrant whole cinnamon quill.",
+    description: "Artisanal sparkling botanical infusion crafted from dried organic Sudan hibiscus calyces, crushed Macedonian juniper berries, fresh mint, and whole Ceylon cinnamon quills. Cold-steeped for 24 hours, carbonated under high pressure, and served over crystal ice with an expressed lemon twist for a crimson, tart, and deeply refreshing effervescence.",
     price: "40K",
     category: "NON COFFEE",
     previewImage: "/images-original/gallery/gallery-01.jpg",
@@ -252,7 +252,7 @@ export const menuItems: MenuItem[] = [
   {
     id: "nc3",
     name: "EXCEPTEUR SINT",
-    description: "Single-origin Java artisanal chocolate melted into creamy dairy, crowned with house-flamed torched marshmallow.",
+    description: "Single-origin East Java artisanal dark chocolate melted into warm creamy whole milk, crowned with house-made vanilla bean marshmallow flamed to order with an open torch. The charred caramelized marshmallow lends a campfire smokiness that deepens the velvety chocolate indulgence beneath.",
     price: "35K",
     category: "NON COFFEE",
     previewImage: "/images-original/gallery/gallery-02.jpg",
@@ -267,7 +267,7 @@ export const menuItems: MenuItem[] = [
   {
     id: "nc4",
     name: "OCCAECAT CUPIDATAT",
-    description: "Slow-brewed loose leaf roasted Genmaicha tea blended with roasted brown rice and whole dairy milk.",
+    description: "Slow-brewed loose leaf Kyoto Genmaicha tea blended with roasted brown rice kernels, steamed silky dairy milk, and a touch of raw cane sugar. The fragrant aroma of toasted grains and roasted barley combines effortlessly with delicate green tea notes for a cozy, earthy, and soothing non-caffeinated experience.",
     price: "38K",
     category: "NON COFFEE",
     previewImage: "/images-original/gallery/gallery-03.jpg",
@@ -282,7 +282,7 @@ export const menuItems: MenuItem[] = [
   {
     id: "nc5",
     name: "PROIDENT SUNT",
-    description: "Refreshing cold brewed white peach tea shaken with fresh mint sprigs and sparkling mineral water.",
+    description: "Chilled cold-brewed white peach blossom tea flash-shaken with bruised organic mint leaves, fresh peach puree, and natural sparkling mineral water. Poured over hand-crushed ice for a radiant, fragrant, and thirst-quenching cooler that celebrates summer orchard botanicals.",
     price: "36K",
     category: "NON COFFEE",
     previewImage: "/images-original/gallery/gallery-04.jpg",
@@ -297,7 +297,7 @@ export const menuItems: MenuItem[] = [
   {
     id: "nc6",
     name: "DESERUNT MOLLIT",
-    description: "Spiced golden milk infusion made with fresh turmeric, ginger root, cardamom pod, black pepper, and almond milk.",
+    description: "Spiced golden milk elixir slowly decocted from fresh organic turmeric root, crushed ginger, green cardamom pods, black peppercorns, and creamy almond milk. Lightly sweetened with wild honey, offering an anti-inflammatory, warming, and comforting tonic with balanced aromatic warmth.",
     price: "38K",
     category: "NON COFFEE",
     previewImage: "/images-original/gallery/gallery-05.jpg",
@@ -312,7 +312,7 @@ export const menuItems: MenuItem[] = [
   {
     id: "nc7",
     name: "LABORUM SED",
-    description: "Sparkling cold-pressed yuzu juice infused with organic butterfly pea flower tea for a two-toned sunset gradient.",
+    description: "Cold-pressed Kochi yuzu juice shaken with sparkling tonic water, delicately layered with steeped blue butterfly pea blossom tea to create a mesmerizing two-toned purple sunset gradient. Vibrant citrus brightness meets delicate floral undertones in an invigorating, photogenic mocktail.",
     price: "42K",
     category: "NON COFFEE",
     previewImage: "/images-original/gallery/gallery-06.jpg",

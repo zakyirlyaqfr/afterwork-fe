@@ -160,8 +160,8 @@ export default function MenusPage() {
       className="min-h-screen bg-black text-[#F5F5F5] pt-24 sm:pt-28 md:pt-32 px-6 sm:px-10 md:px-12 lg:px-16 selection:bg-[#E05D29] selection:text-black overflow-x-visible relative"
       style={{ paddingBottom: "clamp(4rem, 8vw, 8rem)" }}
     >
-      {/* Main Content Container */}
-      <div className="w-full max-w-[1540px] mx-auto relative z-10">
+      {/* Main Content Container — with pb-[40vh] so sticky header stays pinned all the way past the bottom cards */}
+      <div className="w-full max-w-[1540px] mx-auto relative z-10 pb-[40vh]">
 
         {/* Header Container for Title & Category Filters
             - Sticky dan transparan: tetap di posisi saat di-scroll
@@ -188,11 +188,10 @@ export default function MenusPage() {
             <button
               type="button"
               onClick={() => setActiveCategory("ALL")}
-              className={`px-6 py-2.5 text-xs font-black uppercase tracking-[0.2em] border transition-all duration-300 -rotate-1 hover:rotate-0 hover:scale-105 cursor-pointer ${
-                activeCategory === "ALL"
+              className={`px-6 py-2.5 text-xs font-black uppercase tracking-[0.2em] border transition-all duration-300 -rotate-1 hover:rotate-0 hover:scale-105 cursor-pointer ${activeCategory === "ALL"
                   ? "bg-[#E05D29] text-black border-[#E05D29] punk-glow font-black shadow-[0_4px_16px_rgba(224,93,41,0.45)]"
                   : "border-[#333] text-[#F5F5F5]/80 hover:border-[#E05D29] hover:text-[#E05D29] bg-black/85 backdrop-blur-md shadow-[0_4px_14px_rgba(0,0,0,0.6)]"
-              }`}
+                }`}
             >
               ALL
             </button>
@@ -204,11 +203,10 @@ export default function MenusPage() {
                 type="button"
                 onClick={() => setActiveCategory(cat)}
                 style={{ transform: `rotate(${idx % 2 === 0 ? "1" : "-1"}deg)` }}
-                className={`px-6 py-2.5 text-xs font-black uppercase tracking-[0.2em] border transition-all duration-300 hover:rotate-0 hover:scale-105 cursor-pointer ${
-                  activeCategory === cat
+                className={`px-6 py-2.5 text-xs font-black uppercase tracking-[0.2em] border transition-all duration-300 hover:rotate-0 hover:scale-105 cursor-pointer ${activeCategory === cat
                     ? "bg-[#E05D29] text-black border-[#E05D29] punk-glow !rotate-0 font-black shadow-[0_4px_16px_rgba(224,93,41,0.45)]"
                     : "border-[#333] text-[#F5F5F5]/80 hover:border-[#E05D29] hover:text-[#E05D29] bg-black/85 backdrop-blur-md shadow-[0_4px_14px_rgba(0,0,0,0.6)]"
-                }`}
+                  }`}
               >
                 {cat}
               </button>
@@ -249,15 +247,13 @@ export default function MenusPage() {
             return (
               <div
                 key={item.id}
-                className={`menu-card relative ${
-                  isLastOdd ? "md:mt-16 lg:mt-24" : variant.offsetY
-                } ${cellAlignment}`}
+                className={`menu-card relative ${isLastOdd ? "md:mt-16 lg:mt-24" : variant.offsetY
+                  } ${cellAlignment}`}
               >
                 {/* Abstract Image Container — strictly holds group & cursor-pointer so hover area matches card 1:1 */}
                 <div
-                  className={`relative group cursor-pointer shrink-0 ${cardWidth} ${cardHeight} ${
-                    isLastOdd ? "mx-auto menu-card-odd-center" : isLeftColumn ? "menu-card-left-shift" : ""
-                  } bg-[#0a0a0a] border border-[#262626] overflow-hidden transition-colors duration-300 hover:border-[#E05D29]/70 hover:shadow-[0_15px_40px_rgba(224,93,41,0.22)]`}
+                  className={`relative group cursor-pointer shrink-0 ${cardWidth} ${cardHeight} ${isLastOdd ? "mx-auto menu-card-odd-center" : isLeftColumn ? "menu-card-left-shift" : ""
+                    } bg-[#0a0a0a] border border-[#262626] overflow-hidden transition-colors duration-300 hover:border-[#E05D29]/70 hover:shadow-[0_15px_40px_rgba(224,93,41,0.22)]`}
                   style={isLastOdd ? undefined : { transform: `rotate(${variant.tilt}deg)` }}
                   onClick={() => handleOpenModal(item)}
                   onKeyDown={(e) => {

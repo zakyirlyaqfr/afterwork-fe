@@ -142,11 +142,10 @@ export default function GalleryPage() {
               type="button"
               onClick={() => setActiveCategory(cat)}
               style={{ transform: `rotate(${idx % 2 === 0 ? '0.8' : '-0.8'}deg)` }}
-              className={`px-4 py-2 text-[11px] font-black uppercase tracking-[0.12em] border-2 transition-all duration-300 hover:rotate-0 hover:scale-105 ${
-                activeCategory === cat
+              className={`px-4 py-2 text-[11px] font-black uppercase tracking-[0.12em] border-2 transition-all duration-300 hover:rotate-0 hover:scale-105 ${activeCategory === cat
                   ? "bg-[#E05D29] text-black border-[#E05D29] punk-glow !rotate-0"
                   : "border-[#333] text-[#F5F5F5]/55 hover:border-[#E05D29] hover:text-[#E05D29]"
-              }`}
+                }`}
             >
               {cat}
             </button>
@@ -165,9 +164,8 @@ export default function GalleryPage() {
             return (
               <div
                 key={item.id}
-                className={`gallery-item ${item.gridSpan} group cursor-pointer relative ${
-                  shouldOverlap ? "md:-ml-6 lg:-ml-14 z-40" : ""
-                }`}
+                className={`gallery-item ${item.gridSpan} group cursor-pointer relative ${shouldOverlap ? "md:-ml-6 lg:-ml-14 z-40" : ""
+                  }`}
                 style={{ transform: `rotate(${tilt}deg)` }}
                 onClick={() => setSelectedImage(item)}
               >
@@ -210,18 +208,16 @@ export default function GalleryPage() {
         <div
           role="dialog"
           aria-modal="true"
-          className={`fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-8 cursor-default ${
-            isClosing ? "" : "lightbox-backdrop-enter"
-          }`}
+          className={`fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-8 cursor-default ${isClosing ? "" : "lightbox-backdrop-enter"
+            }`}
           style={{ backgroundColor: "rgba(0,0,0,0.92)" }}
           onClick={handleClose}
         >
           {/* Lightbox Content */}
           <div
             ref={lightboxContentRef}
-            className={`relative max-w-5xl w-full flex flex-col items-center ${
-              isClosing ? "lightbox-exit" : "lightbox-enter"
-            }`}
+            className={`relative max-w-5xl w-full flex flex-col items-center ${isClosing ? "lightbox-exit" : "lightbox-enter"
+              }`}
             onClick={(e) => e.stopPropagation()}
           >
             {/* Close Button */}
