@@ -18,7 +18,7 @@ export const siteLinks = {
     address: "Ruko G-Walk Citraland, Jl. Niaga Gapura No. FG-19, Surabaya, Jawa Timur 60213",
     coordinates: "-7.2915785, 112.6545816",
     googleMapsUrl: "https://maps.app.goo.gl/3XxSBxAsE6JDKMux9",
-    embedIframe: "https://maps.google.com/maps?q=Afterwork+Caffeine+Surabaya&t=&z=16&ie=UTF8&iwloc=&output=embed",
+    embedIframe: "https://maps.google.com/maps?q=-7.2915785,112.6545816&t=&z=16&ie=UTF8&iwloc=&output=embed",
   },
   locations: [
     {
@@ -31,7 +31,7 @@ export const siteLinks = {
       spot: "G-Walk Citraland",
       coordinates: "-7.2915785, 112.6545816",
       googleMapsUrl: "https://maps.app.goo.gl/3XxSBxAsE6JDKMux9",
-      embedQuery: "Afterwork+Caffeine+Surabaya",
+      embedQuery: "-7.2915785,112.6545816",
     },
     {
       id: "foremost",

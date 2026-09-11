@@ -165,8 +165,8 @@ export default function NavigationOverlay() {
 
         {/*
           Right Column: Abstract Punk Visual Composition
-          - Asymmetric tilt, layered brutalist underlayer, corner brackets & authentic street photography.
-          - Text stickers removed: raw craft, surabaya stencil, and no rules badge are gone.
+          - Asymmetric tilt, corner brackets & authentic street photography.
+          - Orange wireframe frame removed per user request.
           - Animated floating entrance & ambient levitation.
           - Visible on desktop/tablet (>= md).
         */}
@@ -175,20 +175,14 @@ export default function NavigationOverlay() {
             ref={imageCardRef}
             className="relative w-full max-w-[300px] md:max-w-[340px] lg:max-w-[400px] xl:max-w-[440px] mr-2 lg:mr-4 select-none float-ambient-a"
           >
-            {/* Abstract Punk Offset Underlayer Wireframe */}
-            <div
-              aria-hidden="true"
-              className="absolute -inset-3 sm:-inset-4 border-2 border-[#E05D29] bg-[#E05D29]/10 rotate-[2.5deg] translate-x-3 translate-y-3 pointer-events-none z-0 shadow-[0_0_35px_rgba(224,93,41,0.25)]"
-            />
-
             {/* Main Asymmetric Tilted Image Frame */}
             <div className="relative w-full aspect-[3/4] bg-[#0c0c0c] border border-neutral-700 -rotate-[3deg] shadow-[0_25px_60px_rgba(0,0,0,0.9)] overflow-visible z-10 transition-transform duration-500 ease-out hover:scale-[1.02] hover:-rotate-[1.5deg]">
               
-              {/* Punk Corner Brackets Framing */}
+              {/* Corner Brackets Framing (Clean monochrome, no orange frame lines) */}
               <div aria-hidden="true" className="absolute -inset-2.5 pointer-events-none z-30">
                 <div className="absolute top-0 left-0 w-5 h-5 border-t-2 border-l-2 border-white/90" />
-                <div className="absolute top-0 right-0 w-5 h-5 border-t-2 border-r-2 border-[#E05D29]" />
-                <div className="absolute bottom-0 left-0 w-5 h-5 border-b-2 border-l-2 border-[#E05D29]" />
+                <div className="absolute top-0 right-0 w-5 h-5 border-t-2 border-r-2 border-white/90" />
+                <div className="absolute bottom-0 left-0 w-5 h-5 border-b-2 border-l-2 border-white/90" />
                 <div className="absolute bottom-0 right-0 w-5 h-5 border-b-2 border-r-2 border-white/90" />
               </div>
 

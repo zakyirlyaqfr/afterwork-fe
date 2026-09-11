@@ -253,7 +253,7 @@ export default function MenuDetailModal({
             {/* 2. Sensory Notes: Layout dari SS (Header SENSORY NOTES + Text dipisahkan '|' tanpa kotak) */}
             {item.details?.notes && (
               <div className="flex flex-col gap-1.5 pb-2.5">
-                <span className="text-[9px] font-mono uppercase tracking-[0.22em] text-neutral-400 font-bold">
+                <span className="text-[9px] font-mono uppercase tracking-[0.22em] text-[#E05D29] font-bold">
                   SENSORY NOTES
                 </span>
                 <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-xs sm:text-[13px] font-mono tracking-wide text-neutral-200">
@@ -298,7 +298,7 @@ export default function MenuDetailModal({
 
                 {item.details?.origin && (
                   <div className="flex flex-col gap-1 pl-3">
-                    <span className="text-[9px] font-mono uppercase tracking-wider text-neutral-400 font-bold">
+                    <span className="text-[9px] font-mono uppercase tracking-wider text-[#E05D29] font-bold">
                       ORIGIN / TERROIR
                     </span>
                     <span className="text-xs text-neutral-200 font-medium leading-snug">
@@ -311,7 +311,7 @@ export default function MenuDetailModal({
 
             {/* 4. Deskripsi Menu: Keterangan Sangat Panjang dengan Formatting Editorial */}
             <div className="flex flex-col gap-1.5 pt-0.5">
-              <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-neutral-400 font-bold">
+              <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-[#E05D29] font-bold">
                 Artisan Story & Narrative
               </span>
               <div className="text-xs sm:text-[13px] text-neutral-300 leading-relaxed font-normal space-y-3">

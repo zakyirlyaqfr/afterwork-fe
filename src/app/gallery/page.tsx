@@ -128,7 +128,7 @@ export default function GalleryPage() {
             className="relative pointer-events-none"
           >
             <h1 className="relative z-10 text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black tracking-tighter uppercase leading-[0.88] text-[#F5F5F5]">
-              <span className="text-[#E05D29]">ARCHIVE.</span>
+              ARCHIVE<span className="text-[#E05D29]">.</span>
             </h1>
           </div>
         </div>

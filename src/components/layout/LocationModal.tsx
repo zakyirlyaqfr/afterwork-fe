@@ -130,25 +130,25 @@ export default function LocationModal() {
           />
         </div>
 
-        {/* Minimal X Close Button */}
+        {/* Minimal X Close Button (Clean Black X without card container) */}
         <button
           type="button"
           onClick={handleClose}
           aria-label="Tutup peta lokasi"
-          className="absolute top-3.5 right-3.5 z-50 p-2 text-white/70 hover:text-white bg-black/60 backdrop-blur-md rounded-full active:scale-90 transition-all duration-200 cursor-pointer focus:outline-none drop-shadow-[0_2px_8px_rgba(0,0,0,0.85)] border border-white/15"
+          className="absolute top-3.5 right-3.5 z-50 p-2 text-black hover:text-[#E05D29] active:scale-90 transition-all duration-200 cursor-pointer focus:outline-none drop-shadow-[0_1px_3px_rgba(255,255,255,0.3)]"
         >
-          <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+          <svg width="18" height="18" viewBox="0 0 16 16" fill="none">
             <path
               d="M2.5 2.5L13.5 13.5M13.5 2.5L2.5 13.5"
               stroke="currentColor"
-              strokeWidth="1.8"
+              strokeWidth="2"
               strokeLinecap="round"
             />
           </svg>
         </button>
 
         {/* Layer 2: Clean Bottom Info Sheet matching Menus design */}
-        <div className="w-full flex-1 bg-[#0E0E0E] px-6 sm:px-7 py-3.5 sm:py-4 flex flex-col justify-between relative z-20 border-t border-white/10 shadow-2xl">
+        <div className="w-full flex-1 bg-[#0E0E0E] px-6 sm:px-7 py-4 sm:py-5 flex flex-col justify-between relative z-20 border-t border-white/10 shadow-2xl">
           {/* Subtle gradient separator */}
           <div
             aria-hidden="true"
@@ -158,28 +158,8 @@ export default function LocationModal() {
             }}
           />
 
-          {/* Venue Switcher Tabs */}
-          <div className="flex items-center gap-1.5 pb-1 border-b border-white/10 overflow-x-auto no-scrollbar">
-            {locations.map((loc, idx) => {
-              const isActive = idx === activeLocationIndex;
-              return (
-                <button
-                  key={loc.id}
-                  type="button"
-                  onClick={() => setActiveLocationIndex(idx)}
-                  className={`px-2.5 py-1 text-[10px] font-mono font-bold tracking-wider uppercase transition-all duration-200 cursor-pointer whitespace-nowrap rounded-[2px] ${isActive
-                      ? "bg-[#E05D29] text-black shadow-[0_2px_10px_rgba(224,93,41,0.35)]"
-                      : "text-neutral-400 hover:text-white bg-white/5 hover:bg-white/10 border border-white/5"
-                    }`}
-                >
-                  {loc.name}
-                </button>
-              );
-            })}
-          </div>
-
           {/* Title */}
-          <div className="flex items-baseline flex-wrap gap-x-2 gap-y-0.5 pt-1">
+          <div className="flex items-baseline flex-wrap gap-x-2 gap-y-0.5">
             <h2
               id="modal-location-title"
               className="text-xl sm:text-[22px] font-black uppercase tracking-tight text-white leading-tight"

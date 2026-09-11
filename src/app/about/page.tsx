@@ -278,17 +278,17 @@ export default function AboutPage() {
               ref={sec1TitleRef}
               className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-30 select-none px-2 text-center"
             >
-              {/* Line 1: ABOUT - High-End Wide Tracking Architectural Stroke */}
-              <span className="block text-4xl sm:text-7xl md:text-8xl lg:text-9xl xl:text-[9.2rem] font-black uppercase text-transparent [-webkit-text-stroke:1.5px_rgba(255,255,255,0.85)] sm:[-webkit-text-stroke:2px_rgba(255,255,255,0.95)] tracking-[0.14em] sm:tracking-[0.18em] leading-[0.85] drop-shadow-[0_20px_45px_rgba(0,0,0,0.95)]">
+              {/* Line 1: ABOUT - Reduced font size by 1 step, solid white, tight tracking */}
+              <span className="block text-3xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-[8.2rem] font-black uppercase text-white tracking-tight leading-[0.85] drop-shadow-[0_20px_45px_rgba(0,0,0,0.95)]">
                 ABOUT
               </span>
 
-              {/* Line 2: AFTERWORK - Solid Bold White + Signature Italic Serif Orange */}
+              {/* Line 2: AFTERWORK - Solid Bold White, no space between */}
               <span className="flex items-baseline justify-center -mt-2 sm:-mt-4 lg:-mt-6 drop-shadow-[0_25px_50px_rgba(0,0,0,0.98)]">
                 <span className="text-3xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-[8.5rem] font-black uppercase text-white tracking-tight leading-[0.85]">
                   AFTER
                 </span>
-                <span className="text-3xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-[8.5rem] font-serif italic font-light text-[#E05D29] tracking-tight leading-[0.85] ml-2 sm:ml-3 drop-shadow-[0_0_35px_rgba(224,93,41,0.35)]">
+                <span className="text-3xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-[8.5rem] font-black uppercase text-white tracking-tight leading-[0.85]">
                   WORK
                 </span>
               </span>
@@ -323,22 +323,22 @@ export default function AboutPage() {
             >
               <div className="space-y-6">
 
-                {/* Abstract Deconstructed Headline */}
+                {/* Abstract Deconstructed Headline - Uniform font style matching LOREM, all white */}
                 <div className="space-y-2">
                   <div className="abstract-text-item flex items-baseline gap-3">
                     <span className="text-3xl sm:text-5xl lg:text-6xl font-black uppercase tracking-tight text-white">
                       LOREM
                     </span>
-                    <span className="text-2xl sm:text-4xl lg:text-5xl font-light italic uppercase text-[#E05D29] -rotate-2 pl-2">
+                    <span className="text-3xl sm:text-5xl lg:text-6xl font-black uppercase tracking-tight text-white">
                       IPSUM
                     </span>
                   </div>
 
                   <div className="abstract-text-item flex items-baseline gap-3 pl-4 sm:pl-8 border-l-2 border-[#E05D29]/60">
-                    <span className="text-4xl sm:text-6xl lg:text-7xl font-black uppercase tracking-tighter text-transparent [-webkit-text-stroke:1.5px_rgba(255,255,255,0.9)]">
+                    <span className="text-3xl sm:text-5xl lg:text-6xl font-black uppercase tracking-tight text-white">
                       DOLOR
                     </span>
-                    <span className="text-xl sm:text-3xl lg:text-4xl font-light uppercase tracking-widest text-[#E05D29]">
+                    <span className="text-3xl sm:text-5xl lg:text-6xl font-black uppercase tracking-tight text-white">
                       SIT AMET
                     </span>
                   </div>
@@ -477,10 +477,10 @@ export default function AboutPage() {
               ref={sec3TextRef}
               className="md:col-span-5 space-y-6"
             >
-              <h3 className="text-3xl sm:text-4xl lg:text-5xl font-black uppercase tracking-tight text-[#F5F5F5] leading-[1.08]">
+              <h3 className="text-3xl sm:text-4xl lg:text-5xl font-black uppercase tracking-tight text-white leading-[1.08]">
                 CONSECTETUR
                 <br />
-                <span className="text-[#E05D29]">ADIPISCING ELIT.</span>
+                ADIPISCING ELIT<span className="text-[#E05D29]">.</span>
               </h3>
 
               <p className="text-sm sm:text-base text-[#F5F5F5]/70 leading-relaxed max-w-lg">
