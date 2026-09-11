@@ -9,7 +9,8 @@ interface UIContextType {
   closeMenu: () => void;
 
   isLocationModalOpen: boolean;
-  openLocationModal: () => void;
+  selectedLocationIndex: number;
+  openLocationModal: (initialIndex?: number) => void;
   closeLocationModal: () => void;
 
   isDetailModalOpen: boolean;
@@ -29,6 +30,7 @@ const UIContext = createContext<UIContextType | undefined>(undefined);
 export function UIProvider({ children }: { children: React.ReactNode }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
+  const [selectedLocationIndex, setSelectedLocationIndex] = useState(0);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [hasSeenSplash, setHasSeenSplash] = useState(false); // Default false so hero waits for splash
   const [currentSectionTheme, setCurrentSectionTheme] = useState<"dark" | "light">("dark");
@@ -70,7 +72,12 @@ export function UIProvider({ children }: { children: React.ReactNode }) {
   const openMenu = () => setIsMenuOpen(true);
   const closeMenu = () => setIsMenuOpen(false);
 
-  const openLocationModal = () => setIsLocationModalOpen(true);
+  const openLocationModal = (initialIndex?: number) => {
+    if (typeof initialIndex === "number") {
+      setSelectedLocationIndex(initialIndex);
+    }
+    setIsLocationModalOpen(true);
+  };
   const closeLocationModal = () => setIsLocationModalOpen(false);
 
   const openDetailModal = () => setIsDetailModalOpen(true);
@@ -100,6 +107,7 @@ export function UIProvider({ children }: { children: React.ReactNode }) {
         openMenu,
         closeMenu,
         isLocationModalOpen,
+        selectedLocationIndex,
         openLocationModal,
         closeLocationModal,
         isDetailModalOpen,

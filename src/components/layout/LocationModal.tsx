@@ -1,69 +1,92 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useUI } from "@/context/UIContext";
 import { siteLinks } from "@/config/links";
 import gsap from "gsap";
-import CircularWatermark from "@/components/menus/CircularWatermark";
 
 export default function LocationModal() {
-  const { isLocationModalOpen, closeLocationModal } = useUI();
+  const { isLocationModalOpen, closeLocationModal, selectedLocationIndex } = useUI();
+  const [activeLocationIndex, setActiveLocationIndex] = useState(0);
   const backdropRef = useRef<HTMLDivElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
 
+  const locations = siteLinks.locations;
+  const currentLoc = locations[activeLocationIndex] || locations[0];
+
+  // Sync selected location index when modal opens
+  useEffect(() => {
+    if (isLocationModalOpen && typeof selectedLocationIndex === "number") {
+      setActiveLocationIndex(selectedLocationIndex);
+    }
+  }, [isLocationModalOpen, selectedLocationIndex]);
+
+  // Close handler with smooth exit animation
+  const handleClose = useCallback(() => {
+    if (!modalRef.current || !backdropRef.current) {
+      closeLocationModal();
+      return;
+    }
+
+    const tl = gsap.timeline({
+      onComplete: closeLocationModal,
+    });
+
+    tl.to(modalRef.current, {
+      opacity: 0,
+      scale: 0.94,
+      y: 14,
+      duration: 0.2,
+      ease: "power2.in",
+    }).to(
+      backdropRef.current,
+      {
+        opacity: 0,
+        duration: 0.16,
+        ease: "power2.in",
+      },
+      "-=0.08"
+    );
+  }, [closeLocationModal]);
+
+  // Entrance animation matching MenuDetailModal
   useEffect(() => {
     if (!isLocationModalOpen) return;
 
-    // Entrance animation
+    const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+
     if (backdropRef.current) {
-      gsap.fromTo(
+      tl.fromTo(
         backdropRef.current,
         { opacity: 0 },
-        { opacity: 1, duration: 0.25, ease: "power2.out" }
+        { opacity: 1, duration: 0.2 }
       );
     }
 
-    if (contentRef.current) {
-      gsap.fromTo(
-        contentRef.current,
-        { opacity: 0, y: 25, scale: 0.94 },
-        { opacity: 1, y: 0, scale: 1, duration: 0.38, ease: "power3.out", delay: 0.05 }
+    if (modalRef.current) {
+      tl.fromTo(
+        modalRef.current,
+        { opacity: 0, scale: 0.95, y: 16 },
+        { opacity: 1, scale: 1, y: 0, duration: 0.3 },
+        "-=0.1"
       );
     }
   }, [isLocationModalOpen]);
-
-  const handleClose = () => {
-    if (contentRef.current && backdropRef.current) {
-      const tl = gsap.timeline({ onComplete: closeLocationModal });
-      tl.to(contentRef.current, {
-        opacity: 0,
-        y: 16,
-        scale: 0.95,
-        duration: 0.2,
-        ease: "power2.in",
-      }).to(
-        backdropRef.current,
-        {
-          opacity: 0,
-          duration: 0.15,
-          ease: "power2.in",
-        },
-        "-=0.08"
-      );
-    } else {
-      closeLocationModal();
-    }
-  };
 
   // ESC key listener
   useEffect(() => {
     if (!isLocationModalOpen) return;
+
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") handleClose();
+      if (e.key === "Escape") {
+        e.preventDefault();
+        handleClose();
+      }
     };
+
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isLocationModalOpen]);
+  }, [isLocationModalOpen, handleClose]);
 
   if (!isLocationModalOpen) return null;
 
@@ -74,95 +97,146 @@ export default function LocationModal() {
       aria-modal="true"
       aria-labelledby="modal-location-title"
       data-lenis-prevent
-      className="fixed inset-0 z-[75] flex items-center justify-center p-4 sm:p-6 md:p-10 select-none cursor-pointer"
-      style={{ backgroundColor: "rgba(0,0,0,0.82)", backdropFilter: "blur(8px)" }}
+      className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-6 select-none cursor-pointer"
+      style={{
+        backgroundColor: "rgba(0, 0, 0, 0.85)",
+        backdropFilter: "blur(14px)",
+        WebkitBackdropFilter: "blur(14px)",
+      }}
       onClick={handleClose}
     >
       {/* 
-        Simple, Minimal & Elegant Location Modal:
-        - Sharp corners (rounded-none)
-        - Clean layout: Info sebelah kiri, Live Map sebelah kanan
-        - Tanpa teks bertele-tele (hanya info esensial yang elegan)
-        - Watermark halus di latar belakang
+        Location Modal:
+        - Design matches MenuDetailModal portrait card: max-w-[440px] h-[660px]
+        - Fully interactive Google Maps embed with tabs for all 3 venues
+        - Minimal X close button
+        - Clean bottom info sheet with direct Google Maps trigger
       */}
       <div
-        ref={contentRef}
+        ref={modalRef}
         onClick={(e) => e.stopPropagation()}
         data-lenis-prevent
-        className="w-full max-w-3xl max-h-[88dvh] bg-[#0A0A0A] border border-white/15 text-[#F5F5F5] flex flex-col md:flex-row shadow-[0_25px_70px_rgba(0,0,0,0.95)] relative overflow-hidden select-text cursor-default rounded-none"
+        className="relative z-[210] w-full max-w-[400px] sm:max-w-[440px] h-[620px] max-h-[92dvh] sm:max-h-[95dvh] sm:h-[660px] bg-[#0D0D0D] rounded-[6px] overflow-hidden shadow-[0_30px_90px_rgba(0,0,0,0.95)] flex flex-col cursor-default select-text border border-white/10"
       >
-        {/* Ambient Subtle Watermark in background */}
-        <div
-          aria-hidden="true"
-          className="absolute -bottom-16 -right-16 pointer-events-none z-0 opacity-10 select-none"
-        >
-          <CircularWatermark size={260} scrollDriven={false} />
+        {/* Layer 1: Fully Interactive Live Google Maps Embed (Zoomable & Draggable) */}
+        <div className="relative w-full h-[52%] sm:h-[54%] bg-[#111] overflow-hidden z-10 shrink-0">
+          <iframe
+            key={currentLoc.id}
+            title={`${currentLoc.fullName} Interactive Map`}
+            src={`https://maps.google.com/maps?q=${encodeURIComponent(currentLoc.embedQuery)}&t=&z=16&ie=UTF8&iwloc=&output=embed`}
+            className="w-full h-full border-0 contrast-105 pointer-events-auto"
+            loading="lazy"
+            allowFullScreen
+          />
         </div>
 
-        {/* Close Button */}
+        {/* Minimal X Close Button */}
         <button
           type="button"
           onClick={handleClose}
           aria-label="Tutup peta lokasi"
-          className="absolute top-3.5 right-3.5 z-20 w-9 h-9 flex items-center justify-center bg-black/60 backdrop-blur-md border border-white/20 text-white/80 hover:text-[#E05D29] hover:border-[#E05D29] transition-colors rounded-none cursor-pointer"
+          className="absolute top-3.5 right-3.5 z-50 p-2 text-white/70 hover:text-white bg-black/60 backdrop-blur-md rounded-full active:scale-90 transition-all duration-200 cursor-pointer focus:outline-none drop-shadow-[0_2px_8px_rgba(0,0,0,0.85)] border border-white/15"
         >
-          <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
-            <path d="M2 2L14 14M14 2L2 14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+            <path
+              d="M2.5 2.5L13.5 13.5M13.5 2.5L2.5 13.5"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+            />
           </svg>
         </button>
 
-        {/* Sisi Kiri: Info Esensial Bersih */}
-        <div className="w-full md:w-[45%] p-6 sm:p-8 flex flex-col justify-between relative z-10 border-b md:border-b-0 md:border-r border-white/10">
-          <div className="space-y-4">
-            <div className="text-[11px] font-mono tracking-[0.25em] text-[#E05D29] uppercase font-bold">
-              VENUE LOCATION
-            </div>
+        {/* Layer 2: Clean Bottom Info Sheet matching Menus design */}
+        <div className="w-full flex-1 bg-[#0E0E0E] px-6 sm:px-7 py-3.5 sm:py-4 flex flex-col justify-between relative z-20 border-t border-white/10 shadow-2xl">
+          {/* Subtle gradient separator */}
+          <div
+            aria-hidden="true"
+            className="absolute -top-5 left-0 right-0 h-5 pointer-events-none z-30"
+            style={{
+              background: "linear-gradient(to top, rgba(14, 14, 14, 0.95) 0%, rgba(14, 14, 14, 0) 100%)",
+            }}
+          />
 
+          {/* Venue Switcher Tabs */}
+          <div className="flex items-center gap-1.5 pb-1 border-b border-white/10 overflow-x-auto no-scrollbar">
+            {locations.map((loc, idx) => {
+              const isActive = idx === activeLocationIndex;
+              return (
+                <button
+                  key={loc.id}
+                  type="button"
+                  onClick={() => setActiveLocationIndex(idx)}
+                  className={`px-2.5 py-1 text-[10px] font-mono font-bold tracking-wider uppercase transition-all duration-200 cursor-pointer whitespace-nowrap rounded-[2px] ${isActive
+                      ? "bg-[#E05D29] text-black shadow-[0_2px_10px_rgba(224,93,41,0.35)]"
+                      : "text-neutral-400 hover:text-white bg-white/5 hover:bg-white/10 border border-white/5"
+                    }`}
+                >
+                  {loc.name}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Title */}
+          <div className="flex items-baseline flex-wrap gap-x-2 gap-y-0.5 pt-1">
             <h2
               id="modal-location-title"
-              className="text-2xl sm:text-3xl font-black tracking-tight uppercase leading-none text-white"
+              className="text-xl sm:text-[22px] font-black uppercase tracking-tight text-white leading-tight"
             >
-              AFTERWORK<br />
-              <span className="text-[#E05D29]">CAFFEINE</span>
+              AFTERWORK{" "}
+              <span className="inline-block text-sm sm:text-base font-mono font-bold text-[#E05D29] tracking-wider align-baseline ml-1 drop-shadow-[0_0_10px_rgba(224,93,41,0.35)]">
+                {currentLoc.city}
+              </span>
             </h2>
+            <span className="text-[11px] text-neutral-400 font-mono tracking-wide">
+              — {currentLoc.spot}
+            </span>
+          </div>
 
-            <div className="w-8 h-0.5 bg-[#E05D29]" />
+          {/* Specifications: Operating Hours & Spot */}
+          <div className="grid grid-cols-2 divide-x divide-white/10 border-y border-white/10 py-2 my-0.5">
+            <div className="flex flex-col gap-0.5 pr-2.5">
+              <span className="text-[9px] font-mono uppercase tracking-wider text-[#E05D29] font-bold">
+                OPERATING HOURS
+              </span>
+              <span className="text-xs text-neutral-200 font-medium leading-snug">
+                {currentLoc.hours}
+              </span>
+            </div>
 
-            <div className="space-y-3 pt-1 text-xs text-neutral-300">
-              <div>
-                <span className="block text-[10px] font-mono uppercase text-neutral-500 tracking-wider">Address</span>
-                <p className="mt-0.5 leading-relaxed font-medium">{siteLinks.location.address}</p>
-              </div>
-
-              <div>
-                <span className="block text-[10px] font-mono uppercase text-neutral-500 tracking-wider">Hours</span>
-                <p className="mt-0.5 font-bold text-white">09:00 — 02:00 Everyday</p>
-              </div>
+            <div className="flex flex-col gap-0.5 pl-2.5">
+              <span className="text-[9px] font-mono uppercase tracking-wider text-neutral-400 font-bold">
+                VENUE SPOT
+              </span>
+              <span className="text-xs text-neutral-200 font-medium leading-snug truncate">
+                {currentLoc.spot}
+              </span>
             </div>
           </div>
 
-          <div className="pt-6">
+          {/* Address Details */}
+          <div className="flex flex-col gap-0.5">
+            <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-neutral-400 font-bold">
+              Location Address
+            </span>
+            <p className="text-xs text-neutral-300 leading-relaxed font-normal line-clamp-2">
+              {currentLoc.address}
+            </p>
+          </div>
+
+          {/* Direct External Maps Trigger */}
+          <div className="pt-1.5">
             <a
-              href={siteLinks.location.googleMapsUrl}
+              href={currentLoc.googleMapsUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full inline-flex items-center justify-between px-5 py-3 bg-[#E05D29] text-black text-xs font-black tracking-[0.18em] uppercase hover:bg-white transition-colors cursor-pointer"
+              className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-[#E05D29] text-black text-xs font-black tracking-[0.18em] uppercase hover:bg-white transition-colors cursor-pointer rounded-none font-mono shadow-md"
             >
-              <span>GOOGLE MAPS</span>
+              <span>OPEN IN GOOGLE MAPS</span>
               <span className="text-sm">↗</span>
             </a>
           </div>
-        </div>
-
-        {/* Sisi Kanan: Peta Interaktif */}
-        <div className="w-full md:w-[55%] min-h-[260px] md:min-h-[360px] relative bg-[#111111] z-10">
-          <iframe
-            title="Afterwork Caffeine Location"
-            src={siteLinks.location.embedIframe}
-            className="w-full h-full border-0 grayscale contrast-125 opacity-90 hover:opacity-100 transition-opacity"
-            loading="lazy"
-            allowFullScreen
-          />
         </div>
       </div>
     </div>

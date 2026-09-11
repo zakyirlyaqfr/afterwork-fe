@@ -8,7 +8,7 @@ export default function Footer() {
 
   return (
     <footer
-      className="relative w-full z-40 bg-black text-white border-t border-white/15 select-none overflow-hidden transition-opacity duration-200"
+      className="relative w-full z-40 bg-black text-white select-none overflow-hidden transition-opacity duration-200"
       style={{
         opacity: isMenuOpen ? 0 : 1,
         visibility: isMenuOpen ? "hidden" : "visible",
@@ -35,7 +35,7 @@ export default function Footer() {
         </div>
 
         {/* Bottom Tier: Pure Minimal Brand Line & Fine Print (No List Menu) */}
-        <div className="pt-8 border-t border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="pt-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="font-mono text-xs tracking-[0.25em] text-neutral-400 uppercase">
             DAMNGOOD COFFEE CULTURE
           </div>

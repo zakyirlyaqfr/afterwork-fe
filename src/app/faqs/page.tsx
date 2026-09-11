@@ -1,23 +1,17 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { faqItems } from "@/data/faq";
-import CircularWatermark from "@/components/menus/CircularWatermark";
 
 export default function FaqsPage() {
-  const [openId, setOpenId] = useState<string | null>(faqItems[0].id);
   const sectionRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
   const watermarkRef = useRef<HTMLDivElement>(null);
   const prefersReduced = useReducedMotion();
-
-  const toggleFaq = (id: string) => {
-    setOpenId(openId === id ? null : id);
-  };
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -70,139 +64,60 @@ export default function FaqsPage() {
   return (
     <main
       ref={sectionRef}
-      className="min-h-screen bg-black text-[#F5F5F5] pt-28 sm:pt-32 md:pt-32 px-4 sm:px-8 md:px-12 lg:px-16 selection:bg-[#E05D29] selection:text-black overflow-x-visible relative"
-      style={{ paddingBottom: "clamp(6rem, 12vw, 12rem)" }}
+      className="min-h-screen bg-black text-[#F5F5F5] pt-28 sm:pt-32 md:pt-32 px-4 sm:px-8 md:px-12 lg:px-16 selection:bg-[#E05D29] selection:text-black overflow-x-visible relative flex flex-col justify-between"
+      style={{ paddingBottom: "clamp(3rem, 6vw, 6rem)" }}
     >
-      {/* Background Typography Watermark */}
+      {/* Background Typography Watermark: Changed from FAQS to FREQUENT INQUIRIES */}
       <div
         ref={watermarkRef}
         aria-hidden="true"
-        className="punk-watermark top-[20%] -left-16 sm:-left-32 text-[clamp(6rem,18vw,20rem)] z-0 select-none pointer-events-none"
+        className="punk-watermark top-[16%] -left-8 sm:-left-16 text-[clamp(4.5rem,11vw,12rem)] z-0 select-none pointer-events-none opacity-50"
       >
-        FAQS
+        FREQUENT INQUIRIES
       </div>
 
-      {/* 
-        Stationary Fixed Palette Gray Watermarks:
-        - Positioned fixed in viewport, stays during scroll
-        - Multiple watermarks: Bottom-left and Top-right circular watermarks
-        - Color: Palette gray (#404040 / #383838)
-      */}
-      {/* 1. Fixed Bottom-Left Rotating Watermark */}
-      <div
-        aria-hidden="true"
-        className="fixed bottom-6 left-[-50px] md:left-[-80px] pointer-events-none z-10 select-none"
-      >
-        <CircularWatermark
-          size={370}
-          color="#404040"
-          opacity={0.35}
-          scrollDriven
-          speedFactor={0.25}
-          direction="clockwise"
-        />
-      </div>
+      {/* Main Content Container — Centered, single page height without excessive scroll */}
+      <div className="w-full max-w-[1440px] mx-auto relative z-10 flex-1 flex flex-col">
 
-      {/* 2. Fixed Top-Right Counter-Rotating Watermark */}
-      <div
-        aria-hidden="true"
-        className="fixed top-28 right-[-50px] md:right-[-80px] pointer-events-none z-10 select-none hidden sm:block"
-      >
-        <CircularWatermark
-          size={330}
-          color="#383838"
-          opacity={0.28}
-          scrollDriven
-          speedFactor={0.22}
-          direction="counterclockwise"
-        />
-      </div>
-
-      {/* Main Content Container — with pb-[25vh] for comfortable distance from footer */}
-      <div className="w-full max-w-[1440px] mx-auto relative z-10 pb-[25vh]">
-
-        {/* 1. Header Container for Title
-            - Menggunakan logic yang sama dengan fitur Menus:
-            - Sticky dan transparan (.menu-sticky-header)
-            - Pinned di z-[78] sehingga tidak menghilang saat di-scroll */}
-        <div className="menu-sticky-header mb-8 sm:mb-12">
+        {/* 1. Header Container for Title: Changed from FREQUENT INQUIRIES to FAQS. */}
+        <div className="menu-sticky-header mb-6 sm:mb-8">
           <div
             ref={titleRef}
             className="relative pointer-events-none"
-            style={{ marginBottom: "clamp(0.8rem, 1.4vw, 1.3rem)" }}
+            style={{ marginBottom: "clamp(0.4rem, 0.8vw, 0.8rem)" }}
           >
             <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black tracking-tighter uppercase leading-[0.88] text-[#F5F5F5]">
-              FREQUENT<br />
-              <span className="text-[#E05D29]">INQUIRIES.</span>
+              <span className="text-[#E05D29]">FAQS.</span>
             </h1>
           </div>
         </div>
 
-        {/* 2. Simple, Elegant & Minimalist Accordion List dengan jarak nyaman dari judul */}
+        {/* 2. All FAQ Items Open Directly, Centered, Clean 2-Column Grid to Fit 1 Page */}
         <div
           ref={listRef}
-          className="flex flex-col gap-3.5 sm:gap-4 max-w-4xl subpage-content-spacing"
+          className="w-full max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5 subpage-content-spacing !mt-4 !pt-0"
         >
-          {faqItems.map((item) => {
-            const isOpen = openId === item.id;
-
-            return (
-              <div
-                key={item.id}
-                className="faq-item relative rounded-none transition-colors duration-200"
-              >
-                <div
-                  className={`bg-[#0A0A0A] border transition-all duration-300 rounded-none ${
-                    isOpen
-                      ? "border-[#E05D29]/60 shadow-[0_4px_25px_rgba(224,93,41,0.12)]"
-                      : "border-[#222222] hover:border-[#383838]"
-                  }`}
-                >
-                  {/* Accordion Trigger Button */}
-                  <button
-                    type="button"
-                    onClick={() => toggleFaq(item.id)}
-                    aria-expanded={isOpen}
-                    className="w-full text-left p-5 sm:p-6 md:p-7 flex items-center justify-between gap-4 group focus:outline-none cursor-pointer"
-                  >
-                    <div className="flex items-center gap-3 sm:gap-4">
-                      <span className="text-xs font-mono font-bold text-[#E05D29]">
-                        {item.number}
-                      </span>
-                      <h2
-                        className={`text-sm sm:text-base md:text-lg font-black uppercase tracking-tight transition-colors duration-200 ${
-                          isOpen ? "text-white" : "text-neutral-300 group-hover:text-white"
-                        }`}
-                      >
-                        {item.question}
-                      </h2>
-                    </div>
-
-                    <div
-                      className={`shrink-0 w-7 h-7 flex items-center justify-center border transition-all duration-300 rounded-none ${
-                        isOpen
-                          ? "border-[#E05D29] text-[#E05D29] rotate-45"
-                          : "border-neutral-700 text-neutral-400 group-hover:border-neutral-400 group-hover:text-white"
-                      }`}
-                    >
-                      <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
-                        <path d="M8 2V14M2 8H14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                      </svg>
-                    </div>
-                  </button>
-
-                  {/* Expanded Answer Content */}
-                  {isOpen && (
-                    <div className="px-5 sm:px-6 md:px-7 pb-6 sm:pb-7 pt-1 border-t border-white/5">
-                      <p className="text-xs sm:text-sm text-neutral-300 leading-relaxed max-w-3xl">
-                        {item.answer}
-                      </p>
-                    </div>
-                  )}
-                </div>
+          {faqItems.map((item) => (
+            <div
+              key={item.id}
+              className="faq-item bg-[#0A0A0A] border border-[#222222] hover:border-[#383838] transition-colors p-5 sm:p-6 rounded-none flex flex-col justify-between gap-3 shadow-md"
+            >
+              <div className="flex items-start gap-3.5">
+                <span className="text-xs font-mono font-bold text-[#E05D29] shrink-0 mt-0.5">
+                  {item.number}
+                </span>
+                <h2 className="text-sm sm:text-base font-black uppercase tracking-tight text-white leading-snug">
+                  {item.question}
+                </h2>
               </div>
-            );
-          })}
+
+              <div className="pl-7 pt-1 border-t border-white/5">
+                <p className="text-xs sm:text-sm text-neutral-400 leading-relaxed">
+                  {item.answer}
+                </p>
+              </div>
+            </div>
+          ))}
         </div>
 
       </div>
