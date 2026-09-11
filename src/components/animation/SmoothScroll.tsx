@@ -9,8 +9,21 @@ import { useUI } from "@/context/UIContext";
 
 export default function SmoothScroll({ children }: { children: React.ReactNode }) {
   const prefersReduced = useReducedMotion();
-  const { isMenuOpen, isLocationModalOpen, isDetailModalOpen } = useUI();
+  const { isMenuOpen, isLocationModalOpen, isDetailModalOpen, hasSeenSplash } = useUI();
   const lenisRef = useRef<Lenis | null>(null);
+
+  // Re-synchronize Lenis dimensions and ScrollTrigger after splash fully dissolves
+  useEffect(() => {
+    if (!hasSeenSplash) return;
+    const timer = setTimeout(() => {
+      if (lenisRef.current) {
+        lenisRef.current.resize();
+      }
+      ScrollTrigger.refresh();
+    }, 1100);
+
+    return () => clearTimeout(timer);
+  }, [hasSeenSplash]);
 
   useEffect(() => {
     if (typeof window === "undefined" || prefersReduced) return;

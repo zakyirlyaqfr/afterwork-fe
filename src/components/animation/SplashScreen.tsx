@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { useUI } from "@/context/UIContext";
 import Image from "next/image";
 import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 export default function SplashScreen() {
   const { completeSplash } = useUI();
@@ -54,23 +55,30 @@ export default function SplashScreen() {
     if (phaseRef.current === "done") return;
     phaseRef.current = "done";
 
-    // 1. Immediately remove showing-splash class so homepage DOM is active underneath
+    // 1. Gently stop logo breathing so it doesn't fight the smooth container fade-out
+    if (logoRef.current) {
+      gsap.killTweensOf(logoRef.current);
+    }
+
+    // 2. Immediately remove showing-splash class so homepage DOM is active underneath
     if (typeof document !== "undefined") {
       document.documentElement.classList.remove("showing-splash");
     }
 
-    // 2. Immediately trigger completeSplash() so Hero.tsx entrance animation starts RIGHT NOW
+    // 3. Immediately trigger completeSplash() so Hero.tsx entrance animation starts
     completeSplash();
 
-    // 3. Simultaneously dissolve the splash overlay over 0.95s so the hero reveals smoothly underneath
+    // 4. Silky smooth dissolve of the splash overlay over 1.0s so the hero reveals gently underneath
     if (containerRef.current) {
       containerRef.current.style.pointerEvents = "none";
       gsap.to(containerRef.current, {
         opacity: 0,
-        duration: 0.95,
+        duration: 1.0,
         ease: "power2.inOut",
         onComplete: () => {
           setIsVisible(false);
+          // Only refresh scroll triggers once the overlay has completely vanished
+          ScrollTrigger.refresh();
         },
       });
     } else {
@@ -100,6 +108,9 @@ export default function SplashScreen() {
               try {
                 videoRef.current.pause();
               } catch {}
+            }
+            if (videoWrapperRef.current) {
+              videoWrapperRef.current.style.display = "none";
             }
           },
         },
@@ -296,13 +307,12 @@ export default function SplashScreen() {
       <div
         ref={loaderWrapperRef}
         className="absolute inset-0 z-20 flex items-center justify-center bg-black pointer-events-none opacity-0"
-        style={{ backgroundColor: "#000000", opacity: 0 }}
+        style={{ backgroundColor: "#000000" }}
       >
         {/* Enlarged Logo with calm breathing */}
         <div
           ref={logoRef}
           className="relative flex items-center justify-center origin-center opacity-0"
-          style={{ opacity: 0 }}
         >
           {/* Soft warm aura */}
           <div

@@ -119,17 +119,29 @@ html.showing-splash #custom-cursor {
   padding-top: 24px;
 }
 
-/* Sticky header for Menus, Gallery, Contact, FAQs with frosted blur on scroll boundary */
+/* Sticky header for Menus, Gallery, Contact, FAQs with edge-to-edge frosted blur breakout */
 .menu-sticky-header {
   position: sticky;
   top: 0;
   z-index: 78;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.98) 0%, rgba(0, 0, 0, 0.9) 60%, rgba(0, 0, 0, 0.4) 85%, rgba(0, 0, 0, 0) 100%);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
   padding-top: 52px;
   padding-bottom: 36px;
   margin-top: -52px;
+  pointer-events: none;
+}
+
+.menu-sticky-header::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 100vw;
+  transform: translateX(-50%);
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.98) 0%, rgba(0, 0, 0, 0.9) 60%, rgba(0, 0, 0, 0.4) 85%, rgba(0, 0, 0, 0) 100%);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  z-index: -1;
   pointer-events: none;
 }
 
@@ -149,6 +161,10 @@ html.showing-splash #custom-cursor {
     padding-top: 40px;
     padding-bottom: 40px;
     margin-top: -40px;
+  }
+
+  .menu-sticky-header::before {
+    transform: translateX(calc(-50% - 0.5 * var(--sidebar-width)));
   }
 
   .menu-card-left-shift {
@@ -788,4 +804,22 @@ html.lenis body {
 
 .page-loader-bar {
   animation: pageLoaderBar 0.8s ease-in-out infinite alternate;
+}
+/* Smooth page title blur-reveal � CSS-native GPU interpolation, no garis/streak */
+@keyframes pageTitleReveal {
+  0%   { opacity: 0; filter: blur(14px); }
+  100% { opacity: 1; filter: blur(0px);  }
+}
+
+.page-title-reveal {
+  animation: pageTitleReveal 1.1s cubic-bezier(0.16, 1, 0.3, 1) both;
+  will-change: filter, opacity;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-title-reveal {
+    animation: none;
+    opacity: 1;
+    filter: none;
+  }
 }

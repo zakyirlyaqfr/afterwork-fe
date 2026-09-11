@@ -107,6 +107,9 @@ export default function RootLayout({
         <style
           dangerouslySetInnerHTML={{
             __html: `
+              html.showing-splash body {
+                overflow: hidden !important;
+              }
               html.showing-splash .page-chrome-wrapper,
               html.showing-splash footer,
               html.showing-splash .main-content-layout,
@@ -114,9 +117,9 @@ export default function RootLayout({
               html.showing-splash .sidebar-dock,
               html.showing-splash .site-chrome,
               html.showing-splash #custom-cursor {
-                display: none !important;
                 visibility: hidden !important;
                 opacity: 0 !important;
+                pointer-events: none !important;
               }
               html:not(.showing-splash) #afterwork-splash-screen {
                 display: none !important;
@@ -151,7 +154,7 @@ export default function RootLayout({
 
           {/* Smooth Lenis + GSAP Scroll container */}
           <SmoothScroll>
-            <div className="page-chrome-wrapper flex-1 flex flex-col relative min-h-screen bg-black">
+            <div className="page-chrome-wrapper flex-1 flex flex-col relative min-h-screen bg-black overflow-x-clip">
               <div className="main-content-layout flex-1 flex flex-col relative bg-black">
                 {children}
               </div>

@@ -7,6 +7,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { useUI } from "@/context/UIContext";
 
 const galleryItems = [
   {
@@ -48,6 +49,7 @@ export default function CraftCollage() {
   const watermarkRef = useRef<HTMLDivElement>(null);
   const prefersReduced = useReducedMotion();
   const isMobile = useMediaQuery("(max-width: 639px)");
+  const { hasSeenSplash } = useUI();
 
   const total = galleryItems.length;
 
@@ -84,95 +86,114 @@ export default function CraftCollage() {
 
   useEffect(() => {
     if (prefersReduced) return;
+
+    if (!hasSeenSplash) {
+      // Pre-set elements to hidden starting state so they do not flash when splash dissolves
+      if (watermarkRef.current) {
+        gsap.set(watermarkRef.current, { opacity: 0, y: 40 });
+      }
+      if (carouselTrackRef.current) {
+        gsap.set(carouselTrackRef.current, { opacity: 0, y: 45, filter: "blur(4px)" });
+      }
+      if (buttonRef.current) {
+        gsap.set(buttonRef.current, { opacity: 0, y: 18 });
+      }
+      return;
+    }
+
     gsap.registerPlugin(ScrollTrigger);
 
     const section = sectionRef.current;
     if (!section) return;
 
-    // 1. Watermark reveals visibly as section arrives, spanning across sidebar
-    if (watermarkRef.current) {
-      gsap.fromTo(
-        watermarkRef.current,
-        { opacity: 0, y: 40 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 1.6,
-          ease: "power2.out",
+    const ctx = gsap.context(() => {
+      // 1. Watermark reveals visibly as section arrives, spanning across sidebar
+      if (watermarkRef.current) {
+        gsap.fromTo(
+          watermarkRef.current,
+          { opacity: 0, y: 40 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 1.6,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: section,
+              start: "top 85%",
+              toggleActions: "play none none reverse",
+            },
+          }
+        );
+
+        // Delicate parallax float on scroll
+        gsap.to(watermarkRef.current, {
+          y: -70,
+          ease: "none",
           scrollTrigger: {
             trigger: section,
-            start: "top 85%",
-            toggleActions: "play none none reverse",
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 1.6,
           },
-        }
-      );
+        });
+      }
 
-      // Delicate parallax float on scroll
-      gsap.to(watermarkRef.current, {
-        y: -70,
-        ease: "none",
-        scrollTrigger: {
-          trigger: section,
-          start: "top bottom",
-          end: "bottom top",
-          scrub: 1.6,
-        },
-      });
-    }
+      // 2. Carousel Track Cards emerge gracefully with buttery motion
+      if (carouselTrackRef.current) {
+        gsap.fromTo(
+          carouselTrackRef.current,
+          { opacity: 0, y: 45, filter: "blur(4px)" },
+          {
+            opacity: 1,
+            y: 0,
+            filter: "blur(0px)",
+            duration: 1.4,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: carouselTrackRef.current,
+              start: "top 82%",
+              toggleActions: "play none none reverse",
+            },
+          }
+        );
+      }
 
-    // 2. Carousel Track Cards emerge gracefully with buttery motion
-    if (carouselTrackRef.current) {
-      gsap.fromTo(
-        carouselTrackRef.current,
-        { opacity: 0, y: 45, filter: "blur(4px)" },
-        {
-          opacity: 1,
-          y: 0,
-          filter: "blur(0px)",
-          duration: 1.4,
-          ease: "power3.out",
+      // 3. EXPLORE button emerges smoothly following the cards
+      if (buttonRef.current) {
+        gsap.fromTo(
+          buttonRef.current,
+          { opacity: 0, y: 18 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 1.2,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: buttonRef.current,
+              start: "top 92%",
+              toggleActions: "play none none reverse",
+            },
+          }
+        );
+      }
+
+      // Continuous bi-directional vertical floating scroll scrub (buttery smooth sync for cards and button)
+      if (collageClusterRef.current) {
+        gsap.to(collageClusterRef.current, {
+          y: 32,
+          ease: "none",
           scrollTrigger: {
-            trigger: carouselTrackRef.current,
-            start: "top 82%",
-            toggleActions: "play none none reverse",
+            trigger: section,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 2.0,
           },
-        }
-      );
-    }
+        });
+      }
+    }, sectionRef);
 
-    // 3. EXPLORE button emerges smoothly following the cards
-    if (buttonRef.current) {
-      gsap.fromTo(
-        buttonRef.current,
-        { opacity: 0, y: 18 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 1.2,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: buttonRef.current,
-            start: "top 92%",
-            toggleActions: "play none none reverse",
-          },
-        }
-      );
-    }
-
-    // Continuous bi-directional vertical floating scroll scrub (buttery smooth sync for cards and button)
-    if (collageClusterRef.current) {
-      gsap.to(collageClusterRef.current, {
-        y: 32,
-        ease: "none",
-        scrollTrigger: {
-          trigger: section,
-          start: "top bottom",
-          end: "bottom top",
-          scrub: 2.0,
-        },
-      });
-    }
-  }, [prefersReduced]);
+    return () => ctx.revert();
+  }, [prefersReduced, hasSeenSplash]);
 
   return (
     <section
