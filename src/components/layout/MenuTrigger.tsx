@@ -13,6 +13,7 @@ export default function MenuTrigger() {
         Desktop Sidebar Dock Controls (Layer Paling Atas - z-[80]):
         Sidebar dock transparent saat tertutup, dan melayang di atas NavigationOverlay saat terbuka.
         Logo dan Button Menu tetap berada di layer z-[80].
+        Sifat button di sidebar sama kayak menus dan filter: tetap tampil di layer latar saat pop-up dibuka.
       */}
       <aside
         className="hidden md:block fixed left-0 top-0 bottom-0 sidebar-dock site-chrome z-[80] pointer-events-none select-none"
@@ -119,10 +120,10 @@ export default function MenuTrigger() {
       </aside>
 
       {/* Mobile Logo (< md, fixed top-left) */}
-      <div className="md:hidden fixed left-5 sm:left-6 top-6 sm:top-8 z-[80] select-none site-chrome">
+      <div className="md:hidden fixed left-4 sm:left-6 top-4 sm:top-5 z-[80] select-none site-chrome">
         <Link
           href="/"
-          className="group block relative w-10 h-10 focus:outline-none"
+          className="group block relative w-9 h-9 sm:w-10 sm:h-10 focus:outline-none"
           aria-label="Afterwork Caffeine Homepage"
         >
           <Image
@@ -142,18 +143,18 @@ export default function MenuTrigger() {
         onClick={toggleMenu}
         aria-expanded={isMenuOpen}
         aria-label={isMenuOpen ? "Close navigation menu" : "Open navigation menu"}
-        className={`md:hidden fixed top-5 sm:top-6 right-5 sm:right-6 z-[80] site-chrome flex items-center gap-2.5 px-3.5 py-2 focus:outline-none group cursor-pointer transition-all duration-300 ${
+        className={`md:hidden fixed top-4 sm:top-5 right-4 sm:right-6 z-[80] site-chrome flex items-center gap-2 sm:gap-2.5 px-3 py-1.5 sm:px-3.5 sm:py-2 focus:outline-none group cursor-pointer transition-all duration-300 ${
           isMenuOpen
             ? "bg-black/95 text-[#E05D29] border border-[#E05D29] shadow-[0_0_15px_rgba(224,93,41,0.4)]"
             : "bg-black/80 backdrop-blur-md text-white border border-[#333333] hover:border-[#E05D29]"
         }`}
       >
-        <svg viewBox="0 0 32 32" fill="none" className="w-5 h-5">
+        <svg viewBox="0 0 32 32" fill="none" className="w-4 h-4 sm:w-5 sm:h-5">
           <circle cx="16" cy="16" r="14" stroke={isMenuOpen ? "#E05D29" : "white"} strokeWidth="1.8" />
           <circle cx="16" cy="16" r="10" stroke="#E05D29" strokeWidth="2" />
         </svg>
         <span
-          className={`text-xs font-sans font-bold tracking-widest uppercase ${
+          className={`text-[11px] sm:text-xs font-sans font-bold tracking-widest uppercase ${
             isMenuOpen ? "text-[#E05D29]" : "text-white/90 group-hover:text-[#E05D29]"
           }`}
         >

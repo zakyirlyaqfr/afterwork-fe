@@ -129,7 +129,7 @@ export default function EditorialStory() {
           <div className="flex flex-col lg:flex-row items-start justify-between gap-16 lg:gap-12 relative">
 
             {/* Left Column: Primary Card tilted left, positioned to overlap towards sidebar */}
-            <div className="w-full lg:w-5/12 flex flex-col items-start relative md:-ml-12 lg:-ml-20 xl:-ml-28 z-40">
+            <div className="w-full lg:w-5/12 flex flex-col items-center lg:items-start relative md:-ml-12 lg:-ml-20 xl:-ml-28 z-40">
 
               {/* Primary Card 01: Authentic Afterwork Caffeine Table Setting - Maju ke layer depan (z-40) diatas sidebar */}
               <div
@@ -156,7 +156,7 @@ export default function EditorialStory() {
                 className="relative z-20 w-full max-w-xl space-y-6 sm:space-y-8 py-2 sm:py-6 will-change-transform"
               >
                 {/* Staggered Rhythm Statement */}
-                <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black uppercase tracking-[-0.03em] leading-[1.04] text-white">
+                <h2 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black uppercase tracking-[-0.03em] leading-[1.04] text-white">
                   <span className="block">Afterwork is an</span>
                   <span className="block text-neutral-300">institution</span>
                   <span className="block italic font-light text-neutral-400 pl-4 sm:pl-8 border-l border-[#E05D29]/50 my-1">

@@ -279,16 +279,16 @@ export default function AboutPage() {
               className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-30 select-none px-2 text-center"
             >
               {/* Line 1: ABOUT - High-End Wide Tracking Architectural Stroke */}
-              <span className="block text-5xl sm:text-7xl md:text-8xl lg:text-9xl xl:text-[9.2rem] font-black uppercase text-transparent [-webkit-text-stroke:1.5px_rgba(255,255,255,0.85)] sm:[-webkit-text-stroke:2px_rgba(255,255,255,0.95)] tracking-[0.14em] sm:tracking-[0.18em] leading-[0.85] drop-shadow-[0_20px_45px_rgba(0,0,0,0.95)]">
+              <span className="block text-4xl sm:text-7xl md:text-8xl lg:text-9xl xl:text-[9.2rem] font-black uppercase text-transparent [-webkit-text-stroke:1.5px_rgba(255,255,255,0.85)] sm:[-webkit-text-stroke:2px_rgba(255,255,255,0.95)] tracking-[0.14em] sm:tracking-[0.18em] leading-[0.85] drop-shadow-[0_20px_45px_rgba(0,0,0,0.95)]">
                 ABOUT
               </span>
 
               {/* Line 2: AFTERWORK - Solid Bold White + Signature Italic Serif Orange */}
               <span className="flex items-baseline justify-center -mt-2 sm:-mt-4 lg:-mt-6 drop-shadow-[0_25px_50px_rgba(0,0,0,0.98)]">
-                <span className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-[8.5rem] font-black uppercase text-white tracking-tight leading-[0.85]">
+                <span className="text-3xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-[8.5rem] font-black uppercase text-white tracking-tight leading-[0.85]">
                   AFTER
                 </span>
-                <span className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-[8.5rem] font-serif italic font-light text-[#E05D29] tracking-tight leading-[0.85] ml-2 sm:ml-3 drop-shadow-[0_0_35px_rgba(224,93,41,0.35)]">
+                <span className="text-3xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-[8.5rem] font-serif italic font-light text-[#E05D29] tracking-tight leading-[0.85] ml-2 sm:ml-3 drop-shadow-[0_0_35px_rgba(224,93,41,0.35)]">
                   WORK
                 </span>
               </span>
@@ -418,13 +418,13 @@ export default function AboutPage() {
           <div className="grid grid-cols-1 md:grid-cols-12 gap-12 lg:gap-16 items-center relative z-10">
 
             {/* Kolom Kiri: 2 Gambar Bertumpuk sesuai Sketsa (Image 1 Memanjang ke Kiri Menimpa Sidebar, Sedikit Gelap, Tanpa Blur) */}
-            <div className="md:col-span-7 relative flex justify-start items-center">
+            <div className="md:col-span-7 relative flex justify-center md:justify-start items-center">
               <div className="relative w-full max-w-[640px] sm:max-w-[700px] lg:max-w-[820px] xl:max-w-[900px] h-[380px] sm:h-[440px] md:h-[480px] lg:h-[540px] xl:h-[580px] md:-ml-16 lg:-ml-28 xl:-ml-36">
 
                 {/* Image 1: Top-Left Landscape Card (Memanjang ke Kiri Menimpa Sidebar, Sedikit Gelap, Tanpa Blur) */}
                 <div
                   ref={sec3Img1Ref}
-                  className="absolute top-0 -left-6 sm:-left-12 md:-left-24 lg:-left-36 xl:-left-44 w-[92%] sm:w-[88%] lg:w-[90%] aspect-[4/3] sm:aspect-[16/11] overflow-hidden bg-neutral-950 border border-neutral-700/60 shadow-[0_25px_60px_rgba(0,0,0,0.95)] z-20 will-change-transform group"
+                  className="absolute top-0 left-0 sm:-left-6 md:-left-24 lg:-left-36 xl:-left-44 w-[90%] sm:w-[88%] lg:w-[90%] aspect-[4/3] sm:aspect-[16/11] overflow-hidden bg-neutral-950 border border-neutral-700/60 shadow-[0_25px_60px_rgba(0,0,0,0.95)] z-20 will-change-transform group"
                 >
                   {/* Corner Brackets */}
                   <div className="absolute -inset-2.5 pointer-events-none z-20">
@@ -449,7 +449,7 @@ export default function AboutPage() {
                 {/* Image 2: Bottom-Right Overlapping Card (Jernih & Sharp di Depan, Tilted 7deg) */}
                 <div
                   ref={sec3Img2Ref}
-                  className="absolute right-0 sm:right-2 bottom-0 sm:bottom-2 lg:bottom-4 w-[60%] sm:w-[56%] lg:w-[58%] aspect-[4/3] overflow-hidden bg-neutral-950 border-2 border-neutral-700 shadow-[0_30px_70px_rgba(0,0,0,0.98)] rotate-[7deg] hover:rotate-[4deg] transition-all duration-500 z-30 will-change-transform group"
+                  className="absolute right-0 sm:right-2 bottom-0 sm:bottom-2 lg:bottom-4 w-[60%] sm:w-[56%] lg:w-[58%] aspect-[4/3] overflow-hidden bg-neutral-950 border-2 border-neutral-700 shadow-[0_30px_70px_rgba(0,0,0,0.98)] rotate-[5deg] md:rotate-[7deg] hover:rotate-[3deg] transition-all duration-500 z-30 will-change-transform group"
                 >
                   {/* Corner Brackets */}
                   <div className="absolute -inset-2.5 pointer-events-none z-20">

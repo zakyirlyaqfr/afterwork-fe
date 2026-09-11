@@ -15,12 +15,27 @@ export default function PageLoader() {
   const auraRef = useRef<HTMLDivElement>(null);
   const prevPathRef = useRef(pathname);
   const isFirstRender = useRef(true);
+  const isRefreshLoad = useRef(false);
 
-  // Trigger loader on route change (skip initial page load and when splash screen is active)
+  // Check on mount if this is a page refresh where splash screen was already seen
+  // Or trigger loader on subsequent route changes
   useEffect(() => {
     if (isFirstRender.current) {
       isFirstRender.current = false;
       prevPathRef.current = pathname;
+
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const forceSplash =
+          urlParams.get("splash") === "1" || urlParams.get("splash") === "true";
+        const seen = sessionStorage.getItem("afterwork_splash_seen");
+        if (seen && !forceSplash) {
+          isRefreshLoad.current = true;
+          setShowLoader(true);
+        }
+      } catch {
+        // Ignore
+      }
       return;
     }
 
@@ -28,6 +43,7 @@ export default function PageLoader() {
     if (prevPathRef.current === pathname) return;
     prevPathRef.current = pathname;
 
+    isRefreshLoad.current = false;
     setShowLoader(true);
   }, [pathname, hasSeenSplash]);
 
@@ -40,89 +56,119 @@ export default function PageLoader() {
     const aura = auraRef.current;
     if (!container || !logo) return;
 
+    const isRefresh = isRefreshLoad.current;
+
     // Reset initial states cleanly
-    gsap.set(container, { opacity: 0 });
-    gsap.set(logo, { opacity: 0, scale: 0.94 });
-    if (aura) gsap.set(aura, { opacity: 0.2, scale: 0.95 });
+    if (isRefresh) {
+      // On page refresh, container is already visible via CSS
+      gsap.set(container, { opacity: 1 });
+      gsap.set(logo, { opacity: 1, scale: 1 });
+      if (aura) gsap.set(aura, { opacity: 0.25, scale: 1 });
+    } else {
+      // On route change transition, smoothly darken from 0 to 1
+      gsap.set(container, { opacity: 0 });
+      gsap.set(logo, { opacity: 0, scale: 0.94 });
+      if (aura) gsap.set(aura, { opacity: 0.2, scale: 0.95 });
+    }
 
     const tl = gsap.timeline();
 
-    // 1. Velvet entrance: container smoothly darkens the screen
-    tl.to(
-      container,
-      {
-        opacity: 1,
-        duration: 0.45,
-        ease: "power2.out",
-      },
-      0
-    );
-
-    // 2. Logo gently emerges with subtle organic scale (no bouncy pop)
-    tl.to(
-      logo,
-      {
-        opacity: 1,
-        scale: 1,
-        duration: 0.5,
-        ease: "power2.out",
-        onComplete: () => {
-          // Calm, deep breathing pulse (matching splashscreen exactly)
-          gsap.to(logo, {
-            scale: 1.045,
-            duration: 1.25,
-            ease: "sine.inOut",
-            yoyo: true,
-            repeat: -1,
-          });
-
-          // Soft warm aura glows in harmony with breathing
-          if (aura) {
-            gsap.to(aura, {
-              scale: 1.12,
-              opacity: 0.35,
-              duration: 1.25,
-              ease: "sine.inOut",
-              yoyo: true,
-              repeat: -1,
-            });
-          }
+    if (!isRefresh) {
+      // 1. Velvet entrance: container smoothly darkens the screen
+      tl.to(
+        container,
+        {
+          opacity: 1,
+          duration: 0.45,
+          ease: "power2.out",
         },
-      },
-      0.05
-    );
+        0
+      );
+
+      // 2. Logo gently emerges with subtle organic scale (no bouncy pop)
+      tl.to(
+        logo,
+        {
+          opacity: 1,
+          scale: 1,
+          duration: 0.5,
+          ease: "power2.out",
+        },
+        0.05
+      );
+    }
+
+    // Breathing pulse animation (matching splashscreen exactly)
+    const breathingTween = gsap.to(logo, {
+      scale: 1.045,
+      duration: 1.25,
+      ease: "sine.inOut",
+      yoyo: true,
+      repeat: -1,
+    });
+
+    let auraTween: gsap.core.Tween | null = null;
+    if (aura) {
+      auraTween = gsap.to(aura, {
+        scale: 1.12,
+        opacity: 0.35,
+        duration: 1.25,
+        ease: "sine.inOut",
+        yoyo: true,
+        repeat: -1,
+      });
+    }
 
     // 3. Tranquil hold: allow the breathing logo to breathe peacefully without rushing
+    const holdDuration = isRefresh ? 1400 : 1600;
     const exitTimer = setTimeout(() => {
-      // 4. Silky, gentle dissolution revealing the new page underneath
+      // Remove the static CSS class so GSAP controls opacity
+      if (typeof document !== "undefined") {
+        document.documentElement.classList.remove("showing-refresh-loader");
+      }
+
+      // Ensure container has inline opacity 1 before tweening to 0
+      gsap.set(container, { opacity: 1 });
+
+      // 4. Silky, gentle dissolution revealing the refreshed / new page underneath
       gsap.to(container, {
         opacity: 0,
         duration: 0.65,
         ease: "power2.inOut",
         onComplete: () => {
           setShowLoader(false);
+          breathingTween.kill();
+          if (auraTween) auraTween.kill();
           gsap.killTweensOf([container, logo, aura].filter(Boolean));
         },
       });
-    }, 1600);
+    }, holdDuration);
 
     return () => {
       clearTimeout(exitTimer);
       tl.kill();
+      breathingTween.kill();
+      if (auraTween) auraTween.kill();
       gsap.killTweensOf([container, logo, aura].filter(Boolean));
     };
   }, [showLoader]);
 
-  if (!showLoader) return null;
-
   return (
     <div
+      id="page-transition-loader"
       ref={containerRef}
-      className="fixed inset-0 z-[9990] flex items-center justify-center bg-black pointer-events-none select-none"
-      style={{ opacity: 0, backgroundColor: "#000000" }}
+      className={`fixed inset-0 z-[9990] flex items-center justify-center bg-black pointer-events-none select-none ${
+        showLoader ? "flex" : "hidden"
+      }`}
+      style={{
+        backgroundColor: "#000000",
+      }}
     >
       {/* Enlarged Logo with calm breathing (identical to splashscreen loading) */}
-      <div ref={logoRef} className="relative flex items-center justify-center origin-center" style={{ opacity: 0 }}>
+      <div
+        ref={logoRef}
+        className="loader-logo-wrap relative flex items-center justify-center origin-center"
+      >
         {/* Soft warm aura */}
         <div
           ref={auraRef}

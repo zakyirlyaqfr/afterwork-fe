@@ -167,11 +167,11 @@ export default function Hero() {
       id="section-hero"
       className="relative min-h-screen w-full bg-black text-white flex items-center overflow-hidden select-none"
     >
-      <div className="w-full min-h-screen flex flex-col lg:flex-row items-center lg:items-stretch justify-center lg:justify-between py-10 lg:py-0">
+      <div className="w-full min-h-screen flex flex-col lg:flex-row items-center lg:items-stretch justify-center lg:justify-between py-6 lg:py-0">
         {/* Left: Minimalist Pure Typography ("AFTERWORK") */}
         <div
           ref={textContainerRef}
-          className="w-full lg:w-1/2 flex flex-col justify-center items-center z-40 px-6 sm:px-10 md:px-12 lg:px-16 pt-24 sm:pt-28 lg:pt-0 pb-6 lg:pb-0 will-change-transform overflow-visible"
+          className="w-full lg:w-1/2 flex flex-col justify-center items-center z-40 px-4 sm:px-10 md:px-12 lg:px-16 pt-20 sm:pt-24 lg:pt-0 pb-6 lg:pb-0 will-change-transform overflow-visible"
         >
           <div className="w-full flex flex-col items-center justify-center text-center translate-x-0 md:-translate-x-6 lg:-translate-x-14 pointer-events-none">
             {/* Tightly bounded hover container: only triggers color inversion when cursor is directly over the words */}
@@ -209,7 +209,7 @@ export default function Hero() {
         <div
           ref={imageWrapperRef}
           style={{ opacity: hasSeenSplash ? undefined : 0 }}
-          className="w-full lg:w-1/2 h-[50vh] sm:h-[60vh] lg:h-screen relative pointer-events-none select-none will-change-transform flex items-center justify-center overflow-hidden border-t lg:border-t-0 lg:border-l border-[#222222]/50 z-40 pt-6 sm:pt-8 lg:pt-14"
+          className="w-full lg:w-1/2 h-[46vh] min-h-[260px] sm:h-[60vh] lg:h-screen relative pointer-events-none select-none will-change-transform flex items-center justify-center overflow-hidden border-t lg:border-t-0 lg:border-l border-[#222222]/50 z-40 pt-4 sm:pt-8 lg:pt-14"
         >
           <div className="relative w-full h-full">
             <Image

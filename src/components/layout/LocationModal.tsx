@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import { useUI } from "@/context/UIContext";
 import { siteLinks } from "@/config/links";
 import gsap from "gsap";
+import CircularWatermark from "@/components/menus/CircularWatermark";
 
 export default function LocationModal() {
   const { isLocationModalOpen, closeLocationModal } = useUI();
@@ -15,35 +16,54 @@ export default function LocationModal() {
 
     // Entrance animation
     if (backdropRef.current) {
-      gsap.fromTo(backdropRef.current,
+      gsap.fromTo(
+        backdropRef.current,
         { opacity: 0 },
-        { opacity: 1, duration: 0.35, ease: "power2.out" }
+        { opacity: 1, duration: 0.25, ease: "power2.out" }
       );
     }
 
     if (contentRef.current) {
-      gsap.fromTo(contentRef.current,
-        { opacity: 0, y: 40, scale: 0.94, rotate: -1 },
-        { opacity: 1, y: 0, scale: 1, rotate: 0, duration: 0.5, ease: "power3.out", delay: 0.1 }
+      gsap.fromTo(
+        contentRef.current,
+        { opacity: 0, y: 25, scale: 0.94 },
+        { opacity: 1, y: 0, scale: 1, duration: 0.38, ease: "power3.out", delay: 0.05 }
       );
     }
   }, [isLocationModalOpen]);
 
   const handleClose = () => {
-    // Exit animation
-    if (contentRef.current) {
-      gsap.to(contentRef.current, {
-        opacity: 0, y: 30, scale: 0.96,
-        duration: 0.3, ease: "power2.in",
-      });
-    }
-    if (backdropRef.current) {
-      gsap.to(backdropRef.current, {
-        opacity: 0, duration: 0.3, ease: "power2.in",
-        onComplete: closeLocationModal,
-      });
+    if (contentRef.current && backdropRef.current) {
+      const tl = gsap.timeline({ onComplete: closeLocationModal });
+      tl.to(contentRef.current, {
+        opacity: 0,
+        y: 16,
+        scale: 0.95,
+        duration: 0.2,
+        ease: "power2.in",
+      }).to(
+        backdropRef.current,
+        {
+          opacity: 0,
+          duration: 0.15,
+          ease: "power2.in",
+        },
+        "-=0.08"
+      );
+    } else {
+      closeLocationModal();
     }
   };
+
+  // ESC key listener
+  useEffect(() => {
+    if (!isLocationModalOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") handleClose();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isLocationModalOpen]);
 
   if (!isLocationModalOpen) return null;
 
@@ -53,101 +73,96 @@ export default function LocationModal() {
       role="dialog"
       aria-modal="true"
       aria-labelledby="modal-location-title"
-      className="fixed inset-0 z-[90] flex items-center justify-center p-4 sm:p-6 md:p-12"
-      style={{ backgroundColor: "rgba(0,0,0,0.88)", backdropFilter: "blur(2px)" }}
+      data-lenis-prevent
+      className="fixed inset-0 z-[75] flex items-center justify-center p-4 sm:p-6 md:p-10 select-none cursor-pointer"
+      style={{ backgroundColor: "rgba(0,0,0,0.82)", backdropFilter: "blur(8px)" }}
       onClick={handleClose}
     >
+      {/* 
+        Simple, Minimal & Elegant Location Modal:
+        - Sharp corners (rounded-none)
+        - Clean layout: Info sebelah kiri, Live Map sebelah kanan
+        - Tanpa teks bertele-tele (hanya info esensial yang elegan)
+        - Watermark halus di latar belakang
+      */}
       <div
         ref={contentRef}
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-4xl bg-[#0a0a0a] border-2 border-[#262626] text-[#F5F5F5] flex flex-col md:flex-row overflow-hidden shadow-2xl relative punk-glow"
+        data-lenis-prevent
+        className="w-full max-w-3xl max-h-[88dvh] bg-[#0A0A0A] border border-white/15 text-[#F5F5F5] flex flex-col md:flex-row shadow-[0_25px_70px_rgba(0,0,0,0.95)] relative overflow-hidden select-text cursor-default rounded-none"
       >
-        {/* Corner Brackets */}
-        <div className="absolute -inset-3 pointer-events-none z-30">
-          <div className="absolute top-0 left-0 w-5 h-5 border-t-2 border-l-2 border-white/80" />
-          <div className="absolute top-0 right-0 w-5 h-5 border-t-2 border-r-2 border-[#E05D29]" />
-          <div className="absolute bottom-0 left-0 w-5 h-5 border-b-2 border-l-2 border-[#E05D29]" />
-          <div className="absolute bottom-0 right-0 w-5 h-5 border-b-2 border-r-2 border-white/80" />
+        {/* Ambient Subtle Watermark in background */}
+        <div
+          aria-hidden="true"
+          className="absolute -bottom-16 -right-16 pointer-events-none z-0 opacity-10 select-none"
+        >
+          <CircularWatermark size={260} scrollDriven={false} />
         </div>
 
         {/* Close Button */}
         <button
           type="button"
           onClick={handleClose}
-          aria-label="Close location modal"
-          className="absolute top-4 right-4 z-10 w-10 h-10 flex items-center justify-center bg-black border-2 border-[#333] text-[#F5F5F5] hover:text-[#E05D29] hover:border-[#E05D29] transition-all duration-300 focus:outline-none"
+          aria-label="Tutup peta lokasi"
+          className="absolute top-3.5 right-3.5 z-20 w-9 h-9 flex items-center justify-center bg-black/60 backdrop-blur-md border border-white/20 text-white/80 hover:text-[#E05D29] hover:border-[#E05D29] transition-colors rounded-none cursor-pointer"
         >
-          <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
             <path d="M2 2L14 14M14 2L2 14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
           </svg>
         </button>
 
-        {/* Left Side: Location Details */}
-        <div className="w-full md:w-[48%] p-6 sm:p-8 md:p-10 flex flex-col justify-between border-b md:border-b-0 md:border-r border-[#262626]">
-          <div>
-            <div className="inline-flex items-center gap-2.5 font-mono text-[11px] tracking-[0.25em] text-[#E05D29] uppercase mb-5">
-              <span className="font-semibold">VENUE SURABAYA</span>
+        {/* Sisi Kiri: Info Esensial Bersih */}
+        <div className="w-full md:w-[45%] p-6 sm:p-8 flex flex-col justify-between relative z-10 border-b md:border-b-0 md:border-r border-white/10">
+          <div className="space-y-4">
+            <div className="text-[11px] font-mono tracking-[0.25em] text-[#E05D29] uppercase font-bold">
+              VENUE LOCATION
             </div>
 
             <h2
               id="modal-location-title"
-              className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight uppercase leading-tight mb-6"
+              className="text-2xl sm:text-3xl font-black tracking-tight uppercase leading-none text-white"
             >
-              AFTERWORK
-              <br />
+              AFTERWORK<br />
               <span className="text-[#E05D29]">CAFFEINE</span>
             </h2>
 
-            <div className="space-y-5 text-sm text-[#F5F5F5]/75 my-6">
-              <div className="flex items-start gap-3">
-                <div className="w-6 h-6 flex items-center justify-center border border-[#E05D29] text-[#E05D29] shrink-0 mt-0.5">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                </div>
-                <p className="leading-relaxed text-xs">
-                  {siteLinks.location.address}
-                </p>
+            <div className="w-8 h-0.5 bg-[#E05D29]" />
+
+            <div className="space-y-3 pt-1 text-xs text-neutral-300">
+              <div>
+                <span className="block text-[10px] font-mono uppercase text-neutral-500 tracking-wider">Address</span>
+                <p className="mt-0.5 leading-relaxed font-medium">{siteLinks.location.address}</p>
               </div>
 
-              <div className="flex items-center gap-3">
-                <div className="w-6 h-6 flex items-center justify-center border border-[#E05D29] text-[#E05D29] shrink-0">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                </div>
-                <p className="text-xs">09:00 AM — 02:00 AM (EVERYDAY)</p>
-              </div>
-
-              <div className="pt-3 border-t border-[#262626] text-[11px] text-[#F5F5F5]/45 flex justify-between">
-                <span>GPS COORD</span>
-                <span className="text-[#E05D29]">{siteLinks.location.coordinates}</span>
+              <div>
+                <span className="block text-[10px] font-mono uppercase text-neutral-500 tracking-wider">Hours</span>
+                <p className="mt-0.5 font-bold text-white">09:00 — 02:00 Everyday</p>
               </div>
             </div>
           </div>
 
-          {/* External Action */}
           <div className="pt-6">
             <a
               href={siteLinks.location.googleMapsUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full inline-flex items-center justify-between px-5 py-3.5 bg-[#E05D29] text-black text-xs font-black tracking-[0.15em] uppercase hover:bg-[#F5F5F5] transition-colors group"
+              className="w-full inline-flex items-center justify-between px-5 py-3 bg-[#E05D29] text-black text-xs font-black tracking-[0.18em] uppercase hover:bg-white transition-colors cursor-pointer"
             >
-              <span>OPEN IN GOOGLE MAPS</span>
-              <span className="transform group-hover:translate-x-1 transition-transform duration-300">↗</span>
+              <span>GOOGLE MAPS</span>
+              <span className="text-sm">↗</span>
             </a>
           </div>
         </div>
 
-        {/* Right Side: Map */}
-        <div className="w-full md:w-[52%] min-h-[280px] sm:min-h-[340px] md:min-h-[440px] relative bg-[#111111]">
+        {/* Sisi Kanan: Peta Interaktif */}
+        <div className="w-full md:w-[55%] min-h-[260px] md:min-h-[360px] relative bg-[#111111] z-10">
           <iframe
-            title="Afterwork Caffeine Location Map"
+            title="Afterwork Caffeine Location"
             src={siteLinks.location.embedIframe}
-            className="w-full h-full border-0 grayscale contrast-125 opacity-85 hover:opacity-100 transition-opacity"
+            className="w-full h-full border-0 grayscale contrast-125 opacity-90 hover:opacity-100 transition-opacity"
             loading="lazy"
             allowFullScreen
           />
-          <div className="pointer-events-none absolute bottom-3 right-3 px-2 py-1 bg-black/80 font-mono text-[9px] tracking-widest text-[#F5F5F5]/50 border border-[#262626]">
-            SURABAYA LIVE MAP
-          </div>
         </div>
       </div>
     </div>

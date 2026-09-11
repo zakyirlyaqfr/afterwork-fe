@@ -5,47 +5,42 @@ import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
-import { galleryItems, galleryCategories, GalleryImage } from "@/data/gallery";
-
-const tiltAngles = [-1.5, 1.2, -0.8, 2, -1.8, 0.5, -2.2, 1, -0.5, 1.5, -1, 2.2];
+import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { bentoGalleryItems, BentoGalleryItem } from "@/data/gallery";
+import CircularWatermark from "@/components/menus/CircularWatermark";
 
 export default function GalleryPage() {
-  const [activeCategory, setActiveCategory] = useState<string>("All");
-  const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null);
+  const [selectedImage, setSelectedImage] = useState<BentoGalleryItem | null>(null);
   const [isClosing, setIsClosing] = useState(false);
+  const isMobile = useMediaQuery("(max-width: 767px)");
+
   const sectionRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
-  const filterRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
   const watermarkRef = useRef<HTMLDivElement>(null);
   const lightboxContentRef = useRef<HTMLDivElement>(null);
   const prefersReduced = useReducedMotion();
 
-  const filteredItems =
-    activeCategory === "All"
-      ? galleryItems
-      : galleryItems.filter((item) => item.category === activeCategory);
-
   const handleNext = useCallback(() => {
     if (!selectedImage) return;
-    const currentIndex = filteredItems.findIndex((i) => i.id === selectedImage.id);
-    const nextIndex = (currentIndex + 1) % filteredItems.length;
-    setSelectedImage(filteredItems[nextIndex]);
-  }, [selectedImage, filteredItems]);
+    const currentIndex = bentoGalleryItems.findIndex((i) => i.id === selectedImage.id);
+    const nextIndex = (currentIndex + 1) % bentoGalleryItems.length;
+    setSelectedImage(bentoGalleryItems[nextIndex]);
+  }, [selectedImage]);
 
   const handlePrev = useCallback(() => {
     if (!selectedImage) return;
-    const currentIndex = filteredItems.findIndex((i) => i.id === selectedImage.id);
-    const prevIndex = (currentIndex - 1 + filteredItems.length) % filteredItems.length;
-    setSelectedImage(filteredItems[prevIndex]);
-  }, [selectedImage, filteredItems]);
+    const currentIndex = bentoGalleryItems.findIndex((i) => i.id === selectedImage.id);
+    const prevIndex = (currentIndex - 1 + bentoGalleryItems.length) % bentoGalleryItems.length;
+    setSelectedImage(bentoGalleryItems[prevIndex]);
+  }, [selectedImage]);
 
   const handleClose = useCallback(() => {
     setIsClosing(true);
     setTimeout(() => {
       setSelectedImage(null);
       setIsClosing(false);
-    }, 300);
+    }, 280);
   }, []);
 
   // ESC key handler for lightbox
@@ -60,225 +55,262 @@ export default function GalleryPage() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [selectedImage, handleClose, handleNext, handlePrev]);
 
-  // Lock body scroll when lightbox is open
   useEffect(() => {
-    if (selectedImage) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-    return () => { document.body.style.overflow = ""; };
-  }, [selectedImage]);
-
-  useEffect(() => {
+    window.scrollTo(0, 0);
     if (prefersReduced) return;
     gsap.registerPlugin(ScrollTrigger);
 
+    // Title entrance animation matching menus logic
     if (titleRef.current) {
       gsap.fromTo(
         titleRef.current,
-        { opacity: 0, y: 55, filter: "blur(8px)" },
-        { opacity: 1, y: 0, filter: "blur(0px)", duration: 1.2, ease: "power3.out", delay: 0.1 }
-      );
-    }
-
-    if (filterRef.current) {
-      gsap.fromTo(
-        filterRef.current,
-        { opacity: 0, y: 25 },
-        { opacity: 1, y: 0, duration: 1, ease: "power2.out", delay: 0.3 }
+        { opacity: 0, y: 35, filter: "blur(6px)" },
+        { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.9, ease: "power3.out" }
       );
     }
 
     if (watermarkRef.current) {
       gsap.to(watermarkRef.current, {
-        y: -80, ease: "none",
-        scrollTrigger: { trigger: sectionRef.current, start: "top bottom", end: "bottom top", scrub: 1.6 },
+        y: -60,
+        ease: "none",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 1.6,
+        },
       });
     }
   }, [prefersReduced]);
 
-  // Animate grid on category change
+  // Scroll entrance animation: boxes reveal smoothly 1-by-1 as user scrolls
   useEffect(() => {
     if (prefersReduced || !gridRef.current) return;
-    const items = gridRef.current.querySelectorAll(".gallery-item");
-    gsap.fromTo(
-      items,
-      { opacity: 0, y: 45, scale: 0.93 },
-      { opacity: 1, y: 0, scale: 1, duration: 0.7, ease: "power2.out", stagger: 0.05 }
-    );
-  }, [activeCategory, prefersReduced]);
+
+    const ctx = gsap.context(() => {
+      const items = gridRef.current?.querySelectorAll(".bento-item");
+      if (!items || items.length === 0) return;
+
+      gsap.set(items, { opacity: 0, y: 40 });
+
+      ScrollTrigger.batch(items, {
+        start: "top 88%",
+        once: true,
+        onEnter: (batch) => {
+          gsap.to(batch, {
+            opacity: 1,
+            y: 0,
+            duration: 0.7,
+            ease: "power3.out",
+            stagger: 0.12,
+            overwrite: "auto",
+          });
+        },
+      });
+
+      const refreshTimeout = setTimeout(() => {
+        ScrollTrigger.refresh();
+      }, 100);
+
+      return () => clearTimeout(refreshTimeout);
+    }, gridRef);
+
+    return () => ctx.revert();
+  }, [prefersReduced]);
 
   return (
     <main
       ref={sectionRef}
-      className="min-h-screen bg-black text-[#F5F5F5] pt-28 sm:pt-36 pb-24 px-6 sm:px-10 md:pl-10 md:pr-10 lg:pl-16 lg:pr-14 xl:pl-20 xl:pr-18 selection:bg-[#E05D29] selection:text-black overflow-visible relative"
+      className="min-h-screen bg-black text-[#F5F5F5] pt-28 sm:pt-32 md:pt-32 px-4 sm:px-8 md:px-12 lg:px-16 selection:bg-[#E05D29] selection:text-black overflow-x-visible relative"
+      style={{ paddingBottom: "clamp(6rem, 12vw, 12rem)" }}
     >
-      {/* Watermark */}
+      {/* Background Watermark */}
       <div
         ref={watermarkRef}
         aria-hidden="true"
-        className="punk-watermark top-[25%] -right-16 text-[clamp(6rem,18vw,20rem)] z-0"
+        className="punk-watermark top-[28%] -right-16 text-[clamp(6rem,18vw,20rem)] z-0 select-none pointer-events-none"
       >
         GALLERY
       </div>
 
-      <div className="w-full max-w-[1720px] relative z-10">
+      {/* 
+        Stationary Fixed Palette Gray Watermarks:
+        - Positioned fixed in viewport, stays during scroll
+        - Multiple watermarks: Bottom-left and Top-right circular watermarks
+        - Color: Palette gray (#404040 / #383838)
+      */}
+      {/* 1. Fixed Bottom-Left Rotating Watermark */}
+      <div
+        aria-hidden="true"
+        className="fixed bottom-6 left-[-50px] md:left-[-80px] pointer-events-none z-10 select-none"
+      >
+        <CircularWatermark
+          size={370}
+          color="#404040"
+          opacity={0.35}
+          scrollDriven
+          speedFactor={0.25}
+          direction="clockwise"
+        />
+      </div>
 
-        {/* Title — overlaps sidebar */}
-        <div ref={titleRef} className="mb-14 sm:mb-18 md:-ml-12 lg:-ml-20 xl:-ml-28 relative z-40">
-          <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black tracking-tighter uppercase leading-[0.88]">
-            THE
-            <br />
-            <span className="text-[#E05D29]">GALLERY.</span>
-          </h1>
+      {/* 2. Fixed Top-Right Counter-Rotating Watermark */}
+      <div
+        aria-hidden="true"
+        className="fixed top-28 right-[-50px] md:right-[-80px] pointer-events-none z-10 select-none hidden sm:block"
+      >
+        <CircularWatermark
+          size={330}
+          color="#383838"
+          opacity={0.28}
+          scrollDriven
+          speedFactor={0.22}
+          direction="counterclockwise"
+        />
+      </div>
+
+      {/* Main Content Container — with pb-[30vh] so sticky header stays pinned all the way past the bottom cards */}
+      <div className="w-full max-w-[1440px] mx-auto relative z-10 pb-[20vh]">
+
+        {/* 1. Header Container for Title
+            - Menggunakan logic yang sama dengan fitur Menus:
+            - Sticky dan transparan: tetap di posisi saat di-scroll (.menu-sticky-header)
+            - Pinned di z-[78] sehingga tidak menghilang saat di-scroll atau membuka modal */}
+        <div className="menu-sticky-header mb-8 sm:mb-12">
+          <div
+            ref={titleRef}
+            className="relative pointer-events-none"
+            style={{ marginBottom: "clamp(0.8rem, 1.4vw, 1.3rem)" }}
+          >
+            <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black tracking-tighter uppercase leading-[0.88] text-[#F5F5F5]">
+              THE<br />
+              <span className="text-[#E05D29]">GALLERY.</span>
+            </h1>
+          </div>
         </div>
 
-        {/* Category Filters — punk scattered */}
-        <div ref={filterRef} className="flex flex-wrap items-center gap-2.5 sm:gap-3 mb-16 sm:mb-20 select-none">
-          {galleryCategories.map((cat, idx) => (
-            <button
-              key={cat}
-              type="button"
-              onClick={() => setActiveCategory(cat)}
-              style={{ transform: `rotate(${idx % 2 === 0 ? '0.8' : '-0.8'}deg)` }}
-              className={`px-4 py-2 text-[11px] font-black uppercase tracking-[0.12em] border-2 transition-all duration-300 hover:rotate-0 hover:scale-105 ${activeCategory === cat
-                  ? "bg-[#E05D29] text-black border-[#E05D29] punk-glow !rotate-0"
-                  : "border-[#333] text-[#F5F5F5]/55 hover:border-[#E05D29] hover:text-[#E05D29]"
-                }`}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-
-        {/* Gallery Grid — punk asymmetric */}
+        {/* 2. Bento Gallery Grid
+            - Tema: Bento gallery banyak foto (16 gambar asli tanpa teks poster)
+            - Abstrak & asimetris dengan sudut miring berbeda pada tiap box
+            - Ujung lancip / jangan tumpul (rounded-none)
+            - Tanpa teks sama sekali (murni fotografi autentik)
+            - Tanpa animasi saat cursor mengenai box image (tidak ada zoom/scale/rotate saat hover)
+            - Jarak box rapat & teratur (gap-3 sm:gap-4 md:gap-5)
+            - Tidak tumpang tindih
+            - Di tengah & tidak menempel ke pinggir layar */}
         <div
           ref={gridRef}
-          className="grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-8"
+          className="grid grid-cols-12 gap-3 sm:gap-4 md:gap-5 relative z-10 items-stretch subpage-content-spacing"
         >
-          {filteredItems.map((item, idx) => {
-            const tilt = tiltAngles[idx % tiltAngles.length];
-            const shouldOverlap = idx === 0 || idx === 4;
+          {bentoGalleryItems.map((item) => {
+            // Subtle tilt on mobile to prevent clipping, distinct punk tilt on desktop
+            const activeTilt = isMobile ? item.tilt * 0.35 : item.tilt;
 
             return (
               <div
                 key={item.id}
-                className={`gallery-item ${item.gridSpan} group cursor-pointer relative ${shouldOverlap ? "md:-ml-6 lg:-ml-14 z-40" : ""
-                  }`}
-                style={{ transform: `rotate(${tilt}deg)` }}
-                onClick={() => setSelectedImage(item)}
+                className={`bento-item ${item.gridSpan} ${item.heightClass} relative select-none rounded-none`}
+                style={{ transform: `rotate(${activeTilt}deg)` }}
               >
-                <div className="relative w-full overflow-hidden bg-neutral-950 border border-[#262626] transition-all duration-500 group-hover:rotate-0 group-hover:scale-[1.03] group-hover:border-[#E05D29]/50 group-hover:shadow-[0_0_35px_rgba(224,93,41,0.15)]">
-                  {/* Corner Brackets on hover */}
-                  <div className="absolute -inset-2.5 pointer-events-none z-30 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-white/80" />
-                    <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-[#E05D29]" />
-                    <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-[#E05D29]" />
-                    <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-white/80" />
-                  </div>
+                {/* 
+                  Sharp Bento Box:
+                  - rounded-none (ujung tidak tumpul)
+                  - Tanpa animasi saat hover cursor (no scale/zoom)
+                  - Border tajam dan clean
+                  - Clickable untuk membuka full-view lightbox
+                */}
+                <div
+                  className="w-full h-full relative overflow-hidden bg-[#0a0a0a] border border-[#262626] rounded-none cursor-pointer"
+                  onClick={() => setSelectedImage(item)}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={item.alt}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      setSelectedImage(item);
+                    }
+                  }}
+                >
+                  <Image
+                    src={item.src}
+                    alt={item.alt}
+                    fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    className="object-cover object-center contrast-105"
+                    priority={item.id === "bg-01" || item.id === "bg-02"}
+                  />
 
-                  <div className="relative w-full" style={{ aspectRatio: item.aspectRatio }}>
-                    <Image
-                      src={item.src}
-                      alt={item.alt}
-                      fill
-                      sizes="(max-width: 768px) 100vw, 50vw"
-                      className="object-cover transition-transform duration-700 group-hover:scale-105"
-                    />
-                  </div>
-
-                  {/* Vignette */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none opacity-40 group-hover:opacity-20 transition-opacity duration-300" />
-                </div>
-
-                {/* Caption — clean, no '//' */}
-                <div className="flex items-center justify-between text-[10px] tracking-[0.15em] text-[#F5F5F5]/50 mt-2.5 font-bold uppercase">
-                  <span className="text-[#F5F5F5]/70">{item.title}</span>
-                  <span className="text-[#E05D29]/60">{item.category}</span>
+                  {/* Dark subtle border vignette for photo depth, static without hover change */}
+                  <div className="absolute inset-0 bg-black/15 pointer-events-none" />
                 </div>
               </div>
             );
           })}
         </div>
+
       </div>
 
-      {/* ===== Punk Lightbox ===== */}
+      {/* ===== Fullscreen Lightbox Modal ===== */}
       {selectedImage && (
         <div
           role="dialog"
           aria-modal="true"
-          className={`fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-8 cursor-default ${isClosing ? "" : "lightbox-backdrop-enter"
-            }`}
-          style={{ backgroundColor: "rgba(0,0,0,0.92)" }}
+          className={`fixed inset-0 z-[85] flex items-center justify-center p-4 sm:p-8 cursor-default ${
+            isClosing ? "opacity-0 transition-opacity duration-200" : "lightbox-backdrop-enter"
+          }`}
+          style={{ backgroundColor: "rgba(0,0,0,0.92)", backdropFilter: "blur(6px)" }}
           onClick={handleClose}
         >
-          {/* Lightbox Content */}
           <div
             ref={lightboxContentRef}
-            className={`relative max-w-5xl w-full flex flex-col items-center ${isClosing ? "lightbox-exit" : "lightbox-enter"
-              }`}
+            className="relative max-w-5xl w-full flex flex-col items-center"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Close Button */}
             <button
               type="button"
               onClick={handleClose}
-              className="absolute -top-12 sm:-top-14 right-0 w-10 h-10 flex items-center justify-center border-2 border-[#333] text-[#F5F5F5]/70 hover:border-[#E05D29] hover:text-[#E05D29] transition-all duration-300 z-50 bg-black/50"
-              aria-label="Close lightbox"
+              className="absolute -top-12 sm:-top-14 right-0 w-10 h-10 flex items-center justify-center border border-white/20 text-[#F5F5F5] hover:border-[#E05D29] hover:text-[#E05D29] transition-colors z-50 bg-black/70 rounded-none cursor-pointer"
+              aria-label="Tutup foto"
             >
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
                 <path d="M2 2L14 14M14 2L2 14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
               </svg>
             </button>
 
-            {/* Image Container with corner brackets */}
-            <div className="relative w-full punk-glow">
-              {/* Corner Brackets */}
-              <div className="absolute -inset-3 sm:-inset-4 pointer-events-none z-30">
-                <div className="absolute top-0 left-0 w-5 sm:w-6 h-5 sm:h-6 border-t-2 border-l-2 border-white/80" />
-                <div className="absolute top-0 right-0 w-5 sm:w-6 h-5 sm:h-6 border-t-2 border-r-2 border-[#E05D29]" />
-                <div className="absolute bottom-0 left-0 w-5 sm:w-6 h-5 sm:h-6 border-b-2 border-l-2 border-[#E05D29]" />
-                <div className="absolute bottom-0 right-0 w-5 sm:w-6 h-5 sm:h-6 border-b-2 border-r-2 border-white/80" />
-              </div>
-
-              <div
-                className="relative w-full max-h-[75vh] overflow-hidden bg-neutral-950 border border-[#333]"
-                style={{ aspectRatio: selectedImage.aspectRatio }}
-              >
+            {/* Image Box */}
+            <div className="relative w-full max-h-[80vh] overflow-hidden bg-neutral-950 border border-white/15 rounded-none shadow-2xl">
+              <div className="relative w-full h-[65vh] sm:h-[75vh]">
                 <Image
                   src={selectedImage.src}
                   alt={selectedImage.alt}
                   fill
                   className="object-contain"
-                  sizes="90vw"
+                  sizes="92vw"
+                  priority
                 />
               </div>
             </div>
 
-            {/* Bottom Info Bar */}
-            <div className="w-full flex items-center justify-between mt-5 sm:mt-6 select-none">
-              <div>
-                <span className="text-sm sm:text-base font-black text-[#F5F5F5] uppercase tracking-tight">
-                  {selectedImage.title}
-                </span>
-                <span className="block text-[10px] tracking-[0.15em] text-[#F5F5F5]/40 mt-1 uppercase">
-                  {selectedImage.subtitle}
-                </span>
-              </div>
+            {/* Navigation Controls */}
+            <div className="w-full flex items-center justify-between mt-4 select-none">
+              <span className="text-[11px] font-mono tracking-widest text-[#F5F5F5]/40 uppercase">
+                AFTERWORK ARCHIVE
+              </span>
 
               <div className="flex items-center gap-3">
                 <button
                   type="button"
                   onClick={handlePrev}
-                  className="px-4 py-2 border-2 border-[#333] text-[#F5F5F5]/60 hover:border-[#E05D29] hover:text-[#E05D29] transition-all duration-300 text-xs font-bold tracking-widest uppercase"
+                  className="px-4 py-2 border border-white/20 text-[#F5F5F5]/70 hover:border-[#E05D29] hover:text-[#E05D29] transition-colors text-xs font-mono font-bold tracking-widest uppercase cursor-pointer"
                 >
                   ← PREV
                 </button>
                 <button
                   type="button"
                   onClick={handleNext}
-                  className="px-4 py-2 border-2 border-[#333] text-[#F5F5F5]/60 hover:border-[#E05D29] hover:text-[#E05D29] transition-all duration-300 text-xs font-bold tracking-widest uppercase"
+                  className="px-4 py-2 border border-white/20 text-[#F5F5F5]/70 hover:border-[#E05D29] hover:text-[#E05D29] transition-colors text-xs font-mono font-bold tracking-widest uppercase cursor-pointer"
                 >
                   NEXT →
                 </button>

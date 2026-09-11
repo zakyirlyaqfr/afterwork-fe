@@ -6,6 +6,7 @@ import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 const galleryItems = [
   {
@@ -46,6 +47,7 @@ export default function CraftCollage() {
   const buttonRef = useRef<HTMLDivElement>(null);
   const watermarkRef = useRef<HTMLDivElement>(null);
   const prefersReduced = useReducedMotion();
+  const isMobile = useMediaQuery("(max-width: 639px)");
 
   const total = galleryItems.length;
 
@@ -198,7 +200,7 @@ export default function CraftCollage() {
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
           onPointerLeave={handlePointerUp}
-          className="relative w-[80vw] sm:w-[50vw] md:w-[38vw] lg:w-[32vw] max-w-[320px] sm:max-w-[420px] lg:max-w-[480px] aspect-[3/4] flex items-center justify-center cursor-grab active:cursor-grabbing overflow-visible touch-pan-y"
+          className="relative w-[74vw] sm:w-[50vw] md:w-[38vw] lg:w-[32vw] max-w-[310px] sm:max-w-[420px] lg:max-w-[480px] aspect-[3/4] flex items-center justify-center cursor-grab active:cursor-grabbing overflow-visible touch-pan-y"
         >
           {galleryItems.map((item, idx) => {
             // Calculate circular offset from active index
@@ -230,30 +232,30 @@ export default function CraftCollage() {
               zIndex = 30;
               pointerEvents = "auto";
             } else if (isLeft) {
-              translateX = "-85%";
+              translateX = isMobile ? "-66%" : "-85%";
               translateY = "14px";
-              scale = 0.88;
+              scale = isMobile ? 0.84 : 0.88;
               rotate = -2;
               opacity = 0.78;
               zIndex = 20;
               pointerEvents = "auto";
             } else if (isRight) {
-              translateX = "85%";
+              translateX = isMobile ? "66%" : "85%";
               translateY = "-12px";
-              scale = 0.88;
+              scale = isMobile ? 0.84 : 0.88;
               rotate = 2;
               opacity = 0.78;
               zIndex = 20;
               pointerEvents = "auto";
             } else if (offset === -2) {
-              translateX = "-165%";
+              translateX = isMobile ? "-130%" : "-165%";
               translateY = "0px";
               scale = 0.7;
               rotate = -4;
               opacity = 0;
               zIndex = 5;
             } else if (offset === 2) {
-              translateX = "165%";
+              translateX = isMobile ? "130%" : "165%";
               translateY = "0px";
               scale = 0.7;
               rotate = 4;

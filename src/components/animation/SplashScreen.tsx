@@ -7,9 +7,9 @@ import gsap from "gsap";
 
 export default function SplashScreen() {
   const { completeSplash } = useUI();
-  // Default to visible so initial SSR and early client render are solid pitch black
   const [isVisible, setIsVisible] = useState(true);
   const [isMounted, setIsMounted] = useState(false);
+  const [shouldPlayVideo, setShouldPlayVideo] = useState(false);
   const phaseRef = useRef<"video" | "loading" | "done">("video");
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -33,11 +33,13 @@ export default function SplashScreen() {
 
       if (seen && !forceSplash) {
         setIsVisible(false);
+        setShouldPlayVideo(false);
         if (typeof document !== "undefined") {
           document.documentElement.classList.remove("showing-splash");
         }
       } else {
         setIsVisible(true);
+        setShouldPlayVideo(true);
         if (typeof document !== "undefined") {
           document.documentElement.classList.add("showing-splash");
         }
@@ -249,6 +251,7 @@ export default function SplashScreen() {
 
   return (
     <div
+      id="afterwork-splash-screen"
       ref={containerRef}
       role="dialog"
       aria-modal="true"
@@ -262,29 +265,31 @@ export default function SplashScreen() {
         className="absolute inset-0 flex items-center justify-center p-2 sm:p-4 md:p-6 origin-center"
         style={{ backgroundColor: "#000000" }}
       >
-        <video
-          ref={videoRef}
-          playsInline
-          autoPlay
-          muted
-          disablePictureInPicture
-          disableRemotePlayback
-          preload="auto"
-          onPlaying={handleVideoPlaying}
-          onTimeUpdate={checkTimeAndTransition}
-          onEnded={transitionToLoading}
-          className="w-full h-full object-contain pointer-events-none"
-          style={{
-            maxHeight: "92vh",
-            maxWidth: "92vw",
-            aspectRatio: "464 / 720",
-            mixBlendMode: "screen",
-            filter: "contrast(1.2) brightness(1.0) grayscale(1)",
-          }}
-        >
-          <source src="/brand/afterwork-splash-final.webm" type="video/webm" />
-          <source src="/brand/afterwork-splash-final.mp4" type="video/mp4" />
-        </video>
+        {shouldPlayVideo && (
+          <video
+            ref={videoRef}
+            playsInline
+            autoPlay
+            muted
+            disablePictureInPicture
+            disableRemotePlayback
+            preload="auto"
+            onPlaying={handleVideoPlaying}
+            onTimeUpdate={checkTimeAndTransition}
+            onEnded={transitionToLoading}
+            className="w-full h-full object-contain pointer-events-none"
+            style={{
+              maxHeight: "92vh",
+              maxWidth: "92vw",
+              aspectRatio: "464 / 720",
+              mixBlendMode: "screen",
+              filter: "contrast(1.2) brightness(1.0) grayscale(1)",
+            }}
+          >
+            <source src="/brand/afterwork-splash-final.webm" type="video/webm" />
+            <source src="/brand/afterwork-splash-final.mp4" type="video/mp4" />
+          </video>
+        )}
       </div>
 
       {/* 2. Loading State Layer (100% solid opaque black background, NO lines, NO text, enlarged breathing logo) */}

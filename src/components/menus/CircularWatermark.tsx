@@ -1,29 +1,61 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useRef } from "react";
 
 interface CircularWatermarkProps {
   className?: string;
   size?: number;
   text?: string;
-  spinSpeed?: number;
   opacity?: number;
-  color?: string; // Faded orange brand color
+  color?: string; // Gray brand palette
+  scrollDriven?: boolean;
+  speedFactor?: number;
+  direction?: "clockwise" | "counterclockwise";
 }
 
 export default function CircularWatermark({
   className = "",
   size = 320,
   text = "AFTERWORKCAFFEINE",
-  spinSpeed = 45,
-  opacity = 0.2,
-  color = "#E05D29",
+  opacity = 0.35,
+  color = "#404040",
+  scrollDriven = true,
+  speedFactor = 0.2,
+  direction = "clockwise",
 }: CircularWatermarkProps) {
+  const svgRef = useRef<SVGSVGElement>(null);
+
   // Pure letters only — no dots, no symbols
   const chars = text.toUpperCase().replace(/[^A-Z]/g, "").split("");
   const total = chars.length;
   const radius = 108;
   const center = 150;
+
+  useEffect(() => {
+    if (!scrollDriven) return;
+
+    let ticking = false;
+
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          if (svgRef.current) {
+            const dirMultiplier = direction === "counterclockwise" ? -1 : 1;
+            const rot = (window.scrollY * speedFactor * dirMultiplier) % 360;
+            svgRef.current.style.transform = `rotate(${rot}deg)`;
+          }
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    // Initial position
+    handleScroll();
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [scrollDriven, speedFactor, direction]);
 
   return (
     <div
@@ -35,21 +67,15 @@ export default function CircularWatermark({
       }}
     >
       <svg
+        ref={svgRef}
         viewBox="0 0 300 300"
         className="w-full h-full will-change-transform"
         style={{
-          animation: `spinWatermark ${spinSpeed}s linear infinite`,
           opacity,
+          transformOrigin: "center center",
+          transition: "transform 0.08s linear",
         }}
       >
-        <style>
-          {`
-            @keyframes spinWatermark {
-              from { transform: rotate(0deg); }
-              to { transform: rotate(360deg); }
-            }
-          `}
-        </style>
         {chars.map((char, index) => {
           const angle = (index * 360) / total;
           const rad = (angle * Math.PI) / 180;
@@ -80,3 +106,4 @@ export default function CircularWatermark({
     </div>
   );
 }
+

@@ -96,6 +96,8 @@ export default function RootLayout({
                   var isForce = window.location.search.indexOf("splash=1") !== -1 || window.location.search.indexOf("splash=true") !== -1;
                   if (!seen || isForce) {
                     document.documentElement.classList.add("showing-splash");
+                  } else {
+                    document.documentElement.classList.add("showing-refresh-loader");
                   }
                 } catch(e) {}
               })();
@@ -115,6 +117,16 @@ export default function RootLayout({
                 display: none !important;
                 visibility: hidden !important;
                 opacity: 0 !important;
+              }
+              html:not(.showing-splash) #afterwork-splash-screen {
+                display: none !important;
+                visibility: hidden !important;
+                opacity: 0 !important;
+              }
+              html.showing-refresh-loader #page-transition-loader {
+                display: flex !important;
+                opacity: 1 !important;
+                visibility: visible !important;
               }
             `,
           }}

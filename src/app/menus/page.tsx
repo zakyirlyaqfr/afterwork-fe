@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useLayoutEffect, useRef } from "react";
 import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { menuItems, menuCategories, MenuItem } from "@/data/menu";
 import MenuDetailModal from "@/components/menus/MenuDetailModal";
 
@@ -70,6 +71,7 @@ export default function MenusPage() {
   const [activeCategory, setActiveCategory] = useState<string>("ALL");
   const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const isMobile = useMediaQuery("(max-width: 767px)");
 
   const sectionRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
@@ -144,6 +146,29 @@ export default function MenusPage() {
     return () => ctx.revert();
   }, [activeCategory, prefersReduced]);
 
+  const handleCategorySelect = (cat: string) => {
+    // Instantly jump scroll to top BEFORE state update so the page never
+    // briefly shows footer when filtered items are fewer (shorter page).
+    if (typeof window !== "undefined") {
+      if ((window as any).lenis) {
+        (window as any).lenis.scrollTo(0, { immediate: true });
+      }
+      window.scrollTo({ top: 0 });
+    }
+    setActiveCategory(cat);
+  };
+
+  // After activeCategory state is applied (DOM updated), ensure we are at top
+  // and notify the SmoothScroll/Lenis layer — prevents footer flash.
+  useLayoutEffect(() => {
+    if (typeof window === "undefined") return;
+    window.scrollTo({ top: 0 });
+    if ((window as any).lenis) {
+      (window as any).lenis.scrollTo(0, { immediate: true });
+    }
+    window.dispatchEvent(new CustomEvent("afterwork:scroll-to-top"));
+  }, [activeCategory]);
+
   const handleOpenModal = (item: MenuItem) => {
     setSelectedItem(item);
     setIsModalOpen(true);
@@ -157,7 +182,7 @@ export default function MenusPage() {
   return (
     <main
       ref={sectionRef}
-      className="min-h-screen bg-black text-[#F5F5F5] pt-24 sm:pt-28 md:pt-32 px-6 sm:px-10 md:px-12 lg:px-16 selection:bg-[#E05D29] selection:text-black overflow-x-visible relative"
+      className="min-h-screen bg-black text-[#F5F5F5] pt-28 sm:pt-32 md:pt-32 px-4 sm:px-10 md:px-12 lg:px-16 selection:bg-[#E05D29] selection:text-black overflow-x-visible relative"
       style={{ paddingBottom: "clamp(4rem, 8vw, 8rem)" }}
     >
       {/* Main Content Container — with pb-[40vh] so sticky header stays pinned all the way past the bottom cards */}
@@ -166,7 +191,7 @@ export default function MenusPage() {
         {/* Header Container for Title & Category Filters
             - Sticky dan transparan: tetap di posisi saat di-scroll
             - Geser ke bawah sedikit (.menu-sticky-header)
-            - Kartu menu meluncur di layer bawahnya (z-10 < z-40) */}
+            - Kartu menu meluncur di layer bawahnya (z-10 < z-78) */}
         <div className="menu-sticky-header mb-14 sm:mb-18 md:mb-24 lg:mb-28">
           {/* 1. Page Title — Purely "MENUS." */}
           <div
@@ -182,13 +207,13 @@ export default function MenusPage() {
           {/* 2. Category Filters — Translucent buttons, stays clearly above content */}
           <div
             ref={filterRef}
-            className="flex flex-wrap items-center gap-2.5 sm:gap-3.5 select-none relative menu-sticky-interactive"
+            className="flex flex-wrap items-center gap-2 sm:gap-3.5 select-none relative menu-sticky-interactive"
           >
             {/* ALL Button */}
             <button
               type="button"
-              onClick={() => setActiveCategory("ALL")}
-              className={`px-6 py-2.5 text-xs font-black uppercase tracking-[0.2em] border transition-all duration-300 -rotate-1 hover:rotate-0 hover:scale-105 cursor-pointer ${activeCategory === "ALL"
+              onClick={() => handleCategorySelect("ALL")}
+              className={`px-4 py-2 sm:px-6 sm:py-2.5 text-[11px] sm:text-xs font-black uppercase tracking-[0.16em] sm:tracking-[0.2em] border transition-all duration-300 -rotate-1 hover:rotate-0 hover:scale-105 cursor-pointer ${activeCategory === "ALL"
                   ? "bg-[#E05D29] text-black border-[#E05D29] punk-glow font-black shadow-[0_4px_16px_rgba(224,93,41,0.45)]"
                   : "border-[#333] text-[#F5F5F5]/80 hover:border-[#E05D29] hover:text-[#E05D29] bg-black/85 backdrop-blur-md shadow-[0_4px_14px_rgba(0,0,0,0.6)]"
                 }`}
@@ -201,9 +226,9 @@ export default function MenusPage() {
               <button
                 key={cat}
                 type="button"
-                onClick={() => setActiveCategory(cat)}
+                onClick={() => handleCategorySelect(cat)}
                 style={{ transform: `rotate(${idx % 2 === 0 ? "1" : "-1"}deg)` }}
-                className={`px-6 py-2.5 text-xs font-black uppercase tracking-[0.2em] border transition-all duration-300 hover:rotate-0 hover:scale-105 cursor-pointer ${activeCategory === cat
+                className={`px-4 py-2 sm:px-6 sm:py-2.5 text-[11px] sm:text-xs font-black uppercase tracking-[0.16em] sm:tracking-[0.2em] border transition-all duration-300 hover:rotate-0 hover:scale-105 cursor-pointer ${activeCategory === cat
                     ? "bg-[#E05D29] text-black border-[#E05D29] punk-glow !rotate-0 font-black shadow-[0_4px_16px_rgba(224,93,41,0.45)]"
                     : "border-[#333] text-[#F5F5F5]/80 hover:border-[#E05D29] hover:text-[#E05D29] bg-black/85 backdrop-blur-md shadow-[0_4px_14px_rgba(0,0,0,0.6)]"
                   }`}
@@ -217,16 +242,19 @@ export default function MenusPage() {
         {/* 3. Menu Grid
             - Jarak batas jelas dari filter di atasnya (.menu-grid-spacing)
             - Gambar kolom kiri benar-benar bergeser ke kanan menggunakan class .menu-card-left-shift
+            - Animasi floating halus tanpa tumpang tindih (.menu-card-float-a/b)
             - Hover tepat pada kotak gambar tanpa ghost-hover di area kosong */}
         <div
           ref={gridRef}
           className="grid grid-cols-1 md:grid-cols-2 gap-x-8 sm:gap-x-12 md:gap-x-16 gap-y-16 sm:gap-y-24 relative z-10 items-start menu-grid-spacing"
+          style={{ minHeight: "60vh" }}
         >
           {filteredItems.map((item, idx) => {
             const variant = cardVariants[idx % cardVariants.length];
             const isLastOdd =
               idx === filteredItems.length - 1 && filteredItems.length % 2 !== 0;
             const isLeftColumn = idx % 2 === 0 && !isLastOdd;
+            const floatAnimClass = idx % 2 === 0 ? "menu-card-float-a" : "menu-card-float-b";
 
             // Specifically match DOLOR REPREHEND sizing for ESSE CILLUM
             const isEsseCillum = item.name === "ESSE CILLUM";
@@ -239,22 +267,26 @@ export default function MenusPage() {
 
             // Positioning container alignment:
             // - isLastOdd: centered across both columns
-            // - Columns 1 and 2: w-full flex justify-start
+            // - Mobile (< md): centered
+            // - Laptop (md+): Columns 1 and 2: w-full flex justify-start with menu-card-left-shift
             const cellAlignment = isLastOdd
               ? "col-span-full md:col-span-2 w-full flex justify-center items-center"
-              : "w-full flex justify-start";
+              : "w-full flex justify-center md:justify-start";
+
+            // Safe tilt: subtle on mobile to avoid corner clipping, full punk tilt on desktop
+            const activeTilt = isMobile ? variant.tilt * 0.35 : variant.tilt;
 
             return (
               <div
                 key={item.id}
                 className={`menu-card relative ${isLastOdd ? "md:mt-16 lg:mt-24" : variant.offsetY
-                  } ${cellAlignment}`}
+                  } ${cellAlignment} ${floatAnimClass}`}
               >
                 {/* Abstract Image Container — strictly holds group & cursor-pointer so hover area matches card 1:1 */}
                 <div
                   className={`relative group cursor-pointer shrink-0 ${cardWidth} ${cardHeight} ${isLastOdd ? "mx-auto menu-card-odd-center" : isLeftColumn ? "menu-card-left-shift" : ""
                     } bg-[#0a0a0a] border border-[#262626] overflow-hidden transition-colors duration-300 hover:border-[#E05D29]/70 hover:shadow-[0_15px_40px_rgba(224,93,41,0.22)]`}
-                  style={isLastOdd ? undefined : { transform: `rotate(${variant.tilt}deg)` }}
+                  style={isLastOdd ? undefined : { transform: `rotate(${activeTilt}deg)` }}
                   onClick={() => handleOpenModal(item)}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" || e.key === " ") {

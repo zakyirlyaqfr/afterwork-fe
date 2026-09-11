@@ -28,6 +28,13 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
     });
 
     lenisRef.current = lenis;
+    (window as any).lenis = lenis;
+
+    // Global listener for smooth scroll to top
+    const handleScrollToTop = () => {
+      lenis.scrollTo(0, { duration: 1.2 });
+    };
+    window.addEventListener("afterwork:scroll-to-top", handleScrollToTop);
 
     // Connect Lenis to GSAP ScrollTrigger
     lenis.on("scroll", ScrollTrigger.update);
@@ -40,23 +47,21 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
     gsap.ticker.lagSmoothing(500, 33);
 
     return () => {
+      window.removeEventListener("afterwork:scroll-to-top", handleScrollToTop);
       gsap.ticker.remove(updateTicker);
       lenis.destroy();
       lenisRef.current = null;
+      (window as any).lenis = null;
     };
   }, [prefersReduced]);
 
-  // Lock scroll completely when menu or modal is open
+  // Lock scroll completely via Lenis when menu or modal is open
   useEffect(() => {
     const lenis = lenisRef.current;
     if (isMenuOpen || isLocationModalOpen || isDetailModalOpen) {
       if (lenis) lenis.stop();
-      document.documentElement.style.overflow = "hidden";
-      document.body.style.overflow = "hidden";
     } else {
       if (lenis) lenis.start();
-      document.documentElement.style.overflow = "";
-      document.body.style.overflow = "";
     }
   }, [isMenuOpen, isLocationModalOpen, isDetailModalOpen]);
 

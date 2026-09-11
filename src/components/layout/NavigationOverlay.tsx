@@ -117,7 +117,7 @@ export default function NavigationOverlay() {
         - Uses .nav-overlay-content for robust responsive spacing away from the sidebar dock.
         - Zero overlap with sidebar elements or menu/close button.
       */}
-      <div className="flex-1 flex flex-col md:flex-row w-full h-full overflow-hidden items-center justify-between nav-overlay-content pt-24 sm:pt-28 pb-10 md:py-0">
+      <div className="flex-1 flex flex-col md:flex-row w-full h-full overflow-y-auto md:overflow-hidden items-center justify-center md:justify-between nav-overlay-content pt-20 sm:pt-24 pb-8 md:py-0">
         
         {/*
           Menu links column:
@@ -125,9 +125,9 @@ export default function NavigationOverlay() {
           - ANIMATION REMOVED: Static typography, no staggered motion or skew.
           - HOVER COLOR: Brand Orange (#E05D29).
         */}
-        <div className="w-full md:w-[52%] lg:w-[55%] h-full flex flex-col justify-center select-none">
+        <div className="w-full md:w-[52%] lg:w-[55%] h-auto md:h-full flex flex-col justify-center select-none py-4 md:py-0">
           <nav
-            className="flex flex-col justify-center space-y-4 sm:space-y-5 md:space-y-6 lg:space-y-6 xl:space-y-7"
+            className="flex flex-col justify-center space-y-3.5 sm:space-y-5 md:space-y-6 lg:space-y-6 xl:space-y-7"
             aria-label="Main Navigation"
           >
             {navigationItems.map((item) => {

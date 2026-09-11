@@ -79,7 +79,7 @@ html.showing-splash #custom-cursor {
 
 @media (min-width: 768px) {
   .main-content-layout {
-    width: calc(100vw - var(--sidebar-width));
+    width: calc(100% - var(--sidebar-width));
     margin-left: var(--sidebar-width);
     padding-left: 0;
   }
@@ -113,15 +113,24 @@ html.showing-splash #custom-cursor {
   padding-top: 24px;
 }
 
-/* Sticky transparent header for Menus page: stays pinned when scrolling, cards slide underneath */
+/* Generous, guaranteed clearance for subpage content under sticky multi-line headers */
+.subpage-content-spacing {
+  margin-top: 48px;
+  padding-top: 24px;
+}
+
+/* Sticky header for Menus, Gallery, Contact, FAQs with frosted blur on scroll boundary */
 .menu-sticky-header {
   position: sticky;
-  top: 32px;
-  z-index: 40;
-  background: transparent;
+  top: 0;
+  z-index: 78;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.98) 0%, rgba(0, 0, 0, 0.9) 60%, rgba(0, 0, 0, 0.4) 85%, rgba(0, 0, 0, 0) 100%);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  padding-top: 52px;
+  padding-bottom: 36px;
+  margin-top: -52px;
   pointer-events: none;
-  margin-top: 4px;
-  /* Posisi sedikit lebih ke atas */
 }
 
 @media (min-width: 768px) {
@@ -130,10 +139,16 @@ html.showing-splash #custom-cursor {
     padding-top: 40px;
   }
 
+  .subpage-content-spacing {
+    margin-top: 96px;
+    padding-top: 48px;
+  }
+
   .menu-sticky-header {
-    top: 38px;
-    margin-top: 6px;
-    /* Posisi sedikit lebih ke atas */
+    top: 0;
+    padding-top: 40px;
+    padding-bottom: 40px;
+    margin-top: -40px;
   }
 
   .menu-card-left-shift {
@@ -142,15 +157,48 @@ html.showing-splash #custom-cursor {
 }
 
 @media (min-width: 1024px) {
+  .subpage-content-spacing {
+    margin-top: 128px;
+    padding-top: 64px;
+  }
+
   .menu-sticky-header {
-    top: 42px;
-    margin-top: 8px;
-    /* Posisi sedikit lebih ke atas pada layar lebar */
+    top: 0;
+    padding-top: 44px;
+    padding-bottom: 44px;
+    margin-top: -44px;
   }
 
   .menu-card-left-shift {
     margin-left: 140px !important;
   }
+}
+
+/* Gentle menu card floating without any collision or overlap */
+@keyframes menuCardFloatA {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes menuCardFloatB {
+  0%, 100% {
+    transform: translateY(-2px);
+  }
+  50% {
+    transform: translateY(4px);
+  }
+}
+
+.menu-card-float-a {
+  animation: menuCardFloatA 5.5s ease-in-out infinite;
+}
+
+.menu-card-float-b {
+  animation: menuCardFloatB 6.8s ease-in-out infinite;
 }
 
 .menu-sticky-interactive {
@@ -344,7 +392,7 @@ html.lenis body {
 .hero-word-primary {
   font-family: var(--font-display), 'Alte Haas Grotesk', sans-serif;
   font-weight: 900;
-  font-size: clamp(3.25rem, 6.8vw, 6.85rem);
+  font-size: clamp(2.85rem, 6.8vw, 6.85rem);
   letter-spacing: -0.04em;
   color: #ffffff;
   display: block;
@@ -358,7 +406,7 @@ html.lenis body {
 .hero-word-secondary {
   font-family: var(--font-display), 'Alte Haas Grotesk', sans-serif;
   font-weight: 900;
-  font-size: clamp(3.25rem, 6.8vw, 6.85rem);
+  font-size: clamp(2.85rem, 6.8vw, 6.85rem);
   letter-spacing: -0.04em;
   color: transparent;
   -webkit-text-stroke: 2.5px rgba(255, 255, 255, 0.88);

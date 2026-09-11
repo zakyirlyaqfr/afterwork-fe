@@ -95,12 +95,9 @@ export default function MenuDetailModal({
     );
   }, [onClose]);
 
-  // Smooth entrance animation sequence
+  // Smooth entrance animation sequence (Satu kesatuan utuh tanpa delay pecahan)
   useEffect(() => {
     if (!isOpen || !item) return;
-
-    const originalOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
 
     const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
 
@@ -109,44 +106,19 @@ export default function MenuDetailModal({
       tl.fromTo(
         backdropRef.current,
         { opacity: 0 },
-        { opacity: 1, duration: 0.25 }
+        { opacity: 1, duration: 0.2 }
       );
     }
 
-    // 2. Modal card spring-scale and slide up
+    // 2. Modal card masuk secara utuh (foto, gradasi fade, dan teks langsung menyatu tanpa delay)
     if (modalRef.current) {
       tl.fromTo(
         modalRef.current,
-        { opacity: 0, scale: 0.92, y: 24 },
-        { opacity: 1, scale: 1, y: 0, duration: 0.42 },
-        "-=0.15"
+        { opacity: 0, scale: 0.95, y: 16 },
+        { opacity: 1, scale: 1, y: 0, duration: 0.3 },
+        "-=0.1"
       );
     }
-
-    // 3. Image subtle zoom settle
-    if (imageRef.current) {
-      tl.fromTo(
-        imageRef.current,
-        { scale: 1.06 },
-        { scale: 1, duration: 0.45, ease: "power2.out" },
-        "-=0.3"
-      );
-    }
-
-    // 4. Content elements staggered reveal
-    if (contentRef.current) {
-      const elements = contentRef.current.children;
-      tl.fromTo(
-        elements,
-        { opacity: 0, y: 10 },
-        { opacity: 1, y: 0, duration: 0.32, stagger: 0.05 },
-        "-=0.25"
-      );
-    }
-
-    return () => {
-      document.body.style.overflow = originalOverflow;
-    };
   }, [isOpen, item]);
 
   // ESC key listener
@@ -164,25 +136,6 @@ export default function MenuDetailModal({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, handleClose]);
 
-  // Toggle expand/collapse when clicking the handle/top row
-  const toggleSheetExpand = () => {
-    if (!scrollContainerRef.current) return;
-    const currentScroll = scrollContainerRef.current.scrollTop;
-    // 3/5 spacer is ~348px (desktop 372px)
-    const spacerHeight = window.innerWidth >= 640 ? 372 : 348;
-    if (currentScroll < 60) {
-      scrollContainerRef.current.scrollTo({
-        top: spacerHeight,
-        behavior: "smooth",
-      });
-    } else {
-      scrollContainerRef.current.scrollTo({
-        top: 0,
-        behavior: "smooth",
-      });
-    }
-  };
-
   if (!isOpen || !item) return null;
 
   return (
@@ -192,40 +145,39 @@ export default function MenuDetailModal({
       aria-modal="true"
       aria-labelledby="modal-item-title"
       data-lenis-prevent
-      className="fixed inset-0 z-[85] flex items-center justify-center p-4 sm:p-6 select-none cursor-pointer"
+      className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-6 select-none cursor-pointer"
       style={{
-        backgroundColor: "rgba(0, 0, 0, 0.78)",
-        backdropFilter: "blur(8px)",
-        WebkitBackdropFilter: "blur(8px)",
+        backgroundColor: "rgba(0, 0, 0, 0.85)",
+        backdropFilter: "blur(14px)",
+        WebkitBackdropFilter: "blur(14px)",
       }}
       onClick={handleClose}
     >
       {/* 
         Sederhana & Elegan — True Portrait Modal Card:
-        - Rasio Portrait: max-w-[390px] sm:max-w-[420px], tinggi tetap h-[580px] sm:h-[620px]
-        - Awalnya: Keterangan teks mengisi 2/5 (40%) bagian bawah, Foto terlihat 3/5 (60%) di atas
-        - Bisa di-scroll: Scroll mengangkat kotak teks menutupi foto secara penuh
-        - Jika teks lebih panjang lagi: Teks di dalam kotak teks terus bisa di-scroll
-        - Tanpa scrollbar (.no-scrollbar)
-        - Harga dipindahkan rapi ke bawah judul menu (bukan di pojok atas)
-        - Ujung tumpul aman: Padding horizontal & vertikal luas (px-7 sm:px-8, pb-12 sm:pb-14) agar tidak ada teks terpotong
+        - Layer Terdepan: z-[210] di atas seluruh elemen layout
+        - Rasio Portrait: max-w-[390px] sm:max-w-[430px], tinggi tetap h-[600px] sm:h-[640px]
+        - Awalnya: Keterangan teks mengisi ~45% bagian bawah, Foto terlihat ~55% di atas
+        - Bisa di-scroll: Scroll mengangkat kotak teks menutupi foto, dan mentok tepat sehabis paragraf terakhir tanpa sisa ruang kosong
+        - Tanpa garis samping pada modal
+        - Tombol X minimalis tanpa kotak pembungkus
       */}
       <div
         ref={modalRef}
         onClick={(e) => e.stopPropagation()}
         data-lenis-prevent
-        className="relative z-[90] w-full max-w-[380px] sm:max-w-[420px] h-[580px] sm:h-[620px] bg-[#0D0D0D] border border-white/10 rounded-3xl overflow-hidden shadow-[0_25px_80px_rgba(0,0,0,0.9),0_0_0_1px_rgba(255,255,255,0.06)] flex flex-col cursor-default select-text"
+        className="relative z-[210] w-full max-w-[390px] sm:max-w-[430px] h-[600px] max-h-[90dvh] sm:max-h-[94dvh] sm:h-[640px] bg-[#0D0D0D] rounded-[6px] overflow-hidden shadow-[0_30px_90px_rgba(0,0,0,0.95)] flex flex-col cursor-default select-text"
       >
         {/* Layer 1: Foto Produk di Balik Kotak Teks */}
         <div
           ref={imageRef}
-          className="absolute inset-0 w-full h-[65%] sm:h-[68%] bg-[#141414] overflow-hidden z-0 pointer-events-none"
+          className="absolute inset-0 w-full h-[65%] sm:h-[68%] bg-[#141414] overflow-hidden z-0 pointer-events-none rounded-t-[6px]"
         >
           <Image
             src={item.previewImage || "/images/default.jpg"}
             alt={item.name}
             fill
-            sizes="(max-width: 640px) 100vw, 420px"
+            sizes="(max-width: 640px) 100vw, 430px"
             className="object-cover object-center contrast-105"
             priority
           />
@@ -234,87 +186,145 @@ export default function MenuDetailModal({
           <div className="absolute inset-0 bg-gradient-to-t from-[#0D0D0D] via-transparent to-black/30 pointer-events-none" />
         </div>
 
-        {/* Tombol Tutup Bulat Frosted Glass (Selalu aktif di z-40) */}
+        {/* Tombol Tutup X Minimalis (Tanpa Row Kotak) */}
         <button
           type="button"
           onClick={handleClose}
           aria-label="Tutup pop up"
-          className="absolute top-4 right-4 z-40 w-9 h-9 rounded-full bg-black/55 backdrop-blur-md border border-white/20 text-white/80 hover:text-white hover:bg-black/85 hover:scale-105 active:scale-95 flex items-center justify-center transition-all duration-200 cursor-pointer focus:outline-none shadow-lg"
+          className="absolute top-3.5 right-3.5 z-40 p-2 text-white/60 hover:text-white active:scale-90 transition-all duration-200 cursor-pointer focus:outline-none drop-shadow-[0_2px_6px_rgba(0,0,0,0.85)]"
         >
-          <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
             <path
-              d="M3 3L13 13M13 3L3 13"
+              d="M2.5 2.5L13.5 13.5M13.5 2.5L2.5 13.5"
               stroke="currentColor"
-              strokeWidth="2"
+              strokeWidth="1.8"
               strokeLinecap="round"
             />
           </svg>
         </button>
 
         {/* Layer 2: Wadah Scroll Interaktif (Tanpa Scrollbar)
-            - Spacer transparan 3/5 di atas membuat foto terlihat saat resting state
-            - Kotak teks 2/5 di bawah
-            - Scroll mengangkat kotak teks menutupi foto, dan bisa terus scroll teks jika panjang */}
+            - Spacer transparan di atas membuat foto terlihat saat resting state
+            - Kotak teks menyatu dengan box dengan efek fade lembut
+            - Scroll mentok tepat sehabis paragraf terakhir tanpa menyisakan ruang kosong */}
         <div
           ref={scrollContainerRef}
           data-lenis-prevent
           className="absolute inset-0 z-20 overflow-y-auto no-scrollbar scroll-smooth flex flex-col"
         >
-          {/* Spacer Transparan 3/5 (60% tinggi pop up) */}
+          {/* Spacer Transparan (54% tinggi pop up) */}
           <div
-            className="w-full h-[348px] sm:h-[372px] shrink-0 pointer-events-none bg-transparent"
+            className="w-full h-[54%] shrink-0 pointer-events-none bg-transparent"
             aria-hidden="true"
           />
 
-          {/* Kotak Teks Keterangan (Mengisi 2/5 bagian bawah saat awal, meluncur naik saat di-scroll) */}
+          {/* Kotak Teks Keterangan:
+              - Menyatu dengan box (tanpa handle bar terpisah)
+              - Efek Smooth Scrim Gradient Fade lembut, halus, dan menyatu di bagian atas (persis SS)
+              - Jarak sedikit lebih lebar dari batas kiri-kanan (px-8 sm:px-9) agar teks tidak terlalu dekat batas
+              - Tinggi alami (tanpa min-h-full) sehingga scroll mentok di akhir teks tanpa ruang kosong */}
           <div
             ref={contentRef}
-            className="w-full min-h-full bg-[#0E0E0E] rounded-t-3xl border-t border-white/15 shadow-[0_-20px_40px_rgba(0,0,0,0.9)] px-7 sm:px-8 pt-3 pb-12 sm:pb-14 flex flex-col gap-3 pointer-events-auto"
+            className="w-full bg-[#0E0E0E] px-8 sm:px-9 pt-3 pb-7 sm:pb-8 flex flex-col gap-3.5 pointer-events-auto relative"
           >
-            {/* Handle Bar Interaktif (Bisa ditarik / diklik untuk expand) */}
+            {/* Smooth Fade Transition ke Foto di atas (Smooth Scrim Curve persis SS) */}
             <div
-              onClick={toggleSheetExpand}
-              className="w-full py-1.5 flex justify-center cursor-pointer group"
-              title="Klik atau scroll untuk membuka keterangan penuh"
-            >
-              <div className="w-10 h-1 rounded-full bg-white/25 group-hover:bg-[#E05D29] group-hover:w-14 transition-all duration-300" />
-            </div>
+              aria-hidden="true"
+              className="absolute -top-24 sm:-top-28 left-0 right-0 h-24 sm:h-28 pointer-events-none"
+              style={{
+                background:
+                  "linear-gradient(to top, #0E0E0E 0%, rgba(14, 14, 14, 0.98) 12%, rgba(14, 14, 14, 0.88) 25%, rgba(14, 14, 14, 0.72) 38%, rgba(14, 14, 14, 0.52) 52%, rgba(14, 14, 14, 0.32) 66%, rgba(14, 14, 14, 0.16) 78%, rgba(14, 14, 14, 0.05) 89%, rgba(14, 14, 14, 0) 100%)",
+              }}
+            />
 
-            {/* Blok Kategori & Judul + Harga (Jarak dekat dan harga di kanan judul) */}
-            <div className="flex flex-col gap-1">
-              {/* Kategori Menu */}
-              <div>
-                <span className="text-[11px] font-mono font-bold tracking-[0.25em] text-[#E05D29] uppercase">
-                  {item.category}
-                </span>
-              </div>
-
-              {/* Baris Judul Menu & Harga di Sebelah Kanan */}
-              <div className="flex items-baseline justify-between gap-3">
-                <h2
-                  id="modal-item-title"
-                  className="text-2xl sm:text-[28px] font-black uppercase tracking-tight text-white leading-tight"
-                >
-                  {item.name}
-                </h2>
-                <span className="text-xl sm:text-2xl font-mono font-black text-[#E05D29] tracking-wider shrink-0">
+            {/* 1. Judul Menu & Harga Sejajar (Ukuran Font Harga Berbeda/Lebih Kecil) */}
+            <div className="flex items-baseline flex-wrap gap-x-2.5 gap-y-1">
+              <h2
+                id="modal-item-title"
+                className="text-2xl sm:text-[26px] font-black uppercase tracking-tight text-white leading-tight"
+              >
+                {item.name}{" "}
+                <span className="inline-block text-base sm:text-lg font-mono font-bold text-[#E05D29] tracking-wider align-baseline ml-1.5 drop-shadow-[0_0_10px_rgba(224,93,41,0.35)]">
                   {item.price}
                 </span>
-              </div>
+              </h2>
             </div>
 
-            {/* Garis Aksen Halus */}
-            <div className="w-full h-px bg-white/10 my-0.5" />
+            {/* 2. Sensory Notes: Layout dari SS (Header SENSORY NOTES + Text dipisahkan '|' tanpa kotak) */}
+            {item.details?.notes && (
+              <div className="flex flex-col gap-1.5 pb-2.5">
+                <span className="text-[9px] font-mono uppercase tracking-[0.22em] text-neutral-400 font-bold">
+                  SENSORY NOTES
+                </span>
+                <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-xs sm:text-[13px] font-mono tracking-wide text-neutral-200">
+                  {item.details.notes.split(",").map((note, idx, arr) => (
+                    <span key={note} className="inline-flex items-center gap-2.5">
+                      <span className="text-neutral-200">{note.trim()}</span>
+                      {idx < arr.length - 1 && (
+                        <span className="text-white/35 select-none font-sans font-light">
+                          |
+                        </span>
+                      )}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
 
-            {/* Deskripsi Menu: Keterangan Panjang dengan Ruang Baca Nyaman */}
-            <p className="text-xs sm:text-sm text-neutral-300 leading-relaxed font-normal">
-              {item.description}
-            </p>
+            {/* 3. Specifications: 3 Kolom dari SS, tapi tanpa kotak (batasnya garis saja, jangan dikotakkan) */}
+            {(item.details?.craft || item.details?.ratio || item.details?.origin) && (
+              <div className="grid grid-cols-3 divide-x divide-white/10 border-y border-white/10 py-3 my-0.5">
+                {item.details?.craft && (
+                  <div className="flex flex-col gap-1 pr-3">
+                    <span className="text-[9px] font-mono uppercase tracking-wider text-[#E05D29] font-bold">
+                      CRAFT / METHOD
+                    </span>
+                    <span className="text-xs text-neutral-200 font-medium leading-snug">
+                      {item.details.craft}
+                    </span>
+                  </div>
+                )}
+
+                {item.details?.ratio && (
+                  <div className="flex flex-col gap-1 px-3">
+                    <span className="text-[9px] font-mono uppercase tracking-wider text-[#E05D29] font-bold">
+                      BREW RATIO
+                    </span>
+                    <span className="text-xs text-neutral-200 font-medium leading-snug">
+                      {item.details.ratio}
+                    </span>
+                  </div>
+                )}
+
+                {item.details?.origin && (
+                  <div className="flex flex-col gap-1 pl-3">
+                    <span className="text-[9px] font-mono uppercase tracking-wider text-neutral-400 font-bold">
+                      ORIGIN / TERROIR
+                    </span>
+                    <span className="text-xs text-neutral-200 font-medium leading-snug">
+                      {item.details.origin}
+                    </span>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* 4. Deskripsi Menu: Keterangan Sangat Panjang dengan Formatting Editorial */}
+            <div className="flex flex-col gap-1.5 pt-0.5">
+              <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-neutral-400 font-bold">
+                Artisan Story & Narrative
+              </span>
+              <div className="text-xs sm:text-[13px] text-neutral-300 leading-relaxed font-normal space-y-3">
+                {item.description.split("\n\n").map((paragraph, pIdx) => (
+                  <p key={pIdx} className="text-neutral-300/90 leading-relaxed">
+                    {paragraph}
+                  </p>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
   );
 }
-
-

@@ -77,17 +77,8 @@ export function UIProvider({ children }: { children: React.ReactNode }) {
   const closeDetailModal = () => setIsDetailModalOpen(false);
   const setDetailModalOpen = (open: boolean) => setIsDetailModalOpen(open);
 
-  // Lock body scroll when menu or modal is open
-  useEffect(() => {
-    if (isMenuOpen || isLocationModalOpen || isDetailModalOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [isMenuOpen, isLocationModalOpen, isDetailModalOpen]);
+  // Note: Scroll locking is handled cleanly by Lenis in SmoothScroll without mutating body overflow,
+  // preventing sticky header positioning from breaking when scrolled down.
 
   // Handle ESC key to close open overlays
   useEffect(() => {
