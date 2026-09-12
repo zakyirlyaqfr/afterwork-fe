@@ -1,15 +1,27 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import { useUI } from "@/context/UIContext";
 import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 export default function PageLoader() {
   const pathname = usePathname();
-  const { hasSeenSplash } = useUI();
-  const [showLoader, setShowLoader] = useState(false);
+  const router = useRouter();
+  const {
+    hasSeenSplash,
+    isPageTransitioning,
+    targetPath,
+    finishPageTransition,
+    closeMenu,
+  } = useUI();
+
+  const [isRefreshLoaderActive, setIsRefreshLoaderActive] = useState(false);
+  // Instantly true synchronously in the exact same render frame when navigateTo is called
+  const showLoader = isPageTransitioning || isRefreshLoaderActive;
+
   const containerRef = useRef<HTMLDivElement>(null);
   const logoRef = useRef<HTMLDivElement>(null);
   const auraRef = useRef<HTMLDivElement>(null);
@@ -17,8 +29,7 @@ export default function PageLoader() {
   const isFirstRender = useRef(true);
   const isRefreshLoad = useRef(false);
 
-  // Check on mount if this is a page refresh where splash screen was already seen
-  // Or trigger loader on subsequent route changes
+  // 1. Mount detection: check for page refresh loader
   useEffect(() => {
     if (isFirstRender.current) {
       isFirstRender.current = false;
@@ -31,7 +42,7 @@ export default function PageLoader() {
         const seen = sessionStorage.getItem("afterwork_splash_seen");
         if (seen && !forceSplash) {
           isRefreshLoad.current = true;
-          setShowLoader(true);
+          setIsRefreshLoaderActive(true);
         }
       } catch {
         // Ignore
@@ -43,11 +54,14 @@ export default function PageLoader() {
     if (prevPathRef.current === pathname) return;
     prevPathRef.current = pathname;
 
-    isRefreshLoad.current = false;
-    setShowLoader(true);
-  }, [pathname, hasSeenSplash]);
+    // Fallback if URL changed without navigateTo (e.g. popstate / browser back/forward)
+    if (!isPageTransitioning) {
+      isRefreshLoad.current = false;
+      setIsRefreshLoaderActive(true);
+    }
+  }, [pathname, hasSeenSplash, isPageTransitioning]);
 
-  // Unified cinematic animation flow when loader appears
+  // 3. Cinematic transition & breathing animation
   useEffect(() => {
     if (!showLoader) return;
 
@@ -57,48 +71,14 @@ export default function PageLoader() {
     if (!container || !logo) return;
 
     const isRefresh = isRefreshLoad.current;
+    const isProgrammatic = isPageTransitioning && Boolean(targetPath);
 
-    // Reset initial states cleanly
-    if (isRefresh) {
-      // On page refresh, container is already visible via CSS
-      gsap.set(container, { opacity: 1 });
-      gsap.set(logo, { opacity: 1, scale: 1 });
-      if (aura) gsap.set(aura, { opacity: 0.25, scale: 1 });
-    } else {
-      // On route change transition, smoothly darken from 0 to 1
-      gsap.set(container, { opacity: 0 });
-      gsap.set(logo, { opacity: 0, scale: 0.94 });
-      if (aura) gsap.set(aura, { opacity: 0.2, scale: 0.95 });
-    }
+    // Immediately solid black with breathing logo - NO transparency, zero glimpse of previous page!
+    gsap.set(container, { opacity: 1 });
+    gsap.set(logo, { opacity: 1, scale: 1 });
+    if (aura) gsap.set(aura, { opacity: 0.25, scale: 1 });
 
-    const tl = gsap.timeline();
-
-    if (!isRefresh) {
-      // 1. Velvet entrance: container smoothly darkens the screen
-      tl.to(
-        container,
-        {
-          opacity: 1,
-          duration: 0.45,
-          ease: "power2.out",
-        },
-        0
-      );
-
-      // 2. Logo gently emerges with subtle organic scale (no bouncy pop)
-      tl.to(
-        logo,
-        {
-          opacity: 1,
-          scale: 1,
-          duration: 0.5,
-          ease: "power2.out",
-        },
-        0.05
-      );
-    }
-
-    // Breathing pulse animation (matching splashscreen exactly)
+    // Breathing pulse animation
     const breathingTween = gsap.to(logo, {
       scale: 1.045,
       duration: 1.25,
@@ -119,34 +99,51 @@ export default function PageLoader() {
       });
     }
 
-    // 3. Tranquil hold: allow the breathing logo to breathe peacefully without rushing
-    const holdDuration = isRefresh ? 1400 : 1600;
+    // For programmatic navigation:
+    // Screen is ALREADY 100% black from frame 0.
+    // Close menu, reset scroll, and execute router.push in total darkness!
+    let navTimer: NodeJS.Timeout | null = null;
+    if (isProgrammatic && targetPath) {
+      navTimer = setTimeout(() => {
+        closeMenu();
+        if ((window as any).lenis) {
+          (window as any).lenis.scrollTo(0, { immediate: true });
+        } else {
+          window.scrollTo(0, 0);
+        }
+        router.push(targetPath);
+      }, 50);
+    }
+
+    // Hold duration: breathing peacefully
+    const holdDuration = isRefresh ? 1400 : 1250;
     const exitTimer = setTimeout(() => {
       // Remove the static CSS class so GSAP controls opacity
       if (typeof document !== "undefined") {
         document.documentElement.classList.remove("showing-refresh-loader");
       }
 
-      // Ensure container has inline opacity 1 before tweening to 0
       gsap.set(container, { opacity: 1 });
 
-      // 4. Silky, gentle dissolution revealing the refreshed / new page underneath
+      // Silky gentle dissolution revealing the new page
       gsap.to(container, {
         opacity: 0,
         duration: 0.65,
         ease: "power2.inOut",
         onComplete: () => {
-          setShowLoader(false);
+          setIsRefreshLoaderActive(false);
           breathingTween.kill();
           if (auraTween) auraTween.kill();
           gsap.killTweensOf([container, logo, aura].filter(Boolean));
+          ScrollTrigger.refresh();
+          finishPageTransition();
         },
       });
     }, holdDuration);
 
     return () => {
+      if (navTimer) clearTimeout(navTimer);
       clearTimeout(exitTimer);
-      tl.kill();
       breathingTween.kill();
       if (auraTween) auraTween.kill();
       gsap.killTweensOf([container, logo, aura].filter(Boolean));
@@ -157,8 +154,8 @@ export default function PageLoader() {
     <div
       id="page-transition-loader"
       ref={containerRef}
-      className={`fixed inset-0 z-[9990] flex items-center justify-center bg-black pointer-events-none select-none ${
-        showLoader ? "flex" : "hidden"
+      className={`fixed inset-0 z-[9990] flex items-center justify-center bg-black select-none ${
+        showLoader ? "flex pointer-events-auto opacity-100" : "hidden pointer-events-none opacity-0"
       }`}
       style={{
         backgroundColor: "#000000",

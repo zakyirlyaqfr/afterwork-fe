@@ -15,7 +15,7 @@ export default function EditorialStory() {
   const textRef = useRef<HTMLDivElement>(null);
   const bgTextRef = useRef<HTMLDivElement>(null);
   const prefersReduced = useReducedMotion();
-  const { hasSeenSplash } = useUI();
+  const { hasSeenSplash, navigateTo } = useUI();
 
   useEffect(() => {
     if (prefersReduced) return;
@@ -209,6 +209,10 @@ export default function EditorialStory() {
                 <div className="pt-2 btn-story-wrapper">
                   <Link
                     href="/about"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      navigateTo("/about");
+                    }}
                     className="group inline-flex items-center gap-4 px-8 py-4 bg-white hover:bg-[#E05D29] text-black hover:text-white border-2 border-white hover:border-[#E05D29] transition-all duration-300 tracking-[0.25em] uppercase text-xs sm:text-sm font-sans font-black shadow-2xl cursor-pointer"
                   >
                     <span>Read More</span>

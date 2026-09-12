@@ -2,10 +2,26 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useUI } from "@/context/UIContext";
 
 export default function MenuTrigger() {
-  const { isMenuOpen, toggleMenu } = useUI();
+  const { isMenuOpen, toggleMenu, closeMenu, navigateTo } = useUI();
+  const pathname = usePathname();
+
+  const handleLogoClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (isMenuOpen) closeMenu();
+    if (pathname === "/") {
+      if ((window as any).lenis) {
+        (window as any).lenis.scrollTo(0, { duration: 1.2 });
+      } else {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+      return;
+    }
+    navigateTo("/");
+  };
 
   return (
     <>
@@ -23,6 +39,7 @@ export default function MenuTrigger() {
         <div className="w-full flex justify-center px-4 absolute top-10 lg:top-12 z-[100] pointer-events-auto">
           <Link
             href="/"
+            onClick={handleLogoClick}
             className="group block relative w-12 h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 xl:w-[72px] xl:h-[72px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#E05D29]"
             aria-label="Afterwork Caffeine Homepage"
           >
@@ -123,6 +140,7 @@ export default function MenuTrigger() {
       <div className="md:hidden fixed left-4 sm:left-6 top-4 sm:top-5 z-[90] select-none site-chrome">
         <Link
           href="/"
+          onClick={handleLogoClick}
           className="group block relative w-9 h-9 sm:w-10 sm:h-10 focus:outline-none"
           aria-label="Afterwork Caffeine Homepage"
         >

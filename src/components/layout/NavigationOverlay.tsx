@@ -9,13 +9,22 @@ import { navigationItems } from "@/data/navigation";
 import gsap from "gsap";
 
 export default function NavigationOverlay() {
-  const { isMenuOpen, closeMenu } = useUI();
+  const { isMenuOpen, closeMenu, navigateTo, isPageTransitioning } = useUI();
   const pathname = usePathname();
   const [hoveredId, setHoveredId] = useState<string | null>(null);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const imageCardRef = useRef<HTMLDivElement>(null);
   const isFirstRender = useRef(true);
+
+  const handleNavClick = (e: React.MouseEvent, href: string) => {
+    e.preventDefault();
+    if (pathname === href) {
+      closeMenu();
+      return;
+    }
+    navigateTo(href);
+  };
 
   // Close menu on route change
   useEffect(() => {
@@ -74,6 +83,14 @@ export default function NavigationOverlay() {
         );
       }
     } else {
+      if (isPageTransitioning) {
+        gsap.set(container, { visibility: "hidden", clipPath: "inset(0% 100% 0% 0%)" });
+        if (imageCardRef.current) {
+          gsap.set(imageCardRef.current, { opacity: 0 });
+        }
+        return;
+      }
+
       // Exit Animation: Image card glides out and curtain sweeps back
       if (imageCardRef.current) {
         gsap.to(imageCardRef.current, {
@@ -100,7 +117,7 @@ export default function NavigationOverlay() {
         }
       );
     }
-  }, [isMenuOpen]);
+  }, [isMenuOpen, isPageTransitioning]);
 
   return (
     <div
@@ -139,7 +156,7 @@ export default function NavigationOverlay() {
                 <div key={item.id} className="overflow-hidden">
                   <Link
                     href={item.href}
-                    onClick={closeMenu}
+                    onClick={(e) => handleNavClick(e, item.href)}
                     onMouseEnter={() => setHoveredId(item.id)}
                     onMouseLeave={() => setHoveredId(null)}
                     className={`nav-link-hover group inline-flex items-center py-1 sm:py-1.5 focus:outline-none ${

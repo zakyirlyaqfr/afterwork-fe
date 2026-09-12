@@ -49,7 +49,7 @@ export default function CraftCollage() {
   const watermarkRef = useRef<HTMLDivElement>(null);
   const prefersReduced = useReducedMotion();
   const isMobile = useMediaQuery("(max-width: 639px)");
-  const { hasSeenSplash } = useUI();
+  const { hasSeenSplash, navigateTo } = useUI();
 
   const total = galleryItems.length;
 
@@ -89,9 +89,6 @@ export default function CraftCollage() {
 
     if (!hasSeenSplash) {
       // Pre-set elements to hidden starting state so they do not flash when splash dissolves
-      if (watermarkRef.current) {
-        gsap.set(watermarkRef.current, { opacity: 0, y: 40 });
-      }
       if (carouselTrackRef.current) {
         gsap.set(carouselTrackRef.current, { opacity: 0, y: 45, filter: "blur(4px)" });
       }
@@ -107,27 +104,10 @@ export default function CraftCollage() {
     if (!section) return;
 
     const ctx = gsap.context(() => {
-      // 1. Watermark reveals visibly as section arrives, spanning across sidebar
+      // 1. Ghosted giant background watermark delicate parallax float on scroll (matching Section 2)
       if (watermarkRef.current) {
-        gsap.fromTo(
-          watermarkRef.current,
-          { opacity: 0, y: 40 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 1.6,
-            ease: "power2.out",
-            scrollTrigger: {
-              trigger: section,
-              start: "top 85%",
-              toggleActions: "play none none reverse",
-            },
-          }
-        );
-
-        // Delicate parallax float on scroll
         gsap.to(watermarkRef.current, {
-          y: -70,
+          y: -80,
           ease: "none",
           scrollTrigger: {
             trigger: section,
@@ -203,11 +183,15 @@ export default function CraftCollage() {
     >
       {/* Ghosted Giant Background Industrial Watermark - Spans over sidebar row like Section 2 */}
       <div
-        ref={watermarkRef}
         aria-hidden="true"
-        className="absolute top-1/2 -translate-y-1/2 -left-20 sm:-left-32 md:-left-48 lg:-left-64 pointer-events-none select-none text-[clamp(7rem,21vw,24rem)] font-black uppercase text-white/[0.07] tracking-tighter leading-none whitespace-nowrap z-0 will-change-transform"
+        className="absolute top-1/2 -translate-y-1/2 -left-20 sm:-left-32 md:-left-48 lg:-left-64 pointer-events-none select-none z-0 overflow-visible"
       >
-        AFTERWORK
+        <div
+          ref={watermarkRef}
+          className="text-[clamp(7rem,21vw,24rem)] font-black uppercase text-white/[0.07] tracking-tighter leading-none whitespace-nowrap will-change-transform"
+        >
+          AFTERWORK
+        </div>
       </div>
 
       <div
@@ -344,6 +328,10 @@ export default function CraftCollage() {
         >
           <Link
             href="/gallery"
+            onClick={(e) => {
+              e.preventDefault();
+              navigateTo("/gallery");
+            }}
             className="group inline-flex items-center justify-center gap-4 px-10 sm:px-12 py-3 sm:py-3.5 bg-white hover:bg-[#E05D29] text-black hover:text-white border-2 border-white hover:border-[#E05D29] transition-all duration-300 tracking-[0.25em] uppercase text-xs sm:text-sm font-sans font-black shadow-2xl cursor-pointer"
           >
             <span>EXPLORE</span>

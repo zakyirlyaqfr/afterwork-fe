@@ -1,6 +1,7 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
+import { usePathname } from "next/navigation";
 
 interface UIContextType {
   isMenuOpen: boolean;
@@ -23,6 +24,11 @@ interface UIContextType {
 
   currentSectionTheme: "dark" | "light";
   setCurrentSectionTheme: (theme: "dark" | "light") => void;
+
+  isPageTransitioning: boolean;
+  targetPath: string | null;
+  navigateTo: (href: string) => void;
+  finishPageTransition: () => void;
 }
 
 const UIContext = createContext<UIContextType | undefined>(undefined);
@@ -34,6 +40,9 @@ export function UIProvider({ children }: { children: React.ReactNode }) {
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [hasSeenSplash, setHasSeenSplash] = useState(false); // Default false so hero waits for splash
   const [currentSectionTheme, setCurrentSectionTheme] = useState<"dark" | "light">("dark");
+  const [isPageTransitioning, setIsPageTransitioning] = useState(false);
+  const [targetPath, setTargetPath] = useState<string | null>(null);
+  const pathname = usePathname();
 
   useEffect(() => {
     // Check sessionStorage on client
@@ -84,6 +93,28 @@ export function UIProvider({ children }: { children: React.ReactNode }) {
   const closeDetailModal = () => setIsDetailModalOpen(false);
   const setDetailModalOpen = (open: boolean) => setIsDetailModalOpen(open);
 
+  const navigateTo = useCallback(
+    (href: string) => {
+      // If clicking same page or already transitioning, ignore or just close menu
+      if (href === pathname || isPageTransitioning) {
+        if (isMenuOpen) closeMenu();
+        return;
+      }
+
+      if (isLocationModalOpen) closeLocationModal();
+      if (isDetailModalOpen) closeDetailModal();
+
+      setTargetPath(href);
+      setIsPageTransitioning(true);
+    },
+    [pathname, isPageTransitioning, isMenuOpen, isLocationModalOpen, isDetailModalOpen]
+  );
+
+  const finishPageTransition = useCallback(() => {
+    setIsPageTransitioning(false);
+    setTargetPath(null);
+  }, []);
+
   // Note: Scroll locking is handled cleanly by Lenis in SmoothScroll without mutating body overflow,
   // preventing sticky header positioning from breaking when scrolled down.
 
@@ -118,6 +149,10 @@ export function UIProvider({ children }: { children: React.ReactNode }) {
         completeSplash,
         currentSectionTheme,
         setCurrentSectionTheme,
+        isPageTransitioning,
+        targetPath,
+        navigateTo,
+        finishPageTransition,
       }}
     >
       {children}
