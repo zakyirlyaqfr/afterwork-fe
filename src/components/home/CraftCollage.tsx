@@ -32,7 +32,7 @@ const galleryItems = [
   },
   {
     id: "05",
-    src: "/images/afterwork-glutton-menu.jpg",
+    src: "/images/afterwork-acrylic-menu.jpg",
     alt: "Afterwork Authentic Acrylic Graffiti Menu",
   },
 ];

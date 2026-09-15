@@ -159,15 +159,19 @@ export default function Hero() {
     <section
       ref={containerRef}
       id="section-hero"
-      className="relative min-h-screen w-full bg-black text-white flex items-center overflow-hidden select-none"
+      className="relative min-h-[100dvh] lg:min-h-screen w-full bg-black text-white flex items-center overflow-hidden select-none"
     >
-      <div className="w-full min-h-screen flex flex-col lg:flex-row items-center lg:items-stretch justify-center lg:justify-between py-6 lg:py-0">
-        {/* Left: Minimalist Pure Typography ("AFTERWORK") */}
+      <div className="w-full min-h-[100dvh] lg:min-h-screen flex flex-col lg:flex-row items-center lg:items-stretch justify-center lg:justify-between py-0 relative">
+        {/* 
+          Typography Container ("AFTERWORK")
+          - Mobile (< lg): Full-screen centered hero overlay (vertically & horizontally centered) matching Lune reference.
+          - Laptop Landscape (lg:): Left 50% column with exact original offset.
+        */}
         <div
           ref={textContainerRef}
-          className="w-full lg:w-1/2 flex flex-col justify-center items-center z-40 px-4 sm:px-10 md:px-12 lg:px-16 pt-20 sm:pt-24 lg:pt-0 pb-6 lg:pb-0 will-change-transform overflow-visible"
+          className="relative z-30 w-full h-[100dvh] lg:h-auto lg:w-1/2 flex flex-col justify-center items-center px-4 sm:px-10 md:px-12 lg:px-16 pt-16 sm:pt-20 lg:pt-0 pb-6 lg:pb-0 will-change-transform overflow-visible"
         >
-          <div className="w-full flex flex-col items-center justify-center text-center translate-x-0 md:-translate-x-6 lg:-translate-x-14 pointer-events-none">
+          <div className="w-full flex flex-col items-center justify-center text-center translate-x-0 lg:-translate-x-14 pointer-events-none">
             {/* Tightly bounded hover container: only triggers color inversion when cursor is directly over the words */}
             <div className="hero-afterwork-brand inline-flex flex-col items-center justify-center pointer-events-auto cursor-default w-fit max-w-fit mx-auto p-0">
               {/* Line 1: AFTER */}
@@ -176,19 +180,19 @@ export default function Hero() {
                 className="will-change-transform p-0 overflow-visible flex justify-center w-fit"
               >
                 <div className="hero-anim-slide-a flex justify-center w-fit p-0">
-                  <span className="hero-word-primary">
+                  <span className="hero-word-primary text-[clamp(3.8rem,14vw,6.85rem)] leading-[0.82] lg:leading-none">
                     AFTER
                   </span>
                 </div>
               </div>
 
-              {/* Line 2: WORK */}
+              {/* Line 2: WORK - Solid bold white on mobile matching Lune screenshot; outline stroke on laptop landscape */}
               <div
                 ref={wordWorkRef}
-                className="will-change-transform p-0 overflow-visible flex justify-center w-fit"
+                className="will-change-transform p-0 overflow-visible flex justify-center w-fit mt-1 lg:mt-0"
               >
                 <div className="hero-anim-slide-b flex justify-center w-fit p-0">
-                  <span className="hero-word-secondary">
+                  <span className="hero-word-secondary text-white [-webkit-text-stroke:0px] lg:text-transparent lg:[-webkit-text-stroke:2.5px_rgba(255,255,255,0.88)] text-[clamp(3.8rem,14vw,6.85rem)] leading-[0.82] lg:leading-none">
                     WORK
                   </span>
                 </div>
@@ -197,10 +201,14 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* Right: Full-height architectural container with image shifted down slightly */}
+        {/* 
+          Visual Artwork Layer
+          - Mobile (< lg): Absolute background layer blending into black with smooth vignettes, showing artwork behind/around text.
+          - Laptop Landscape (lg:): Right 50% split container with left border and top padding exactly as original.
+        */}
         <div
           ref={imageWrapperRef}
-          className="w-full lg:w-1/2 h-[46vh] min-h-[260px] sm:h-[60vh] lg:h-screen relative pointer-events-none select-none will-change-transform flex items-center justify-center overflow-hidden border-t lg:border-t-0 lg:border-l border-[#222222]/50 z-40 pt-4 sm:pt-8 lg:pt-14"
+          className="absolute inset-0 w-full h-full lg:relative lg:inset-auto lg:w-1/2 lg:h-screen pointer-events-none select-none will-change-transform flex items-center justify-center overflow-hidden lg:border-l lg:border-[#222222]/50 z-10 lg:z-40 lg:pt-14"
         >
           <div className="relative w-full h-full">
             <Image
@@ -209,8 +217,11 @@ export default function Hero() {
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"
               priority
-              className="object-cover object-[center_35%]"
+              className="object-cover object-[center_35%] opacity-45 lg:opacity-100 transition-opacity duration-700"
             />
+            {/* Mobile dark vignettes ensuring text readability and Lune-style black canvas bleed */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-black/70 lg:hidden pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/90 lg:hidden pointer-events-none" />
           </div>
         </div>
       </div>

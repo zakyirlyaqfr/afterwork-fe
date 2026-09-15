@@ -44,10 +44,10 @@ export default function ContactPage() {
       );
     }
 
-    // 2. Parallax scroll animation on watermark matching homepage
+    // 2. Parallax scroll animation on watermark matching gallery logic
     if (watermarkRef.current) {
       gsap.to(watermarkRef.current, {
-        y: -300,
+        y: -60,
         ease: "none",
         scrollTrigger: {
           trigger: main,
@@ -136,11 +136,11 @@ export default function ContactPage() {
       className="min-h-screen bg-black text-[#F5F5F5] pt-28 sm:pt-32 md:pt-36 px-4 sm:px-8 md:px-12 lg:px-16 selection:bg-[#E05D29] selection:text-black overflow-x-visible relative flex flex-col"
       style={{ paddingBottom: "clamp(6rem, 10vw, 10rem)" }}
     >
-      {/* Background Typography Watermark: Restored to original position and style */}
+      {/* Background Typography Watermark: Absolute positioning matching gallery logic */}
       <div
         ref={watermarkRef}
         aria-hidden="true"
-        className="fixed select-none pointer-events-none z-0 will-change-transform"
+        className="absolute select-none pointer-events-none z-0 will-change-transform"
         style={{
           top: "clamp(150px, 20vw, 260px)",
           right: "clamp(-20px, 4vw, 60px)",
@@ -151,7 +151,7 @@ export default function ContactPage() {
           lineHeight: 0.85,
           whiteSpace: "nowrap",
           color: "transparent",
-          WebkitTextStroke: "1.5px rgba(255, 255, 255, 0.12)",
+          WebkitTextStroke: "1.2px rgba(255, 255, 255, 0.045)",
         }}
       >
         CONTACT
@@ -185,7 +185,7 @@ export default function ContactPage() {
           className="w-full flex justify-center pt-4 sm:pt-6 md:pt-8 pb-20 sm:pb-28"
         >
           <div
-            className="w-full max-w-4xl flex flex-col"
+            className="w-full max-w-[280px] xs:max-w-[300px] sm:max-w-[360px] md:max-w-[420px] lg:max-w-4xl mx-auto px-1 sm:px-2 lg:px-0 flex flex-col"
             style={{ gap: "clamp(32px, 4vw, 56px)" }}
           >
 
@@ -199,7 +199,7 @@ export default function ContactPage() {
             >
               {/* Location 1: G-Walk Citraland */}
               <div
-                className="grid grid-cols-1 md:grid-cols-[1.16fr_0.84fr] gap-6 md:gap-10 text-left"
+                className="grid grid-cols-1 md:grid-cols-[1.16fr_0.84fr] gap-y-0 md:gap-10 text-left"
                 style={{ paddingTop: "clamp(16px, 2vw, 24px)", paddingBottom: "clamp(16px, 2vw, 24px)" }}
               >
                 {/* Left Column: Name & City, Address, Map Action */}
@@ -212,7 +212,7 @@ export default function ContactPage() {
                       SURABAYA
                     </span>
                   </div>
-                  <p className="text-sm sm:text-base text-neutral-400 leading-relaxed max-w-sm">
+                  <p className="text-sm sm:text-base text-neutral-300 lg:text-neutral-400 font-light leading-relaxed tracking-wide max-w-lg">
                     Ruko G-Walk Citraland, Jl. Niaga Gapura No. FG-19, Surabaya, Jawa Timur 60213
                   </p>
                   <div className="pt-1">
@@ -239,7 +239,7 @@ export default function ContactPage() {
 
               {/* Location 2: Foremost Padel Club */}
               <div
-                className="grid grid-cols-1 md:grid-cols-[1.16fr_0.84fr] gap-6 md:gap-10 text-left"
+                className="grid grid-cols-1 md:grid-cols-[1.16fr_0.84fr] gap-y-0 md:gap-10 text-left"
                 style={{ paddingTop: "clamp(16px, 2vw, 24px)", paddingBottom: "clamp(16px, 2vw, 24px)" }}
               >
                 {/* Left Column: Name & City, Address, Map Action */}
@@ -252,7 +252,7 @@ export default function ContactPage() {
                       SURABAYA
                     </span>
                   </div>
-                  <p className="text-sm sm:text-base text-neutral-400 leading-relaxed max-w-sm">
+                  <p className="text-sm sm:text-base text-neutral-300 lg:text-neutral-400 font-light leading-relaxed tracking-wide max-w-lg">
                     Foremost Padel Club, Jl. Gayung Kebonsari, Gayungan, Surabaya, Jawa Timur 60235
                   </p>
                   <div className="pt-1">
@@ -279,7 +279,7 @@ export default function ContactPage() {
 
               {/* Location 3: Sanur Bali */}
               <div
-                className="grid grid-cols-1 md:grid-cols-[1.16fr_0.84fr] gap-6 md:gap-10 text-left"
+                className="grid grid-cols-1 md:grid-cols-[1.16fr_0.84fr] gap-y-0 md:gap-10 text-left"
                 style={{ paddingTop: "clamp(16px, 2vw, 24px)", paddingBottom: "clamp(16px, 2vw, 24px)" }}
               >
                 {/* Left Column: Name & City, Address, Map Action */}
@@ -292,7 +292,7 @@ export default function ContactPage() {
                       BALI
                     </span>
                   </div>
-                  <p className="text-sm sm:text-base text-neutral-400 leading-relaxed max-w-sm">
+                  <p className="text-sm sm:text-base text-neutral-300 lg:text-neutral-400 font-light leading-relaxed tracking-wide max-w-lg">
                     Jl. Batur Sari, Sanur, Denpasar Selatan, Denpasar, Bali 80228
                   </p>
                   <div className="pt-1">
@@ -332,8 +332,8 @@ export default function ContactPage() {
                   <h2 className="text-2xl sm:text-3xl font-black uppercase tracking-tight text-white">
                     WHATSAPP CONCIERGE
                   </h2>
-                  <p className="text-sm sm:text-base text-neutral-400 leading-relaxed max-w-sm">
-                    Pemesanan formula kopi botol, reservasi meja, dan informasi pesanan malam hari.
+                  <p className="text-sm sm:text-base text-neutral-300 lg:text-neutral-400 font-light leading-relaxed tracking-wide max-w-lg">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore.
                   </p>
                   <p className="text-lg sm:text-xl font-mono text-white font-bold tracking-wider pt-0.5">
                     +62 811-3088-7158
@@ -358,8 +358,8 @@ export default function ContactPage() {
                   <h2 className="text-2xl sm:text-3xl font-black uppercase tracking-tight text-white">
                     INSTAGRAM FEED
                   </h2>
-                  <p className="text-sm sm:text-base text-neutral-400 leading-relaxed max-w-sm">
-                    Dokumentasi visual, batch sangrai harian, dan kabar agenda malam Afterwork Caffeine.
+                  <p className="text-sm sm:text-base text-neutral-300 lg:text-neutral-400 font-light leading-relaxed tracking-wide max-w-lg">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam gravida tellus vel nisl finibus in porta.
                   </p>
                   <p className="text-lg sm:text-xl font-mono text-white font-bold tracking-wider pt-0.5">
                     @afterworkcaffeine
@@ -395,7 +395,7 @@ export default function ContactPage() {
                   <h3 className="text-2xl sm:text-3xl font-black uppercase tracking-tight text-white">
                     MESSAGE RECEIVED
                   </h3>
-                  <p className="text-sm sm:text-base text-neutral-300 max-w-md leading-relaxed">
+                  <p className="text-sm sm:text-base text-neutral-300 lg:text-neutral-400 font-light leading-relaxed tracking-wide max-w-lg">
                     Terima kasih! Pesan Anda telah kami terima. Tim Afterwork Caffeine akan segera menghubungi Anda.
                   </p>
                   <div className="pt-4 flex flex-wrap gap-4">
@@ -548,13 +548,16 @@ export default function ContactPage() {
                   </div>
 
                   {/* Submit Button */}
-                  <div className="pt-2 text-left">
+                  <div className="pt-4 flex justify-center w-full">
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="px-10 py-4 bg-[#E05D29] text-black font-mono font-bold text-xs sm:text-sm tracking-[0.2em] uppercase hover:bg-white transition-all duration-200 cursor-pointer shadow-[0_4px_20px_rgba(224,93,41,0.3)] disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="group inline-flex items-center justify-center gap-4 px-8 sm:px-10 py-4 bg-white hover:bg-[#E05D29] text-black hover:text-white border-2 border-white hover:border-[#E05D29] transition-all duration-300 tracking-[0.25em] uppercase text-xs sm:text-sm font-sans font-black shadow-2xl cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      {isSubmitting ? "TRANSMITTING..." : "SUBMIT MESSAGE ↗"}
+                      <span>{isSubmitting ? "TRANSMITTING..." : "SUBMIT MESSAGE"}</span>
+                      <span className="transform group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300 text-sm font-bold">
+                        ↗
+                      </span>
                     </button>
                   </div>
                 </form>

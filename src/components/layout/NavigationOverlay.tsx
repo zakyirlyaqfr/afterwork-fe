@@ -12,6 +12,7 @@ export default function NavigationOverlay() {
   const { isMenuOpen, closeMenu, navigateTo, isPageTransitioning } = useUI();
   const pathname = usePathname();
   const [hoveredId, setHoveredId] = useState<string | null>(null);
+  const [clickedHref, setClickedHref] = useState<string | null>(null);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const imageCardRef = useRef<HTMLDivElement>(null);
@@ -23,23 +24,36 @@ export default function NavigationOverlay() {
       closeMenu();
       return;
     }
+    setClickedHref(href);
     navigateTo(href);
   };
 
   // Close menu on route change
   useEffect(() => {
     closeMenu();
+    setClickedHref(null);
   }, [pathname]);
 
-  // Unified Edge-to-Edge GSAP Curtain Wipe & Image Animation
+  // Unified Edge-to-Edge GSAP Curtain Wipe & Image Animation (Slow at start and end)
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
+    // Helper to identify desktop landscape view
+    const isLandscapeLaptop =
+      typeof window !== "undefined" &&
+      window.innerWidth >= 1024 &&
+      window.matchMedia("(orientation: landscape)").matches;
+
     if (isFirstRender.current) {
       isFirstRender.current = false;
       if (!isMenuOpen) {
-        gsap.set(container, { visibility: "hidden", clipPath: "inset(0% 100% 0% 0%)" });
+        gsap.set(container, {
+          visibility: "hidden",
+          clipPath: isLandscapeLaptop
+            ? "inset(0% 100% 0% 0%)"
+            : "inset(0% 0% 100% 0%)",
+        });
         return;
       }
     }
@@ -48,74 +62,120 @@ export default function NavigationOverlay() {
     gsap.killTweensOf([container, imageCardRef.current].filter(Boolean));
 
     if (isMenuOpen) {
-      // Reveal container and sweep curtain from left to right
+      // Reveal container with slow-at-start, slow-at-end easing (power4.inOut)
       gsap.set(container, { visibility: "visible", opacity: 1 });
 
-      gsap.fromTo(
-        container,
-        {
-          clipPath: "inset(0% 100% 0% 0%)",
-        },
-        {
-          clipPath: "inset(0% 0% 0% 0%)",
-          duration: 0.65,
-          ease: "power3.inOut",
-        }
-      );
+      if (isLandscapeLaptop) {
+        // Desktop landscape: Sweep curtain from left to right with smooth easeInOut
+        gsap.fromTo(
+          container,
+          {
+            clipPath: "inset(0% 100% 0% 0%)",
+          },
+          {
+            clipPath: "inset(0% 0% 0% 0%)",
+            duration: 0.85,
+            ease: "power4.inOut",
+          }
+        );
+      } else {
+        // Non-desktop-landscape (mobile/tablet): Open menu dari atas ke bawah
+        gsap.fromTo(
+          container,
+          {
+            clipPath: "inset(0% 0% 100% 0%)",
+          },
+          {
+            clipPath: "inset(0% 0% 0% 0%)",
+            duration: 0.85,
+            ease: "power4.inOut",
+          }
+        );
+      }
 
-      // Slower, smooth floating entrance animation for the sidebar image
+      // Smooth floating entrance animation for the sidebar image
       if (imageCardRef.current) {
         gsap.fromTo(
           imageCardRef.current,
           {
             opacity: 0,
-            x: 60,
+            x: isLandscapeLaptop ? 60 : 30,
+            y: isLandscapeLaptop ? 0 : 20,
             scale: 0.92,
           },
           {
             opacity: 1,
             x: 0,
+            y: 0,
             scale: 1,
-            duration: 0.8,
-            delay: 0.12,
+            duration: 0.9,
+            delay: 0.15,
             ease: "power3.out",
           }
         );
       }
     } else {
       if (isPageTransitioning) {
-        gsap.set(container, { visibility: "hidden", clipPath: "inset(0% 100% 0% 0%)" });
+        gsap.set(container, {
+          visibility: "hidden",
+          clipPath: isLandscapeLaptop
+            ? "inset(0% 100% 0% 0%)"
+            : "inset(0% 0% 100% 0%)",
+        });
         if (imageCardRef.current) {
           gsap.set(imageCardRef.current, { opacity: 0 });
         }
+        setClickedHref(null);
         return;
       }
 
-      // Exit Animation: Image card glides out and curtain sweeps back
+      // Normal Exit Animation: Image card glides out with smooth easeInOut
       if (imageCardRef.current) {
         gsap.to(imageCardRef.current, {
           opacity: 0,
-          x: 40,
+          x: isLandscapeLaptop ? 35 : 15,
+          y: isLandscapeLaptop ? 0 : -15,
           scale: 0.94,
-          duration: 0.4,
-          ease: "power2.in",
+          duration: 0.65,
+          ease: "power3.inOut",
         });
       }
 
-      gsap.fromTo(
-        container,
-        {
-          clipPath: "inset(0% 0% 0% 0%)",
-        },
-        {
-          clipPath: "inset(0% 100% 0% 0%)",
-          duration: 0.65,
-          ease: "power3.inOut",
-          onComplete: () => {
-            gsap.set(container, { visibility: "hidden" });
+      if (isLandscapeLaptop) {
+        // Desktop landscape: Sweep curtain back to left with calm power4.inOut
+        gsap.fromTo(
+          container,
+          {
+            clipPath: "inset(0% 0% 0% 0%)",
           },
-        }
-      );
+          {
+            clipPath: "inset(0% 100% 0% 0%)",
+            duration: 0.85,
+            ease: "power4.inOut",
+            onComplete: () => {
+              gsap.set(container, { visibility: "hidden" });
+              setClickedHref(null);
+            },
+          }
+        );
+      } else {
+        // Non-desktop-landscape (mobile/tablet): Close dari bawah ke atas
+        gsap.fromTo(
+          container,
+          {
+            clipPath: "inset(0% 0% 0% 0%)",
+          },
+          {
+            clipPath: "inset(0% 0% 100% 0%)",
+            duration: 0.85,
+            ease: "power4.inOut",
+            onComplete: () => {
+              gsap.set(container, { visibility: "hidden" });
+              setClickedHref(null);
+            },
+          }
+        );
+      }
     }
   }, [isMenuOpen, isPageTransitioning]);
 
@@ -134,23 +194,23 @@ export default function NavigationOverlay() {
         - Uses .nav-overlay-content for robust responsive spacing away from the sidebar dock.
         - Zero overlap with sidebar elements or menu/close button.
       */}
-      <div className="flex-1 flex flex-col md:flex-row w-full h-full overflow-y-auto md:overflow-hidden items-center justify-center md:justify-between nav-overlay-content pt-20 sm:pt-24 pb-8 md:py-0">
-        
+      <div className="flex-1 flex flex-row w-full h-full overflow-hidden items-center justify-between nav-overlay-content pt-16 sm:pt-20 md:pt-0 pb-6 md:pb-0">
+
         {/*
           Menu links column:
-          - Sits entirely in the main section.
-          - ANIMATION REMOVED: Static typography, no staggered motion or skew.
-          - HOVER COLOR: Brand Orange (#E05D29).
+          - Sits on the left side of the split layout.
+          - Text animation & hover color restored: Brand Orange (#E05D29) transition.
         */}
-        <div className="w-full md:w-[52%] lg:w-[55%] h-auto md:h-full flex flex-col justify-center select-none py-4 md:py-0">
+        <div className="w-[48%] sm:w-[48%] md:w-[52%] lg:w-[55%] h-full flex flex-col justify-center select-none py-4 md:py-0">
           <nav
-            className="flex flex-col justify-center space-y-3.5 sm:space-y-5 md:space-y-6 lg:space-y-6 xl:space-y-7"
+            className="flex flex-col justify-center space-y-3.5 sm:space-y-4 md:space-y-6 lg:space-y-6 xl:space-y-7"
             aria-label="Main Navigation"
           >
             {navigationItems.map((item) => {
               const isActive = pathname === item.href;
               const isHovered = hoveredId === item.id;
-              const isOrange = isActive || isHovered;
+              const isClicked = clickedHref === item.href;
+              const isOrange = isActive || isHovered || isClicked;
 
               return (
                 <div key={item.id} className="overflow-hidden">
@@ -159,13 +219,12 @@ export default function NavigationOverlay() {
                     onClick={(e) => handleNavClick(e, item.href)}
                     onMouseEnter={() => setHoveredId(item.id)}
                     onMouseLeave={() => setHoveredId(null)}
-                    className={`nav-link-hover group inline-flex items-center py-1 sm:py-1.5 focus:outline-none ${
-                      isActive ? "active" : ""
-                    }`}
+                    className={`nav-link-hover group inline-flex items-center py-0.5 sm:py-1 md:py-1.5 focus:outline-none ${isActive ? "active" : ""
+                      }`}
                   >
-                    {/* Bold Stark Typography with Brand Orange Hover State */}
+                    {/* Bold Stark Typography with Brand Orange Hover State Animation */}
                     <span
-                      className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-[76px] font-black tracking-tighter uppercase leading-[0.96]"
+                      className="text-3xl xs:text-[34px] sm:text-5xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-[76px] font-black tracking-tighter uppercase leading-[0.96]"
                       style={{
                         color: isOrange ? "#E05D29" : "rgba(255, 255, 255, 0.85)",
                         transition: "color 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
@@ -181,35 +240,33 @@ export default function NavigationOverlay() {
         </div>
 
         {/*
-          Right Column: Abstract Punk Visual Composition
-          - Asymmetric tilt, corner brackets & authentic street photography.
-          - Orange wireframe frame removed per user request.
-          - Animated floating entrance & ambient levitation.
-          - Visible on desktop/tablet (>= md).
+          Right Column: Image Composition
+          - Mobile: Visible on right (prominent, enlarged ~210px max-width), sharp corners (rounded-none), tetap miring (-rotate-[3deg])
+          - Desktop (>= md): Preserves original asymmetric tilt, corner brackets & styling
         */}
-        <div className="hidden md:flex md:w-[48%] lg:w-[45%] flex-col justify-center items-center lg:items-end pr-4 sm:pr-8 lg:pr-12 xl:pr-16">
+        <div className="flex w-[52%] sm:w-[52%] md:w-[48%] lg:w-[45%] h-full flex-col justify-center items-end select-none pr-0 sm:pr-4 md:pr-8 lg:pr-12 xl:pr-16 py-4 md:py-0">
           <div
             ref={imageCardRef}
-            className="relative w-full max-w-[300px] md:max-w-[340px] lg:max-w-[400px] xl:max-w-[440px] mr-2 lg:mr-4 select-none float-ambient-a"
+            className="relative w-full max-w-[210px] sm:max-w-[270px] md:max-w-[340px] lg:max-w-[400px] xl:max-w-[440px] mr-0 md:mr-2 lg:mr-4 select-none float-ambient-a"
           >
-            {/* Main Asymmetric Tilted Image Frame */}
-            <div className="relative w-full aspect-[3/4] bg-[#0c0c0c] border border-neutral-700 -rotate-[3deg] shadow-[0_25px_60px_rgba(0,0,0,0.9)] overflow-visible z-10 transition-transform duration-500 ease-out hover:scale-[1.02] hover:-rotate-[1.5deg]">
-              
-              {/* Corner Brackets Framing (Clean monochrome, no orange frame lines) */}
-              <div aria-hidden="true" className="absolute -inset-2.5 pointer-events-none z-30">
+            {/* Main Image Frame: sharp corners (rounded-none), tetap miring (-rotate-[3deg]) */}
+            <div className="relative w-full aspect-[3/4] bg-[#0c0c0c] border border-neutral-700 rounded-none -rotate-[3deg] shadow-[0_25px_60px_rgba(0,0,0,0.9)] overflow-visible z-10 transition-transform duration-500 ease-out hover:scale-[1.02] hover:-rotate-[1.5deg]">
+
+              {/* Corner Brackets Framing (Desktop only, hidden on mobile) */}
+              <div aria-hidden="true" className="hidden md:block absolute -inset-2.5 pointer-events-none z-30">
                 <div className="absolute top-0 left-0 w-5 h-5 border-t-2 border-l-2 border-white/90" />
                 <div className="absolute top-0 right-0 w-5 h-5 border-t-2 border-r-2 border-white/90" />
                 <div className="absolute bottom-0 left-0 w-5 h-5 border-b-2 border-l-2 border-white/90" />
                 <div className="absolute bottom-0 right-0 w-5 h-5 border-b-2 border-r-2 border-white/90" />
               </div>
 
-              {/* Primary Image Container */}
-              <div className="relative w-full h-full overflow-hidden bg-neutral-950">
+              {/* Primary Image Container: sharp corners (rounded-none) */}
+              <div className="relative w-full h-full overflow-hidden rounded-none bg-neutral-950">
                 <Image
                   src="/images/afterwork-seating.jpg"
-                  alt="Afterwork Caffeine Street Architecture"
+                  alt="Afterwork Caffeine Architecture"
                   fill
-                  sizes="(max-width: 1024px) 40vw, 440px"
+                  sizes="(max-width: 768px) 50vw, (max-width: 1024px) 40vw, 440px"
                   priority
                   className="object-cover object-center grayscale-[20%] contrast-[110%]"
                 />

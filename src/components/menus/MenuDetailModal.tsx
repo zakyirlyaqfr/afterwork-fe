@@ -145,7 +145,7 @@ export default function MenuDetailModal({
       aria-modal="true"
       aria-labelledby="modal-item-title"
       data-lenis-prevent
-      className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-6 select-none cursor-pointer"
+      className="fixed inset-0 z-[200] flex items-center justify-center p-6 sm:p-8 select-none cursor-pointer"
       style={{
         backgroundColor: "rgba(0, 0, 0, 0.85)",
         backdropFilter: "blur(14px)",
@@ -156,7 +156,7 @@ export default function MenuDetailModal({
       {/* 
         Sederhana & Elegan — True Portrait Modal Card:
         - Layer Terdepan: z-[210] di atas seluruh elemen layout
-        - Rasio Portrait: max-w-[390px] sm:max-w-[430px], tinggi tetap h-[600px] sm:h-[640px]
+        - Rasio Portrait: max-w-[320px] xs:max-w-[340px], tinggi proporsional h-[460px] xs:h-[490px]
         - Awalnya: Keterangan teks mengisi ~45% bagian bawah, Foto terlihat ~55% di atas
         - Bisa di-scroll: Scroll mengangkat kotak teks menutupi foto, dan mentok tepat sehabis paragraf terakhir tanpa sisa ruang kosong
         - Tanpa garis samping pada modal
@@ -166,7 +166,7 @@ export default function MenuDetailModal({
         ref={modalRef}
         onClick={(e) => e.stopPropagation()}
         data-lenis-prevent
-        className="relative z-[210] w-full max-w-[390px] sm:max-w-[430px] h-[600px] max-h-[90dvh] sm:max-h-[94dvh] sm:h-[640px] bg-[#0D0D0D] rounded-[6px] overflow-hidden shadow-[0_30px_90px_rgba(0,0,0,0.95)] flex flex-col cursor-default select-text"
+        className="relative z-[210] w-[88%] xs:w-[86%] sm:w-full max-w-[320px] xs:max-w-[340px] sm:max-w-[380px] md:max-w-[400px] lg:max-w-[430px] h-[460px] xs:h-[490px] sm:h-[540px] md:h-[590px] lg:h-[640px] max-h-[72dvh] xs:max-h-[75dvh] sm:max-h-[82dvh] md:max-h-[88dvh] lg:max-h-[94dvh] bg-[#0D0D0D] rounded-[6px] overflow-hidden shadow-[0_30px_90px_rgba(0,0,0,0.95)] flex flex-col cursor-default select-text"
       >
         {/* Layer 1: Foto Produk di Balik Kotak Teks */}
         <div
@@ -212,20 +212,18 @@ export default function MenuDetailModal({
           data-lenis-prevent
           className="absolute inset-0 z-20 overflow-y-auto no-scrollbar scroll-smooth flex flex-col"
         >
-          {/* Spacer Transparan (54% tinggi pop up) */}
+          {/* Spacer Transparan (52% tinggi pop up) */}
           <div
-            className="w-full h-[54%] shrink-0 pointer-events-none bg-transparent"
+            className="w-full h-[52%] shrink-0 pointer-events-none bg-transparent"
             aria-hidden="true"
           />
 
           {/* Kotak Teks Keterangan:
-              - Menyatu dengan box (tanpa handle bar terpisah)
-              - Efek Smooth Scrim Gradient Fade lembut, halus, dan menyatu di bagian atas (persis SS)
-              - Jarak sedikit lebih lebar dari batas kiri-kanan (px-8 sm:px-9) agar teks tidak terlalu dekat batas
-              - Tinggi alami (tanpa min-h-full) sehingga scroll mentok di akhir teks tanpa ruang kosong */}
+              - Container teks berjarak rapi dengan container dan padding kanan kiri tepat setengah dari versi besar
+              - Scroll mentok tepat sehabis paragraf terakhir tanpa sisa ruang kosong */}
           <div
             ref={contentRef}
-            className="w-full bg-[#0E0E0E] px-8 sm:px-9 pt-3 pb-7 sm:pb-8 flex flex-col gap-3.5 pointer-events-auto relative"
+            className="w-full bg-[#0E0E0E] px-3 xs:px-3.5 sm:px-4 md:px-4.5 pt-3.5 pb-6 sm:pb-8 flex flex-col items-center pointer-events-auto relative"
           >
             {/* Smooth Fade Transition ke Foto di atas (Smooth Scrim Curve persis SS) */}
             <div
@@ -237,89 +235,92 @@ export default function MenuDetailModal({
               }}
             />
 
-            {/* 1. Judul Menu & Harga Sejajar (Ukuran Font Harga Berbeda/Lebih Kecil) */}
-            <div className="flex items-baseline flex-wrap gap-x-2.5 gap-y-1">
-              <h2
-                id="modal-item-title"
-                className="text-2xl sm:text-[26px] font-black uppercase tracking-tight text-white leading-tight"
-              >
-                {item.name}{" "}
-                <span className="inline-block text-base sm:text-lg font-mono font-bold text-[#E05D29] tracking-wider align-baseline ml-1.5 drop-shadow-[0_0_10px_rgba(224,93,41,0.35)]">
-                  {item.price}
-                </span>
-              </h2>
-            </div>
+            {/* Dedicated Content Container: Dipertahankan dengan lebar proporsional */}
+            <div className="w-full max-w-[260px] xs:max-w-[280px] sm:max-w-[320px] md:max-w-[340px] lg:max-w-[370px] mx-auto text-left flex flex-col gap-3 sm:gap-3.5">
+              {/* 1. Judul Menu & Harga Sejajar (Ukuran Font Harga Berbeda/Lebih Kecil) */}
+              <div className="flex items-baseline flex-wrap gap-x-2.5 gap-y-1">
+                <h2
+                  id="modal-item-title"
+                  className="text-lg sm:text-xl font-black uppercase tracking-tight text-white leading-tight"
+                >
+                  {item.name}{" "}
+                  <span className="inline-block text-sm sm:text-base font-mono font-bold text-[#E05D29] tracking-wider align-baseline ml-1.5 drop-shadow-[0_0_10px_rgba(224,93,41,0.35)]">
+                    {item.price}
+                  </span>
+                </h2>
+              </div>
 
-            {/* 2. Sensory Notes: Layout dari SS (Header SENSORY NOTES + Text dipisahkan '|' tanpa kotak) */}
-            {item.details?.notes && (
-              <div className="flex flex-col gap-1.5 pb-2.5">
-                <span className="text-[9px] font-mono uppercase tracking-[0.22em] text-[#E05D29] font-bold">
-                  SENSORY NOTES
+              {/* 2. Sensory Notes: Layout dari SS (Header SENSORY NOTES + Text dipisahkan '|' tanpa kotak) */}
+              {item.details?.notes && (
+                <div className="flex flex-col gap-1.5 pb-2.5">
+                  <span className="text-[9px] font-mono uppercase tracking-[0.22em] text-[#E05D29] font-bold">
+                    SENSORY NOTES
+                  </span>
+                  <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-xs sm:text-[13px] font-mono tracking-wide text-neutral-200">
+                    {item.details.notes.split(",").map((note, idx, arr) => (
+                      <span key={note} className="inline-flex items-center gap-2.5">
+                        <span className="text-neutral-200">{note.trim()}</span>
+                        {idx < arr.length - 1 && (
+                          <span className="text-white/35 select-none font-sans font-light">
+                            |
+                          </span>
+                        )}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* 3. Specifications: 3 Kolom dari SS, tapi tanpa kotak (batasnya garis saja, jangan dikotakkan) */}
+              {(item.details?.craft || item.details?.ratio || item.details?.origin) && (
+                <div className="grid grid-cols-3 divide-x divide-white/10 border-y border-white/10 py-3 my-0.5">
+                  {item.details?.craft && (
+                    <div className="flex flex-col gap-1 pr-2 sm:pr-3">
+                      <span className="text-[9px] font-mono uppercase tracking-wider text-[#E05D29] font-bold">
+                        CRAFT
+                      </span>
+                      <span className="text-[11px] sm:text-xs text-neutral-200 font-medium leading-snug">
+                        {item.details.craft}
+                      </span>
+                    </div>
+                  )}
+
+                  {item.details?.ratio && (
+                    <div className="flex flex-col gap-1 px-2 sm:px-3">
+                      <span className="text-[9px] font-mono uppercase tracking-wider text-[#E05D29] font-bold">
+                        BREW RATIO
+                      </span>
+                      <span className="text-[11px] sm:text-xs text-neutral-200 font-medium leading-snug">
+                        {item.details.ratio}
+                      </span>
+                    </div>
+                  )}
+
+                  {item.details?.origin && (
+                    <div className="flex flex-col gap-1 pl-2 sm:pl-3">
+                      <span className="text-[9px] font-mono uppercase tracking-wider text-[#E05D29] font-bold">
+                        ORIGIN
+                      </span>
+                      <span className="text-[11px] sm:text-xs text-neutral-200 font-medium leading-snug">
+                        {item.details.origin}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* 4. Deskripsi Menu: Keterangan Sangat Panjang dengan Formatting Editorial */}
+              <div className="flex flex-col gap-1.5 pt-0.5">
+                <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-[#E05D29] font-bold">
+                  Artisan Story & Narrative
                 </span>
-                <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-xs sm:text-[13px] font-mono tracking-wide text-neutral-200">
-                  {item.details.notes.split(",").map((note, idx, arr) => (
-                    <span key={note} className="inline-flex items-center gap-2.5">
-                      <span className="text-neutral-200">{note.trim()}</span>
-                      {idx < arr.length - 1 && (
-                        <span className="text-white/35 select-none font-sans font-light">
-                          |
-                        </span>
-                      )}
-                    </span>
+                <div className="text-xs sm:text-[13px] text-neutral-300 lg:text-neutral-400 font-light leading-relaxed tracking-wide space-y-3 max-w-lg">
+                  {item.description.split("\n\n").map((paragraph, pIdx) => (
+                    <p key={pIdx} className="text-neutral-300/90 lg:text-neutral-400 font-light leading-relaxed tracking-wide">
+                      {paragraph}
+                    </p>
                   ))}
                 </div>
-              </div>
-            )}
-
-            {/* 3. Specifications: 3 Kolom dari SS, tapi tanpa kotak (batasnya garis saja, jangan dikotakkan) */}
-            {(item.details?.craft || item.details?.ratio || item.details?.origin) && (
-              <div className="grid grid-cols-3 divide-x divide-white/10 border-y border-white/10 py-3 my-0.5">
-                {item.details?.craft && (
-                  <div className="flex flex-col gap-1 pr-3">
-                    <span className="text-[9px] font-mono uppercase tracking-wider text-[#E05D29] font-bold">
-                      CRAFT / METHOD
-                    </span>
-                    <span className="text-xs text-neutral-200 font-medium leading-snug">
-                      {item.details.craft}
-                    </span>
-                  </div>
-                )}
-
-                {item.details?.ratio && (
-                  <div className="flex flex-col gap-1 px-3">
-                    <span className="text-[9px] font-mono uppercase tracking-wider text-[#E05D29] font-bold">
-                      BREW RATIO
-                    </span>
-                    <span className="text-xs text-neutral-200 font-medium leading-snug">
-                      {item.details.ratio}
-                    </span>
-                  </div>
-                )}
-
-                {item.details?.origin && (
-                  <div className="flex flex-col gap-1 pl-3">
-                    <span className="text-[9px] font-mono uppercase tracking-wider text-[#E05D29] font-bold">
-                      ORIGIN / TERROIR
-                    </span>
-                    <span className="text-xs text-neutral-200 font-medium leading-snug">
-                      {item.details.origin}
-                    </span>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* 4. Deskripsi Menu: Keterangan Sangat Panjang dengan Formatting Editorial */}
-            <div className="flex flex-col gap-1.5 pt-0.5">
-              <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-[#E05D29] font-bold">
-                Artisan Story & Narrative
-              </span>
-              <div className="text-xs sm:text-[13px] text-neutral-300 leading-relaxed font-normal space-y-3">
-                {item.description.split("\n\n").map((paragraph, pIdx) => (
-                  <p key={pIdx} className="text-neutral-300/90 leading-relaxed">
-                    {paragraph}
-                  </p>
-                ))}
               </div>
             </div>
           </div>

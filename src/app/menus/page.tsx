@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useLayoutEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -108,37 +108,40 @@ export default function MenusPage() {
     }
   }, [prefersReduced]);
 
-  // Scroll-triggered 1-by-1 entrance animation for each card as user scrolls
+  const isFilterTransitioningRef = useRef(false);
+
+  // Smooth easeInOut entrance animation for cards upon category change and mount
   useEffect(() => {
     if (prefersReduced || !gridRef.current) return;
 
     const ctx = gsap.context(() => {
       const cards = gridRef.current?.querySelectorAll(".menu-card");
-      if (!cards || cards.length === 0) return;
+      if (!cards || cards.length === 0) {
+        isFilterTransitioningRef.current = false;
+        return;
+      }
 
-      // Set initial state: hidden, translated down
-      gsap.set(cards, { opacity: 0, y: 50 });
-
-      // ScrollTrigger batch reveals cards 1 per 1 as they enter the viewport
-      ScrollTrigger.batch(cards, {
-        start: "top 88%",
-        once: true,
-        onEnter: (batch) => {
-          gsap.to(batch, {
-            opacity: 1,
-            y: 0,
-            duration: 0.75,
-            ease: "power3.out",
-            stagger: 0.16,
-            overwrite: "auto",
-          });
-        },
-      });
+      // Reveal cards smoothly with a slow-at-start, slow-at-end staggered curve
+      gsap.fromTo(
+        cards,
+        { opacity: 0, y: 28 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: "power3.out",
+          stagger: 0.07,
+          clearProps: "y,opacity",
+          onComplete: () => {
+            isFilterTransitioningRef.current = false;
+          },
+        }
+      );
 
       // Recalculate ScrollTrigger positions
       const refreshTimeout = setTimeout(() => {
         ScrollTrigger.refresh();
-      }, 100);
+      }, 150);
 
       return () => clearTimeout(refreshTimeout);
     }, gridRef);
@@ -147,27 +150,33 @@ export default function MenusPage() {
   }, [activeCategory, prefersReduced]);
 
   const handleCategorySelect = (cat: string) => {
-    // Instantly jump scroll to top BEFORE state update so the page never
-    // briefly shows footer when filtered items are fewer (shorter page).
-    if (typeof window !== "undefined") {
-      if ((window as any).lenis) {
-        (window as any).lenis.scrollTo(0, { immediate: true });
-      }
-      window.scrollTo({ top: 0 });
-    }
-    setActiveCategory(cat);
-  };
+    if (cat === activeCategory || isFilterTransitioningRef.current) return;
+    isFilterTransitioningRef.current = true;
 
-  // After activeCategory state is applied (DOM updated), ensure we are at top
-  // and notify the SmoothScroll/Lenis layer — prevents footer flash.
-  useLayoutEffect(() => {
-    if (typeof window === "undefined") return;
-    window.scrollTo({ top: 0 });
-    if ((window as any).lenis) {
-      (window as any).lenis.scrollTo(0, { immediate: true });
+    // Smooth easeInOut dissolution of current cards before switching category
+    const currentCards = gridRef.current?.querySelectorAll(".menu-card");
+    if (currentCards && currentCards.length > 0) {
+      gsap.to(currentCards, {
+        opacity: 0,
+        y: -14,
+        duration: 0.32,
+        ease: "power2.inOut",
+        onComplete: () => {
+          // If scrolled far down, gently glide up with smooth easing rather than harsh snapping
+          if (typeof window !== "undefined" && window.scrollY > 220) {
+            if ((window as any).lenis) {
+              (window as any).lenis.scrollTo(0, { duration: 0.8 });
+            } else {
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }
+          }
+          setActiveCategory(cat);
+        },
+      });
+    } else {
+      setActiveCategory(cat);
     }
-    window.dispatchEvent(new CustomEvent("afterwork:scroll-to-top"));
-  }, [activeCategory]);
+  };
 
   const handleOpenModal = (item: MenuItem) => {
     setSelectedItem(item);
@@ -214,8 +223,8 @@ export default function MenusPage() {
               type="button"
               onClick={() => handleCategorySelect("ALL")}
               className={`px-4 py-2 sm:px-6 sm:py-2.5 text-[11px] sm:text-xs font-black uppercase tracking-[0.16em] sm:tracking-[0.2em] border transition-all duration-300 -rotate-1 hover:rotate-0 hover:scale-105 cursor-pointer ${activeCategory === "ALL"
-                  ? "bg-[#E05D29] text-black border-[#E05D29] punk-glow font-black shadow-[0_4px_16px_rgba(224,93,41,0.45)]"
-                  : "border-[#333] text-[#F5F5F5]/80 hover:border-[#E05D29] hover:text-[#E05D29] bg-black/85 backdrop-blur-md shadow-[0_4px_14px_rgba(0,0,0,0.6)]"
+                ? "bg-[#E05D29] text-black border-[#E05D29] punk-glow font-black shadow-[0_4px_16px_rgba(224,93,41,0.45)]"
+                : "border-[#333] text-[#F5F5F5]/80 hover:border-[#E05D29] hover:text-[#E05D29] bg-black/85 backdrop-blur-md shadow-[0_4px_14px_rgba(0,0,0,0.6)]"
                 }`}
             >
               ALL
@@ -229,8 +238,8 @@ export default function MenusPage() {
                 onClick={() => handleCategorySelect(cat)}
                 style={{ transform: `rotate(${idx % 2 === 0 ? "1" : "-1"}deg)` }}
                 className={`px-4 py-2 sm:px-6 sm:py-2.5 text-[11px] sm:text-xs font-black uppercase tracking-[0.16em] sm:tracking-[0.2em] border transition-all duration-300 hover:rotate-0 hover:scale-105 cursor-pointer ${activeCategory === cat
-                    ? "bg-[#E05D29] text-black border-[#E05D29] punk-glow !rotate-0 font-black shadow-[0_4px_16px_rgba(224,93,41,0.45)]"
-                    : "border-[#333] text-[#F5F5F5]/80 hover:border-[#E05D29] hover:text-[#E05D29] bg-black/85 backdrop-blur-md shadow-[0_4px_14px_rgba(0,0,0,0.6)]"
+                  ? "bg-[#E05D29] text-black border-[#E05D29] punk-glow !rotate-0 font-black shadow-[0_4px_16px_rgba(224,93,41,0.45)]"
+                  : "border-[#333] text-[#F5F5F5]/80 hover:border-[#E05D29] hover:text-[#E05D29] bg-black/85 backdrop-blur-md shadow-[0_4px_14px_rgba(0,0,0,0.6)]"
                   }`}
               >
                 {cat}

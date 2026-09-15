@@ -3,8 +3,7 @@
 import { useUI } from "@/context/UIContext";
 
 export default function Footer() {
-  const { isMenuOpen } = useUI();
-  const currentYear = new Date().getFullYear();
+  const { isMenuOpen, openLocationModal } = useUI();
 
   return (
     <footer
@@ -15,33 +14,137 @@ export default function Footer() {
         pointerEvents: isMenuOpen ? "none" : "auto",
       }}
     >
-      <div className="w-full px-6 sm:px-10 md:px-14 lg:px-20 py-12 md:py-16 relative z-10 flex flex-col space-y-12">
-        {/* Top Tier: Wordmark & Operating Details Spanning Entire Width Above Sidebar */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
-          <div className="space-y-2">
-            <div className="font-sans text-3xl sm:text-5xl md:text-6xl font-black tracking-tight uppercase text-white leading-none">
-              AFTERWORK CAFFEINE
+      {/* ========================================================================= */}
+      {/* Non-Landscape Laptop Layout (Mobile & Tablet: < lg)                       */}
+      {/* Flow: 1. Lokasi -> 2. @ Copyright -> 3. AFTERWORK CAFFEINE (Paling Bawah) */}
+      {/* Lokasi & @ memakai logic horizontal padding persis <p> editorial: px-6 sm:px-8 max-w-lg */}
+      {/* KECUALI AFTERWORK CAFFEINE yang paling bawah                             */}
+      {/* ========================================================================= */}
+      <div className="block lg:hidden w-full py-12 sm:py-16">
+        {/* Container Lokasi & Copyright: Dikembalikan ke layout awal (kiri) */}
+        <div className="w-full max-w-lg px-6 sm:px-8 text-left flex flex-col space-y-6">
+          {/* 1. Lokasi */}
+          <div className="font-mono text-xs sm:text-[13px] tracking-[0.2em] text-neutral-400 uppercase space-y-3 text-left">
+            <div
+              role="button"
+              tabIndex={0}
+              onClick={() => openLocationModal(0)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  openLocationModal(0);
+                }
+              }}
+              className="hover:text-white transition-colors cursor-pointer leading-relaxed"
+            >
+              G-Walk Citraland - Lakarsantri, Surabaya
             </div>
-            <p className="font-mono text-xs sm:text-sm tracking-[0.25em] text-neutral-400 uppercase pt-1">
-              Specialty Bottled Formulas & Artisanal Coffee // Surabaya
-            </p>
+            <div
+              role="button"
+              tabIndex={0}
+              onClick={() => openLocationModal(1)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  openLocationModal(1);
+                }
+              }}
+              className="hover:text-white transition-colors cursor-pointer leading-relaxed"
+            >
+              Foremost Padel Club - Gayungan, Surabaya
+            </div>
+            <div
+              role="button"
+              tabIndex={0}
+              onClick={() => openLocationModal(2)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  openLocationModal(2);
+                }
+              }}
+              className="hover:text-white transition-colors cursor-pointer leading-relaxed"
+            >
+              Sanur Bali - Denpasar, Bali
+            </div>
           </div>
 
-          <div className="font-mono text-xs sm:text-[13px] tracking-[0.2em] text-neutral-400 uppercase space-y-2 md:text-right">
-            <div>G-Walk Citraland & Downtown Surabaya</div>
-            <div className="text-white font-medium text-sm">09:00 — 02:00 Everyday</div>
-            <div className="text-neutral-500 text-[11px]">7°17&apos;08.2&quot;S 112°38&apos;41.5&quot;E</div>
+          {/* 2. Dibawahnya @ itu (Copyright) */}
+          <div className="font-mono text-xs tracking-[0.2em] text-neutral-500 uppercase text-left pt-2">
+            © AFTERWORK CAFFEINE. ALL RIGHTS RESERVED.
           </div>
         </div>
 
-        {/* Bottom Tier: Pure Minimal Brand Line & Fine Print (No List Menu) */}
-        <div className="pt-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="font-mono text-xs tracking-[0.25em] text-neutral-400 uppercase">
-            DAMNGOOD COFFEE CULTURE
+        {/* 3. Dibawahnya AFTERWORK CAFFEINE: Memenuhi kiri kanannya */}
+        <div className="w-full px-2 sm:px-3 pt-12 sm:pt-16 text-center overflow-hidden">
+          <div className="font-sans text-[clamp(2.15rem,9.4vw,5.5rem)] font-black tracking-tighter uppercase text-white leading-none whitespace-nowrap select-none w-full text-center">
+            AFTERWORK CAFFEINE
+          </div>
+        </div>
+      </div>
+
+      {/* ========================================================================= */}
+      {/* Desktop Landscape Laptop Layout (>= lg) - 100% Tetap Mempertahankan Asli */}
+      {/* ========================================================================= */}
+      <div className="hidden lg:flex w-full px-14 lg:px-20 py-12 md:py-16 relative z-10 flex-col space-y-12">
+        {/* Top Tier: Wordmark on Left & 3 Branches on Right */}
+        <div className="flex flex-row items-end justify-between gap-8">
+          <div>
+            <div className="font-sans text-5xl md:text-6xl font-black tracking-tight uppercase text-white leading-none">
+              AFTERWORK CAFFEINE
+            </div>
           </div>
 
+          <div className="font-mono text-xs sm:text-[13px] tracking-[0.2em] text-neutral-400 uppercase space-y-2 text-right">
+            <div
+              role="button"
+              tabIndex={0}
+              onClick={() => openLocationModal(0)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  openLocationModal(0);
+                }
+              }}
+              className="hover:text-white transition-colors cursor-pointer"
+            >
+              G-Walk Citraland - Lakarsantri, Surabaya
+            </div>
+            <div
+              role="button"
+              tabIndex={0}
+              onClick={() => openLocationModal(1)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  openLocationModal(1);
+                }
+              }}
+              className="hover:text-white transition-colors cursor-pointer"
+            >
+              Foremost Padel Club - Gayungan, Surabaya
+            </div>
+            <div
+              role="button"
+              tabIndex={0}
+              onClick={() => openLocationModal(2)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  openLocationModal(2);
+                }
+              }}
+              className="hover:text-white transition-colors cursor-pointer"
+            >
+              Sanur Bali - Denpasar, Bali
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom Tier: Pure Minimal Copyright without year */}
+        <div className="pt-8 flex flex-row items-center justify-between gap-4">
           <div className="font-mono text-xs tracking-[0.2em] text-neutral-500 uppercase">
-            © {currentYear} AFTERWORK CAFFEINE. ALL RIGHTS RESERVED.
+            © AFTERWORK CAFFEINE. ALL RIGHTS RESERVED.
           </div>
         </div>
       </div>

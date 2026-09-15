@@ -38,6 +38,14 @@ html.showing-splash #custom-cursor {
   pointer-events: none !important;
 }
 
+/* Ensure Next.js dev indicator badge is completely hidden */
+[data-nextjs-dev-indicator],
+[data-nextjs-dev-overlay],
+[data-nextjs-toast],
+next-route-announcer {
+  display: none !important;
+}
+
 :root {
   --color-black: #000000;
   --color-orange: #E05D29;
@@ -127,6 +135,7 @@ html.showing-splash #custom-cursor {
   padding-top: 52px;
   padding-bottom: 36px;
   margin-top: -52px;
+  padding-left: 8px;
   pointer-events: none;
 }
 
@@ -160,6 +169,7 @@ html.showing-splash #custom-cursor {
     top: 0;
     padding-top: 40px;
     padding-bottom: 40px;
+    padding-left: 0;
     margin-top: -40px;
   }
 
@@ -192,18 +202,24 @@ html.showing-splash #custom-cursor {
 
 /* Gentle menu card floating without any collision or overlap */
 @keyframes menuCardFloatA {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0px);
   }
+
   50% {
     transform: translateY(-5px);
   }
 }
 
 @keyframes menuCardFloatB {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(-2px);
   }
+
   50% {
     transform: translateY(4px);
   }
@@ -235,8 +251,15 @@ html.showing-splash #custom-cursor {
 
 /* Dedicated responsive framing for Navigation Overlay */
 .nav-overlay-content {
-  padding-left: 2rem;
-  padding-right: 2rem;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .nav-overlay-content {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
 }
 
 @media (min-width: 768px) {
@@ -408,11 +431,11 @@ html.lenis body {
 .hero-word-primary {
   font-family: var(--font-display), 'Alte Haas Grotesk', sans-serif;
   font-weight: 900;
-  font-size: clamp(2.85rem, 6.8vw, 6.85rem);
+  font-size: clamp(3.6rem, 14vw, 6.85rem);
   letter-spacing: -0.04em;
   color: #ffffff;
   display: block;
-  line-height: 1;
+  line-height: 0.82;
   text-align: center;
   overflow: visible;
   transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
@@ -422,17 +445,31 @@ html.lenis body {
 .hero-word-secondary {
   font-family: var(--font-display), 'Alte Haas Grotesk', sans-serif;
   font-weight: 900;
-  font-size: clamp(2.85rem, 6.8vw, 6.85rem);
+  font-size: clamp(3.6rem, 14vw, 6.85rem);
   letter-spacing: -0.04em;
-  color: transparent;
-  -webkit-text-stroke: 2.5px rgba(255, 255, 255, 0.88);
+  color: #ffffff;
+  -webkit-text-stroke: 0;
   display: block;
-  line-height: 1;
+  line-height: 0.82;
   margin-left: 0;
   text-align: center;
   overflow: visible;
   transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: transform, letter-spacing, color, -webkit-text-stroke, text-shadow;
+}
+
+@media (min-width: 1024px) {
+  .hero-word-primary {
+    font-size: clamp(2.85rem, 6.8vw, 6.85rem);
+    line-height: 1;
+  }
+
+  .hero-word-secondary {
+    font-size: clamp(2.85rem, 6.8vw, 6.85rem);
+    color: transparent;
+    -webkit-text-stroke: 2.5px rgba(255, 255, 255, 0.88);
+    line-height: 1;
+  }
 }
 
 /* Kinetic snap & counter-drift */
@@ -478,21 +515,7 @@ html.lenis body {
   }
 }
 
-/* Hover inversion: AFTER becomes outline, WORK becomes filled with luminous orange glow */
-.hero-afterwork-brand:hover .hero-word-primary {
-  color: transparent;
-  -webkit-text-stroke: 2px #ffffff;
-  letter-spacing: -0.01em;
-  transform: scale(1.02);
-}
-
-.hero-afterwork-brand:hover .hero-word-secondary {
-  color: #ffffff;
-  -webkit-text-stroke: 2.5px #e05d29;
-  letter-spacing: 0.01em;
-  text-shadow: 0 0 45px rgba(224, 93, 41, 0.7);
-  transform: scale(1.02);
-}
+/* Hover color inversion removed per user request: text color remains static without color change on cursor hover */
 
 /* Organic Floating Levitation Utilities */
 @keyframes floatGentleA {
@@ -805,10 +828,18 @@ html.lenis body {
 .page-loader-bar {
   animation: pageLoaderBar 0.8s ease-in-out infinite alternate;
 }
+
 /* Smooth page title blur-reveal � CSS-native GPU interpolation, no garis/streak */
 @keyframes pageTitleReveal {
-  0%   { opacity: 0; filter: blur(14px); }
-  100% { opacity: 1; filter: blur(0px);  }
+  0% {
+    opacity: 0;
+    filter: blur(14px);
+  }
+
+  100% {
+    opacity: 1;
+    filter: blur(0px);
+  }
 }
 
 .page-title-reveal {

@@ -11,6 +11,9 @@ interface CircularWatermarkProps {
   scrollDriven?: boolean;
   speedFactor?: number;
   direction?: "clockwise" | "counterclockwise";
+  outline?: boolean;
+  fontWeight?: number | string;
+  strokeWidth?: string;
 }
 
 export default function CircularWatermark({
@@ -22,6 +25,9 @@ export default function CircularWatermark({
   scrollDriven = true,
   speedFactor = 0.2,
   direction = "clockwise",
+  outline = false,
+  fontWeight = 400,
+  strokeWidth = "0.75px",
 }: CircularWatermarkProps) {
   const svgRef = useRef<SVGSVGElement>(null);
 
@@ -91,10 +97,12 @@ export default function CircularWatermark({
               dominantBaseline="central"
               transform={`rotate(${angle}, ${x}, ${y})`}
               style={{
-                fill: color,
+                fill: outline ? "transparent" : color,
+                stroke: outline ? color : undefined,
+                strokeWidth: outline ? strokeWidth : undefined,
                 fontFamily: "var(--font-alte), 'Alte Haas Grotesk', -apple-system, sans-serif",
                 fontSize: "19px",
-                fontWeight: 800,
+                fontWeight,
                 letterSpacing: "0.18em",
               }}
             >

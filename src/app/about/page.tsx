@@ -26,7 +26,6 @@ export default function AboutPage() {
   const sec3Img1Ref = useRef<HTMLDivElement>(null);
   const sec3Img2Ref = useRef<HTMLDivElement>(null);
   const sec3TextRef = useRef<HTMLDivElement>(null);
-  const sec3WatermarkRef = useRef<HTMLDivElement>(null);
 
   const prefersReduced = useReducedMotion();
 
@@ -189,19 +188,6 @@ export default function AboutPage() {
           );
         }
 
-        // Watermark logo subtle parallax
-        if (sec3WatermarkRef.current) {
-          gsap.to(sec3WatermarkRef.current, {
-            y: -50,
-            ease: "none",
-            scrollTrigger: {
-              trigger: sec3Ref.current,
-              start: "top bottom",
-              end: "bottom top",
-              scrub: 1.8,
-            },
-          });
-        }
 
         // Right text block
         if (sec3TextRef.current) {
@@ -245,15 +231,15 @@ export default function AboutPage() {
           className="h-screen min-h-[640px] flex flex-col items-center justify-center relative mb-44 sm:mb-56 lg:mb-64 select-none"
         >
           {/* Centered Image & Overlaid Title Container — Perfectly centered top & bottom */}
-          <div className="relative w-full max-w-[320px] sm:max-w-[380px] md:max-w-[440px] lg:max-w-[490px] mx-auto flex items-center justify-center optical-center-viewport">
+          <div className="relative w-[60%] xs:w-[58%] sm:w-[55%] lg:w-full max-w-[235px] xs:max-w-[255px] sm:max-w-[340px] md:max-w-[420px] lg:max-w-[490px] mx-auto flex items-center justify-center optical-center-viewport">
 
             {/* Centered Portrait Image */}
             <div
               ref={sec1ImgRef}
-              className="relative w-full aspect-[3/4] sm:aspect-[4/5] overflow-hidden bg-neutral-950 shadow-[0_35px_80px_rgba(0,0,0,0.95)] border border-neutral-800 will-change-transform"
+              className="relative w-full aspect-[3/4] sm:aspect-[4/5] overflow-hidden bg-neutral-950 shadow-[0_30px_70px_rgba(0,0,0,0.95)] border border-neutral-800 will-change-transform"
             >
-              {/* Corner Brackets */}
-              <div className="absolute -inset-2.5 pointer-events-none z-20">
+              {/* Corner Brackets (Desktop only, hidden on mobile per screenshot) */}
+              <div className="hidden lg:block absolute -inset-2.5 pointer-events-none z-20">
                 <div className="absolute top-0 left-0 w-5 h-5 border-t-2 border-l-2 border-white/90" />
                 <div className="absolute top-0 right-0 w-5 h-5 border-t-2 border-r-2 border-[#E05D29]" />
                 <div className="absolute bottom-0 left-0 w-5 h-5 border-b-2 border-l-2 border-[#E05D29]" />
@@ -270,25 +256,33 @@ export default function AboutPage() {
               />
 
               {/* Subtle vignette layer */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-black/40 pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/30 lg:from-black/60 lg:via-black/20 lg:to-black/40 pointer-events-none" />
             </div>
 
-            {/* Overlaid Title Text — Tetap diatas image, tipografi menarik, bersih tanpa badge/koordinat/01 */}
+            {/* Overlaid Title Text */}
             <h1
               ref={sec1TitleRef}
               className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-30 select-none px-2 text-center"
             >
-              {/* Line 1: ABOUT - Reduced font size by 1 step, solid white, tight tracking */}
-              <span className="block text-3xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-[8.2rem] font-black uppercase text-white tracking-tight leading-[0.85] drop-shadow-[0_20px_45px_rgba(0,0,0,0.95)]">
-                ABOUT
+              {/* Mobile (< lg): Two lines with enter ("ABOUT" / "AFTERWORK"), extra large, centered across image */}
+              <span className="lg:hidden flex flex-col items-center justify-center text-center">
+                <span className="text-[54px] xs:text-[62px] sm:text-[84px] md:text-[98px] font-black uppercase text-white tracking-tighter leading-[0.84] whitespace-nowrap drop-shadow-[0_20px_45px_rgba(0,0,0,0.98)]">
+                  ABOUT
+                </span>
+                <span className="text-[54px] xs:text-[62px] sm:text-[84px] md:text-[98px] font-black uppercase text-white tracking-tighter leading-[0.84] whitespace-nowrap drop-shadow-[0_25px_50px_rgba(0,0,0,0.98)] -mt-2 xs:-mt-2.5 sm:-mt-3.5 md:-mt-4">
+                  AFTERWORK
+                </span>
               </span>
 
-              {/* Line 2: AFTERWORK - Solid Bold White, no space between */}
-              <span className="flex items-baseline justify-center -mt-2 sm:-mt-4 lg:-mt-6 drop-shadow-[0_25px_50px_rgba(0,0,0,0.98)]">
-                <span className="text-3xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-[8.5rem] font-black uppercase text-white tracking-tight leading-[0.85]">
+              {/* Desktop (>= lg): Original 2-line joined title 100% intact */}
+              <span className="hidden lg:block text-8xl xl:text-[8.2rem] font-black uppercase text-white tracking-tight leading-[0.85] drop-shadow-[0_20px_45px_rgba(0,0,0,0.95)]">
+                ABOUT
+              </span>
+              <span className="hidden lg:flex items-baseline justify-center -mt-6 drop-shadow-[0_25px_50px_rgba(0,0,0,0.98)]">
+                <span className="text-8xl xl:text-[8.5rem] font-black uppercase text-white tracking-tight leading-[0.85]">
                   AFTER
                 </span>
-                <span className="text-3xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-[8.5rem] font-black uppercase text-white tracking-tight leading-[0.85]">
+                <span className="text-8xl xl:text-[8.5rem] font-black uppercase text-white tracking-tight leading-[0.85]">
                   WORK
                 </span>
               </span>
@@ -319,9 +313,9 @@ export default function AboutPage() {
             {/* Kolom Kiri: Teks Abstrak Deconstructed dengan Animasi */}
             <div
               ref={sec2TextRef}
-              className="lg:col-span-5 relative z-10 punk-float-b"
+              className="w-full lg:w-auto lg:col-span-5 relative z-10 punk-float-b flex flex-col items-center lg:items-start"
             >
-              <div className="space-y-6">
+              <div className="w-full max-w-[280px] xs:max-w-[300px] sm:max-w-[360px] md:max-w-[420px] lg:max-w-none mx-auto lg:mx-0 px-1 sm:px-2 lg:px-0 text-left space-y-6">
 
                 {/* Abstract Deconstructed Headline - Uniform font style matching LOREM, all white */}
                 <div className="space-y-2">
@@ -346,12 +340,12 @@ export default function AboutPage() {
 
                 {/* Abstract Paragraph Composition */}
                 <div className="abstract-text-item space-y-4 pt-2">
-                  <p className="text-sm sm:text-base text-[#F5F5F5]/75 font-light leading-relaxed max-w-md -rotate-[0.5deg]">
+                  <p className="text-sm sm:text-base text-neutral-300 lg:text-neutral-400 font-light leading-relaxed tracking-wide max-w-lg -rotate-[0.5deg]">
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam gravida tellus vel nisl finibus, in porta velit placerat. Integer lacinia magna eu elit ullamcorper, et tempor neque pellentesque.
                   </p>
 
                   <div className="pl-6 sm:pl-8 relative border-l border-white/15">
-                    <p className="text-xs sm:text-sm text-[#F5F5F5]/50 font-mono leading-relaxed max-w-sm rotate-[0.5deg]">
+                    <p className="text-xs sm:text-sm text-neutral-400/80 font-mono leading-relaxed tracking-wide max-w-lg rotate-[0.5deg]">
                       Vivamus dictum hendrerit sem, non elementum neque efficitur a. Cras sed nisi sit amet dolor porta lacinia eleifend sit amet nec felis.
                     </p>
                   </div>
@@ -401,19 +395,6 @@ export default function AboutPage() {
           aria-label="About Culture"
           className="min-h-screen flex flex-col justify-center relative py-24 sm:py-32 lg:py-40 mt-32 sm:mt-44 mb-56 sm:mb-68 lg:mb-80 overflow-visible"
         >
-          {/* Ghosted Logo Watermark — Di antara image dan text, mengarah ke text sedikit */}
-          <div
-            ref={sec3WatermarkRef}
-            aria-hidden="true"
-            className="absolute top-1/2 -translate-y-1/2 left-[46%] sm:left-[50%] lg:left-[54%] w-64 h-64 sm:w-80 sm:h-80 md:w-[420px] md:h-[420px] lg:w-[480px] lg:h-[480px] pointer-events-none select-none opacity-[0.10] sm:opacity-[0.13] z-0 will-change-transform"
-          >
-            <Image
-              src="/brand/logo-short-white.png"
-              alt="Afterwork Logo Watermark"
-              fill
-              className="object-contain"
-            />
-          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-12 gap-12 lg:gap-16 items-center relative z-10">
 
@@ -475,25 +456,27 @@ export default function AboutPage() {
             {/* Kolom Kanan: Teks Penjelasan Lorem Ipsum */}
             <div
               ref={sec3TextRef}
-              className="md:col-span-5 space-y-6"
+              className="w-full md:col-span-5 flex flex-col items-center lg:items-start"
             >
-              <h3 className="text-3xl sm:text-4xl lg:text-5xl font-black uppercase tracking-tight text-white leading-[1.08]">
-                CONSECTETUR
-                <br />
-                ADIPISCING ELIT<span className="text-[#E05D29]">.</span>
-              </h3>
+              <div className="w-full max-w-[280px] xs:max-w-[300px] sm:max-w-[360px] md:max-w-[420px] lg:max-w-none mx-auto lg:mx-0 px-1 sm:px-2 lg:px-0 text-left space-y-6">
+                <h3 className="text-3xl sm:text-4xl lg:text-5xl font-black uppercase tracking-tight text-white leading-[1.08]">
+                  CONSECTETUR
+                  <br />
+                  ADIPISCING ELIT<span className="text-[#E05D29]">.</span>
+                </h3>
 
-              <p className="text-sm sm:text-base text-[#F5F5F5]/70 leading-relaxed max-w-lg">
-                Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur.
-              </p>
+                <p className="text-sm sm:text-base text-neutral-300 lg:text-neutral-400 font-light leading-relaxed tracking-wide max-w-lg">
+                  Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur.
+                </p>
 
-              <p className="text-xs sm:text-sm text-[#F5F5F5]/45 leading-relaxed max-w-lg">
-                Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur.
-              </p>
+                <p className="text-xs sm:text-sm text-neutral-400/80 font-light leading-relaxed tracking-wide max-w-lg">
+                  Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur.
+                </p>
 
-              <p className="text-xs sm:text-sm text-[#F5F5F5]/35 leading-relaxed max-w-lg font-mono">
-                Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-              </p>
+                <p className="text-xs sm:text-sm text-neutral-400/60 font-mono leading-relaxed tracking-wide max-w-lg">
+                  Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+                </p>
+              </div>
             </div>
 
           </div>

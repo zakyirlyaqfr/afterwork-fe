@@ -107,7 +107,7 @@ export default function FaqsPage() {
         >
           <div
             ref={listRef}
-            className="w-full max-w-4xl flex flex-col"
+            className="w-full max-w-[280px] xs:max-w-[300px] sm:max-w-[360px] md:max-w-[420px] lg:max-w-4xl mx-auto px-1 sm:px-2 lg:px-0 flex flex-col"
           >
             {faqItems.map((item, index) => (
               <div
@@ -118,7 +118,7 @@ export default function FaqsPage() {
                   <h2 className="text-base sm:text-lg md:text-xl font-black uppercase tracking-tight text-white leading-snug">
                     {item.question}
                   </h2>
-                  <p className="text-sm sm:text-base text-neutral-300 sm:text-neutral-400 leading-relaxed max-w-3xl">
+                  <p className="text-sm sm:text-base text-neutral-300 lg:text-neutral-400 font-light leading-relaxed tracking-wide max-w-lg">
                     {item.answer}
                   </p>
                 </div>
@@ -134,7 +134,7 @@ export default function FaqsPage() {
                     }}
                   >
                     <div
-                      className="faq-divider w-full max-w-3xl origin-left"
+                      className="faq-divider w-full max-w-[280px] xs:max-w-[300px] sm:max-w-[360px] md:max-w-[420px] lg:max-w-3xl origin-left"
                       style={{
                         height: "1px",
                         backgroundColor: "rgba(255, 255, 255, 0.16)",
