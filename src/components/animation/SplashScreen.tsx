@@ -163,11 +163,11 @@ export default function SplashScreen() {
       );
     }
 
-    // 5. Hold the tranquil, clean loading state for 2.0s after it becomes fully visible
-    // Total wait: 0.85s (fade-out + cushion) + 0.7s (fade-in) + 2.0s (hold) = ~3.55s
+    // 5. Hold the tranquil, clean loading state for 2.2s after it becomes fully visible
+    // Total wait: 0.85s (fade-out + cushion) + 0.7s (fade-in) + 2.2s (hold) = ~3.75s
     setTimeout(() => {
       finishAll();
-    }, 3550);
+    }, 3750);
   }, [finishAll]);
 
   // Soft fade in of the video as it starts playing from the initial pure black screen
@@ -342,17 +342,18 @@ export default function SplashScreen() {
         className="absolute inset-0 z-20 flex items-center justify-center bg-black pointer-events-none opacity-0"
         style={{ backgroundColor: "#000000" }}
       >
-        {/* Enlarged Logo with calm breathing */}
+        {/* Enlarged Logo with calm breathing & luminous warm radiant aura */}
         <div
           ref={logoRef}
           className="relative flex items-center justify-center origin-center opacity-0"
         >
-          {/* Soft warm aura */}
+          {/* Radiant luminous warm aura ("cahaya cerah") */}
           <div
-            className="absolute -inset-8 rounded-full pointer-events-none opacity-25"
+            className="absolute -inset-16 sm:-inset-24 rounded-full pointer-events-none opacity-85"
             style={{
               background:
-                "radial-gradient(circle, rgba(224,93,41,0.35) 0%, transparent 70%)",
+                "radial-gradient(circle, rgba(224,93,41,0.85) 0%, rgba(224,93,41,0.48) 42%, rgba(224,93,41,0.14) 65%, transparent 80%)",
+              filter: "blur(14px)",
             }}
           />
           <Image
@@ -360,7 +361,7 @@ export default function SplashScreen() {
             alt="Afterwork Caffeine"
             width={200}
             height={200}
-            className="w-[120px] h-[120px] sm:w-[145px] sm:h-[145px] md:w-[160px] md:h-[160px] object-contain relative z-10 drop-shadow-[0_0_35px_rgba(255,255,255,0.18)]"
+            className="w-[120px] h-[120px] sm:w-[145px] sm:h-[145px] md:w-[160px] md:h-[160px] object-contain relative z-10 drop-shadow-[0_0_40px_rgba(224,93,41,0.65)] drop-shadow-[0_0_20px_rgba(255,255,255,0.25)]"
             priority
           />
         </div>

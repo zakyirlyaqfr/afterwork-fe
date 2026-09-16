@@ -244,7 +244,7 @@ export default function MenusPage() {
   return (
     <main
       ref={sectionRef}
-      className="min-h-screen bg-black text-[#F5F5F5] pt-28 sm:pt-32 md:pt-32 px-4 sm:px-10 md:px-12 lg:px-16 selection:bg-[#E05D29] selection:text-black overflow-x-visible relative"
+      className="min-h-screen bg-black text-[#F5F5F5] pt-20 sm:pt-24 md:pt-32 px-4 sm:px-10 md:px-12 lg:px-16 selection:bg-[#E05D29] selection:text-black overflow-x-visible relative"
       style={{ paddingBottom: "clamp(4rem, 8vw, 8rem)" }}
     >
       {/* Main Content Container — with pb-[40vh] so sticky header stays pinned all the way past the bottom cards */}
@@ -254,7 +254,7 @@ export default function MenusPage() {
             - Sticky dan transparan: tetap di posisi saat di-scroll
             - Geser ke bawah sedikit (.menu-sticky-header)
             - Kartu menu meluncur di layer bawahnya (z-10 < z-78) */}
-        <div className="menu-sticky-header mb-14 sm:mb-18 md:mb-24 lg:mb-28">
+        <div className="menu-sticky-header mb-6 sm:mb-10 md:mb-24 lg:mb-28">
           {/* 1. Page Title — Purely "MENUS." */}
           <div
             ref={titleRef}

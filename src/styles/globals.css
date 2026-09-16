@@ -132,10 +132,10 @@ next-route-announcer {
   position: sticky;
   top: 0;
   z-index: 78;
-  padding-top: 52px;
-  padding-bottom: 36px;
-  margin-top: -52px;
-  padding-left: 8px;
+  padding-top: 14px;
+  padding-bottom: 8px;
+  margin-top: -14px;
+  padding-left: 0;
   pointer-events: none;
 }
 
@@ -147,9 +147,11 @@ next-route-announcer {
   left: 50%;
   width: 100vw;
   transform: translateX(-50%);
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.98) 0%, rgba(0, 0, 0, 0.9) 60%, rgba(0, 0, 0, 0.4) 85%, rgba(0, 0, 0, 0) 100%);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.85) 60%, rgba(0, 0, 0, 0.3) 85%, transparent 100%);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, black 65%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 0%, black 65%, transparent 100%);
   z-index: -1;
   pointer-events: none;
 }
@@ -167,13 +169,17 @@ next-route-announcer {
 
   .menu-sticky-header {
     top: 0;
-    padding-top: 40px;
-    padding-bottom: 40px;
+    padding-top: 36px;
+    padding-bottom: 28px;
     padding-left: 0;
-    margin-top: -40px;
+    margin-top: -36px;
   }
 
   .menu-sticky-header::before {
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    -webkit-mask-image: linear-gradient(to bottom, black 0%, black 72%, transparent 100%);
+    mask-image: linear-gradient(to bottom, black 0%, black 72%, transparent 100%);
     transform: translateX(calc(-50% - 0.5 * var(--sidebar-width)));
   }
 

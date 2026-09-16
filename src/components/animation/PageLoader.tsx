@@ -77,12 +77,12 @@ export default function PageLoader() {
     // Immediately solid black with breathing logo - NO transparency, zero glimpse of previous page!
     gsap.set(container, { opacity: 1 });
     gsap.set(logo, { opacity: 1, scale: 1 });
-    if (aura) gsap.set(aura, { opacity: 0.25, scale: 1 });
+    if (aura) gsap.set(aura, { opacity: 0.85, scale: 1 });
 
     // Breathing pulse animation
     const breathingTween = gsap.to(logo, {
-      scale: 1.045,
-      duration: 1.25,
+      scale: 1.05,
+      duration: 1.3,
       ease: "sine.inOut",
       yoyo: true,
       repeat: -1,
@@ -91,9 +91,9 @@ export default function PageLoader() {
     let auraTween: gsap.core.Tween | null = null;
     if (aura) {
       auraTween = gsap.to(aura, {
-        scale: 1.12,
-        opacity: 0.35,
-        duration: 1.25,
+        scale: 1.15,
+        opacity: 0.98,
+        duration: 1.3,
         ease: "sine.inOut",
         yoyo: true,
         repeat: -1,
@@ -121,8 +121,8 @@ export default function PageLoader() {
       }, 50);
     }
 
-    // Hold duration: breathing peacefully
-    const holdDuration = isRefresh ? 800 : 600;
+    // Hold duration: breathing peacefully (~1.35s - 1.5s as requested by user)
+    const holdDuration = isRefresh ? 1500 : 1350;
     const exitTimer = setTimeout(() => {
       // Remove the static CSS class so GSAP controls opacity
       if (typeof document !== "undefined") {
@@ -137,7 +137,7 @@ export default function PageLoader() {
       // Silky gentle dissolution revealing the new page
       gsap.to(container, {
         opacity: 0,
-        duration: 0.5,
+        duration: 0.65,
         ease: "power2.inOut",
         onComplete: () => {
           setIsRefreshLoaderActive(false);
@@ -169,18 +169,19 @@ export default function PageLoader() {
         backgroundColor: "#000000",
       }}
     >
-      {/* Enlarged Logo with calm breathing (identical to splashscreen loading) */}
+      {/* Enlarged Logo with calm breathing & luminous warm radiant aura */}
       <div
         ref={logoRef}
         className="loader-logo-wrap relative flex items-center justify-center origin-center"
       >
-        {/* Soft warm aura */}
+        {/* Radiant luminous warm aura ("cahaya cerah") */}
         <div
           ref={auraRef}
-          className="absolute -inset-8 rounded-full pointer-events-none opacity-25"
+          className="absolute -inset-16 sm:-inset-24 rounded-full pointer-events-none opacity-85"
           style={{
             background:
-              "radial-gradient(circle, rgba(224,93,41,0.35) 0%, transparent 70%)",
+              "radial-gradient(circle, rgba(224,93,41,0.85) 0%, rgba(224,93,41,0.48) 42%, rgba(224,93,41,0.14) 65%, transparent 80%)",
+            filter: "blur(14px)",
           }}
         />
         <Image
@@ -188,7 +189,7 @@ export default function PageLoader() {
           alt="Afterwork Caffeine"
           width={200}
           height={200}
-          className="w-[120px] h-[120px] sm:w-[145px] sm:h-[145px] md:w-[160px] md:h-[160px] object-contain relative z-10 drop-shadow-[0_0_35px_rgba(255,255,255,0.18)]"
+          className="w-[120px] h-[120px] sm:w-[145px] sm:h-[145px] md:w-[160px] md:h-[160px] object-contain relative z-10 drop-shadow-[0_0_40px_rgba(224,93,41,0.65)] drop-shadow-[0_0_20px_rgba(255,255,255,0.25)]"
           priority
         />
       </div>

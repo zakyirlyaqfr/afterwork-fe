@@ -58,14 +58,13 @@ export default function EditorialStory() {
     if (!section) return;
 
     const ctx = gsap.context(() => {
-      // Unified scroll-driven entrance timeline: elements reveal sequentially 1-by-1
-      // perfectly paced with the user's scroll with luxurious scrub inertia (eliminating tween conflicts)
+      // Responsive scroll-driven entrance timeline: elements reveal sequentially with stately choreography
+      // Uses toggleActions so animation triggers reliably on mobile touch and desktop
       const enterTl = gsap.timeline({
         scrollTrigger: {
           trigger: section,
-          start: "top 82%",
-          end: "top 18%",
-          scrub: 1.6,
+          start: "top 78%",
+          toggleActions: "play none none reverse",
         },
       });
 
@@ -74,7 +73,7 @@ export default function EditorialStory() {
         enterTl.fromTo(
           circularWatermarkRef.current,
           { opacity: 0, scale: 0.85 },
-          { opacity: 1, scale: 1, ease: "power2.out" },
+          { opacity: 1, scale: 1, duration: 0.85, ease: "power2.out" },
           0
         );
       }
@@ -83,32 +82,31 @@ export default function EditorialStory() {
       if (image3Ref.current) {
         enterTl.fromTo(
           image3Ref.current,
-          { opacity: 0, scale: 0.92, y: 30, filter: "blur(4px)" },
-          { opacity: 1, scale: 1, y: 0, filter: "blur(0px)", ease: "power2.out" },
-          0
+          { opacity: 0, scale: 0.92, y: 35, filter: "blur(4px)" },
+          { opacity: 1, scale: 1, y: 0, filter: "blur(0px)", duration: 1.0, ease: "power3.out" },
+          0.05
         );
       }
 
-      // 2. Primary Left Image (Authentic Craft Serving) glides up first with gentle blur clearing
+      // 2. Primary Left Image (Authentic Craft Serving) glides up with gentle blur clearing
       if (image1Ref.current) {
         enterTl.fromTo(
           image1Ref.current,
-          { opacity: 0, y: 70, filter: "blur(8px)" },
-          { opacity: 1, y: 0, filter: "blur(0px)", ease: "power2.out" },
-          0.04
+          { opacity: 0, y: 60, filter: "blur(8px)" },
+          { opacity: 1, y: 0, filter: "blur(0px)", duration: 1.15, ease: "power3.out" },
+          0.12
         );
       }
 
       // 3. Bold Statement Lines emerge 1 by 1 in graceful cascade
       if (textRef.current) {
         const headlineLines = textRef.current.querySelectorAll("h2 > span");
-        headlineLines.forEach((line) => {
-          const idx = Array.from(line.parentElement?.children || []).indexOf(line);
+        headlineLines.forEach((line, idx) => {
           enterTl.fromTo(
             line,
-            { opacity: 0, y: 45, skewY: 1.2, filter: "blur(5px)" },
-            { opacity: 1, y: 0, skewY: 0, filter: "blur(0px)", ease: "power2.out" },
-            0.18 + idx * 0.16
+            { opacity: 0, y: 40, skewY: 1.2, filter: "blur(5px)" },
+            { opacity: 1, y: 0, skewY: 0, filter: "blur(0px)", duration: 0.9, ease: "power3.out" },
+            0.2 + idx * 0.12
           );
         });
 
@@ -117,9 +115,9 @@ export default function EditorialStory() {
         if (paragraph) {
           enterTl.fromTo(
             paragraph,
-            { opacity: 0, y: 36, filter: "blur(4px)" },
-            { opacity: 1, y: 0, filter: "blur(0px)", ease: "power2.out" },
-            0.68
+            { opacity: 0, y: 30, filter: "blur(4px)" },
+            { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.9, ease: "power2.out" },
+            0.55
           );
         }
 
@@ -128,9 +126,9 @@ export default function EditorialStory() {
         if (buttonWrapper) {
           enterTl.fromTo(
             buttonWrapper,
-            { opacity: 0, y: 28 },
-            { opacity: 1, y: 0, ease: "power2.out" },
-            0.86
+            { opacity: 0, y: 24 },
+            { opacity: 1, y: 0, duration: 0.85, ease: "power2.out" },
+            0.7
           );
         }
       }

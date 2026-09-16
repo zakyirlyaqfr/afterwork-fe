@@ -41,6 +41,13 @@ export function getAssetPath(path: string | undefined | null): string {
 }
 
 export function getHomeUrl(): string {
-  return "/";
+  let base = BASE_PATH;
+  if (!base && typeof window !== "undefined") {
+    const pathname = window.location.pathname;
+    if (pathname.startsWith("/afterwork-1")) {
+      base = "/afterwork-1";
+    }
+  }
+  return base ? `${base}/` : "/";
 }
 

@@ -15,14 +15,22 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
   // Re-synchronize Lenis dimensions and ScrollTrigger after splash fully dissolves
   useEffect(() => {
     if (!hasSeenSplash) return;
-    const timer = setTimeout(() => {
-      if (lenisRef.current) {
-        lenisRef.current.resize();
-      }
+    
+    // Immediate and staged refreshes to ensure mobile viewport height and element offsets are calibrated
+    ScrollTrigger.refresh();
+    const timer1 = setTimeout(() => {
+      if (lenisRef.current) lenisRef.current.resize();
       ScrollTrigger.refresh();
-    }, 1100);
+    }, 300);
+    const timer2 = setTimeout(() => {
+      if (lenisRef.current) lenisRef.current.resize();
+      ScrollTrigger.refresh();
+    }, 900);
 
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+    };
   }, [hasSeenSplash]);
 
   useEffect(() => {
@@ -31,13 +39,14 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
     gsap.registerPlugin(ScrollTrigger);
 
     const lenis = new Lenis({
-      duration: 1.75,
+      duration: 1.5,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -9 * t)),
       orientation: "vertical",
       gestureOrientation: "vertical",
       smoothWheel: true,
+      syncTouch: true,
       wheelMultiplier: 0.88,
-      touchMultiplier: 1.4,
+      touchMultiplier: 1.2,
     });
 
     lenisRef.current = lenis;
@@ -49,8 +58,12 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
     };
     window.addEventListener("afterwork:scroll-to-top", handleScrollToTop);
 
-    // Connect Lenis to GSAP ScrollTrigger
+    // Connect both Lenis scroll and native mobile touch window scroll to GSAP ScrollTrigger
     lenis.on("scroll", ScrollTrigger.update);
+    const handleNativeScroll = () => {
+      ScrollTrigger.update();
+    };
+    window.addEventListener("scroll", handleNativeScroll, { passive: true });
 
     const updateTicker = (time: number) => {
       lenis.raf(time * 1000);
@@ -61,6 +74,7 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
 
     return () => {
       window.removeEventListener("afterwork:scroll-to-top", handleScrollToTop);
+      window.removeEventListener("scroll", handleNativeScroll);
       gsap.ticker.remove(updateTicker);
       lenis.destroy();
       lenisRef.current = null;

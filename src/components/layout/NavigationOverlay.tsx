@@ -57,45 +57,49 @@ export default function NavigationOverlay() {
       if (!isMenuOpen) {
         gsap.set(container, {
           visibility: "hidden",
-          clipPath: isLandscapeLaptop
-            ? "inset(0% 100% 0% 0%)"
-            : "inset(0% 0% 100% 0%)",
+          clipPath: "inset(0% 100% 0% 0%)",
         });
         return;
       }
     }
 
-    // Kill any active tweens on the container and image card
+    // Kill any active tweens on the container, image card, and links
     gsap.killTweensOf([container, imageCardRef.current].filter(Boolean));
+    const navLinks = container.querySelectorAll(".nav-link-hover");
+    if (navLinks.length > 0) {
+      gsap.killTweensOf(navLinks);
+    }
 
     if (isMenuOpen) {
       // Reveal container with slow-at-start, slow-at-end easing (power4.inOut)
+      // Applied consistently across desktop landscape and mobile non-landscape
       gsap.set(container, { visibility: "visible", opacity: 1 });
 
-      if (isLandscapeLaptop) {
-        // Desktop landscape: Sweep curtain from left to right with smooth easeInOut
+      // Horizontal sweep curtain from left to right with smooth easeInOut deceleration at the end
+      gsap.fromTo(
+        container,
+        {
+          clipPath: "inset(0% 100% 0% 0%)",
+        },
+        {
+          clipPath: "inset(0% 0% 0% 0%)",
+          duration: 0.85,
+          ease: "power4.inOut",
+        }
+      );
+
+      // Staggered decelerating entrance for navigation links ("diakhirnya lambat")
+      if (navLinks.length > 0) {
         gsap.fromTo(
-          container,
+          navLinks,
+          { opacity: 0, x: -30 },
           {
-            clipPath: "inset(0% 100% 0% 0%)",
-          },
-          {
-            clipPath: "inset(0% 0% 0% 0%)",
+            opacity: 1,
+            x: 0,
             duration: 0.85,
-            ease: "power4.inOut",
-          }
-        );
-      } else {
-        // Non-desktop-landscape (mobile/tablet): Open menu dari atas ke bawah
-        gsap.fromTo(
-          container,
-          {
-            clipPath: "inset(0% 0% 100% 0%)",
-          },
-          {
-            clipPath: "inset(0% 0% 0% 0%)",
-            duration: 0.85,
-            ease: "power4.inOut",
+            delay: 0.18,
+            stagger: 0.06,
+            ease: "power3.out",
           }
         );
       }
@@ -106,9 +110,9 @@ export default function NavigationOverlay() {
           imageCardRef.current,
           {
             opacity: 0,
-            x: isLandscapeLaptop ? 60 : 30,
-            y: isLandscapeLaptop ? 0 : 20,
-            scale: 0.92,
+            x: 45,
+            y: 0,
+            scale: 0.94,
           },
           {
             opacity: 1,
@@ -125,64 +129,56 @@ export default function NavigationOverlay() {
       if (isPageTransitioning) {
         gsap.set(container, {
           visibility: "hidden",
-          clipPath: isLandscapeLaptop
-            ? "inset(0% 100% 0% 0%)"
-            : "inset(0% 0% 100% 0%)",
+          clipPath: "inset(0% 100% 0% 0%)",
         });
         if (imageCardRef.current) {
           gsap.set(imageCardRef.current, { opacity: 0 });
         }
+        if (navLinks.length > 0) {
+          gsap.set(navLinks, { opacity: 0 });
+        }
         setClickedHref(null);
         return;
+      }
+
+      // Normal Exit Animation: Navigation links glide out smoothly
+      if (navLinks.length > 0) {
+        gsap.to(navLinks, {
+          opacity: 0,
+          x: -18,
+          duration: 0.45,
+          ease: "power2.in",
+        });
       }
 
       // Normal Exit Animation: Image card glides out with smooth easeInOut
       if (imageCardRef.current) {
         gsap.to(imageCardRef.current, {
           opacity: 0,
-          x: isLandscapeLaptop ? 35 : 15,
-          y: isLandscapeLaptop ? 0 : -15,
-          scale: 0.94,
-          duration: 0.65,
+          x: 25,
+          y: 0,
+          scale: 0.96,
+          duration: 0.6,
           ease: "power3.inOut",
         });
       }
 
-      if (isLandscapeLaptop) {
-        // Desktop landscape: Sweep curtain back to left with calm power4.inOut
-        gsap.fromTo(
-          container,
-          {
-            clipPath: "inset(0% 0% 0% 0%)",
+      // Horizontal sweep curtain back to left with calm power4.inOut deceleration
+      gsap.fromTo(
+        container,
+        {
+          clipPath: "inset(0% 0% 0% 0%)",
+        },
+        {
+          clipPath: "inset(0% 100% 0% 0%)",
+          duration: 0.85,
+          ease: "power4.inOut",
+          onComplete: () => {
+            gsap.set(container, { visibility: "hidden" });
+            setClickedHref(null);
           },
-          {
-            clipPath: "inset(0% 100% 0% 0%)",
-            duration: 0.85,
-            ease: "power4.inOut",
-            onComplete: () => {
-              gsap.set(container, { visibility: "hidden" });
-              setClickedHref(null);
-            },
-          }
-        );
-      } else {
-        // Non-desktop-landscape (mobile/tablet): Close dari bawah ke atas
-        gsap.fromTo(
-          container,
-          {
-            clipPath: "inset(0% 0% 0% 0%)",
-          },
-          {
-            clipPath: "inset(0% 0% 100% 0%)",
-            duration: 0.85,
-            ease: "power4.inOut",
-            onComplete: () => {
-              gsap.set(container, { visibility: "hidden" });
-              setClickedHref(null);
-            },
-          }
-        );
-      }
+        }
+      );
     }
   }, [isMenuOpen, isPageTransitioning]);
 
