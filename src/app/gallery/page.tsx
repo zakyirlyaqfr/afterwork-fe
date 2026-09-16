@@ -57,8 +57,8 @@ export default function GalleryPage() {
       gsap.set(items, { opacity: 0, y: 40 });
 
       ScrollTrigger.batch(items, {
-        start: "top 88%",
-        end: "bottom 12%",
+        start: "top 92%",
+        once: true,
         onEnter: (batch) => {
           gsap.to(batch, {
             opacity: 1,
@@ -69,23 +69,21 @@ export default function GalleryPage() {
             overwrite: "auto",
           });
         },
-        onLeaveBack: (batch) => {
-          gsap.to(batch, {
-            opacity: 0,
-            y: 40,
-            duration: 0.5,
-            ease: "power2.in",
-            stagger: 0.08,
-            overwrite: "auto",
-          });
-        },
       });
+
+      // Safety reveal fallback: guarantees 100% of gallery images are visible even on slow devices
+      const safetyReveal = setTimeout(() => {
+        gsap.to(items, { opacity: 1, y: 0, duration: 0.4, overwrite: "auto" });
+      }, 1000);
 
       const refreshTimeout = setTimeout(() => {
         ScrollTrigger.refresh();
       }, 100);
 
-      return () => clearTimeout(refreshTimeout);
+      return () => {
+        clearTimeout(refreshTimeout);
+        clearTimeout(safetyReveal);
+      };
     }, gridRef);
 
     return () => ctx.revert();

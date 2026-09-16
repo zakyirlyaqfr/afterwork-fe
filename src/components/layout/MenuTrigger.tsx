@@ -6,11 +6,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useUI } from "@/context/UIContext";
 import gsap from "gsap";
-import { getAssetPath } from "@/utils/asset";
+import { getAssetPath, getHomeUrl } from "@/utils/asset";
 
 export default function MenuTrigger() {
-  const { isMenuOpen, toggleMenu, closeMenu, navigateTo, hasSeenSplash, isPageTransitioning } = useUI();
+  const { isMenuOpen, toggleMenu, closeMenu, navigateTo, hasSeenSplash } = useUI();
   const pathname = usePathname();
+  const homeUrl = getHomeUrl();
 
   const desktopDockRef = useRef<HTMLElement>(null);
   const mobileMenuRef = useRef<HTMLButtonElement>(null);
@@ -49,7 +50,16 @@ export default function MenuTrigger() {
   const handleLogoClick = (e: React.MouseEvent) => {
     e.preventDefault();
     if (isMenuOpen) closeMenu();
-    if (pathname === "/") {
+    const isCurrentHome =
+      pathname === "/" ||
+      pathname === "/afterwork-1" ||
+      pathname === "/afterwork-1/" ||
+      (typeof window !== "undefined" &&
+        (window.location.pathname === "/" ||
+          window.location.pathname === "/afterwork-1" ||
+          window.location.pathname === "/afterwork-1/"));
+
+    if (isCurrentHome) {
       if ((window as any).lenis) {
         (window as any).lenis.scrollTo(0, { duration: 1.2 });
       } else {
@@ -57,7 +67,7 @@ export default function MenuTrigger() {
       }
       return;
     }
-    navigateTo("/");
+    navigateTo(homeUrl);
   };
 
   return (
@@ -76,7 +86,7 @@ export default function MenuTrigger() {
         {/* Brand Logo at top of sidebar dock */}
         <div className="w-full flex justify-center px-4 absolute top-10 lg:top-12 z-[100] pointer-events-auto">
           <Link
-            href="/"
+            href={homeUrl}
             onClick={handleLogoClick}
             className="group block relative w-12 h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 xl:w-[72px] xl:h-[72px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#E05D29]"
             aria-label="Afterwork Caffeine Homepage"
@@ -214,7 +224,7 @@ export default function MenuTrigger() {
         className="md:hidden fixed right-4 sm:right-6 top-1.5 sm:top-2 z-[90] select-none site-chrome"
       >
         <Link
-          href="/"
+          href={homeUrl}
           onClick={handleLogoClick}
           className="group block relative w-13 h-13 sm:w-16 sm:h-16 focus:outline-none"
           aria-label="Afterwork Caffeine Homepage"

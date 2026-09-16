@@ -1,6 +1,3 @@
-import { DEFAULT_IMAGE } from '@/data/assets';
-import { getAssetPath } from '@/utils/asset';
-
 export interface MenuItem {
   id: string;
   name: string;
@@ -194,7 +191,7 @@ export const menuItems: MenuItem[] = [
     description: "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi.\n\nEt harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus.",
     price: "65K",
     category: "FOOD",
-    previewImage: getAssetPath("/images/afterwork-truffle-fries.jpg"),
+    previewImage: "/images/afterwork-truffle-fries.jpg",
     tag: "SIGNATURE SHARE",
     details: {
       notes: "Excepteur, Sint, Occaecat, Cupidatat",
@@ -212,7 +209,7 @@ export const menuItems: MenuItem[] = [
     description: "Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus.\n\nUt aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore.",
     price: "52K",
     category: "FOOD",
-    previewImage: getAssetPath("/images/afterwork-molten-skillet.jpg"),
+    previewImage: "/images/afterwork-molten-skillet.jpg",
     tag: "DESSERT COMFORT",
     details: {
       notes: "Non, Proident, Sunt, In Culpa",
@@ -230,7 +227,7 @@ export const menuItems: MenuItem[] = [
     description: "Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam.\n\nNisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas.",
     price: "48K",
     category: "FOOD",
-    previewImage: getAssetPath("/images/afterwork-savory-scramble.jpg"),
+    previewImage: "/images/afterwork-savory-scramble.jpg",
     tag: "SAVORY MELT",
     details: {
       notes: "Qui, Officia, Deserunt, Mollit",

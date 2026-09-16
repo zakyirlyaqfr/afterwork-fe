@@ -19,11 +19,28 @@ export function getAssetPath(path: string | undefined | null): string {
     return path;
   }
 
-  // If basePath is already present in path, avoid double prefixing
-  if (BASE_PATH && path.startsWith(BASE_PATH)) {
-    return path;
+  // Determine active base path:
+  // 1. Build-time environment variable (e.g. '/afterwork-1')
+  // 2. Client-side runtime detection (if page is running under a subfolder like /afterwork-1/)
+  let base = BASE_PATH;
+  if (!base && typeof window !== "undefined") {
+    const pathname = window.location.pathname;
+    if (pathname.startsWith("/afterwork-1")) {
+      base = "/afterwork-1";
+    }
   }
 
   const cleanPath = path.startsWith("/") ? path : `/${path}`;
-  return `${BASE_PATH}${cleanPath}`;
+
+  // If basePath is already present in path, avoid double prefixing
+  if (base && cleanPath.startsWith(base)) {
+    return cleanPath;
+  }
+
+  return `${base}${cleanPath}`;
 }
+
+export function getHomeUrl(): string {
+  return "/";
+}
+

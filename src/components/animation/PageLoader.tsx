@@ -112,7 +112,12 @@ export default function PageLoader() {
         } else {
           window.scrollTo(0, 0);
         }
-        router.push(targetPath);
+        const bp = process.env.NEXT_PUBLIC_BASE_PATH || "";
+        let dest = targetPath;
+        if (bp && dest.startsWith(bp)) {
+          dest = dest.slice(bp.length) || "/";
+        }
+        router.push(dest);
       }, 50);
     }
 

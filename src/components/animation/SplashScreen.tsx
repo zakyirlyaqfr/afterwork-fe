@@ -175,8 +175,9 @@ export default function SplashScreen() {
     if (videoWrapperRef.current) {
       gsap.to(videoWrapperRef.current, {
         opacity: 1,
-        duration: 0.65,
+        duration: 0.5,
         ease: "power2.out",
+        overwrite: "auto",
       });
     }
   }, []);
@@ -211,7 +212,7 @@ export default function SplashScreen() {
     };
   }, [isVisible, checkTimeAndTransition]);
 
-  // Video autoplay and listeners
+  // Video autoplay and listeners optimized for mobile devices (iOS Safari & Android Chrome)
   useEffect(() => {
     if (!isVisible) return;
 
@@ -219,20 +220,45 @@ export default function SplashScreen() {
     const originalOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
 
-    // Play video
-    const playTimer = setTimeout(() => {
+    // Enforce native DOM properties for strict mobile autoplay policies
+    const video = videoRef.current;
+    if (video) {
+      video.muted = true;
+      video.defaultMuted = true;
+      video.setAttribute("muted", "");
+      video.setAttribute("playsinline", "");
+      video.setAttribute("webkit-playsinline", "");
+    }
+
+    // Play video with immediate and delayed attempts
+    const tryPlay = () => {
       if (videoRef.current) {
-        videoRef.current
-          .play()
-          .then(() => {
-            handleVideoPlaying();
-          })
-          .catch(() => {
-            // If autoplay policy requires user interaction, still reveal video
-            handleVideoPlaying();
-          });
+        videoRef.current.muted = true;
+        const playPromise = videoRef.current.play();
+        if (playPromise !== undefined) {
+          playPromise
+            .then(() => {
+              handleVideoPlaying();
+            })
+            .catch(() => {
+              // Mobile browser policy might wait for user interaction, still reveal video wrapper
+              handleVideoPlaying();
+            });
+        }
       }
-    }, 50);
+    };
+
+    tryPlay();
+    const playTimer = setTimeout(tryPlay, 60);
+    const playRetryTimer = setTimeout(tryPlay, 300);
+
+    // Mobile fallback: If mobile browser strictly delays autoplay until touch gesture (e.g. Low Power Mode),
+    // first tap anywhere on screen instantly kicks off the video!
+    const handleFirstTouch = () => {
+      tryPlay();
+    };
+    window.addEventListener("touchstart", handleFirstTouch, { passive: true, once: true });
+    window.addEventListener("pointerdown", handleFirstTouch, { passive: true, once: true });
 
     // Safety timeout fallback
     const safetyTimer = setTimeout(() => {
@@ -252,7 +278,10 @@ export default function SplashScreen() {
 
     return () => {
       clearTimeout(playTimer);
+      clearTimeout(playRetryTimer);
       clearTimeout(safetyTimer);
+      window.removeEventListener("touchstart", handleFirstTouch);
+      window.removeEventListener("pointerdown", handleFirstTouch);
       window.removeEventListener("keydown", handleKeyDown);
       document.body.style.overflow = originalOverflow;
     };
@@ -287,6 +316,8 @@ export default function SplashScreen() {
             disableRemotePlayback
             preload="auto"
             onPlaying={handleVideoPlaying}
+            onLoadedData={handleVideoPlaying}
+            onCanPlay={handleVideoPlaying}
             onTimeUpdate={checkTimeAndTransition}
             onEnded={transitionToLoading}
             className="w-full h-full object-contain pointer-events-none"
@@ -298,8 +329,9 @@ export default function SplashScreen() {
               filter: "contrast(1.2) brightness(1.0) grayscale(1)",
             }}
           >
-            <source src={getAssetPath("/brand/afterwork-splash-final.webm")} type="video/webm" />
+            {/* MP4 first for 100% universal mobile browser support (iOS Safari & Android Chrome) */}
             <source src={getAssetPath("/brand/afterwork-splash-final.mp4")} type="video/mp4" />
+            <source src={getAssetPath("/brand/afterwork-splash-final.webm")} type="video/webm" />
           </video>
         )}
       </div>

@@ -22,9 +22,9 @@ const rootDir = path.resolve(__dirname, "..");
 const outDir = path.join(rootDir, "out");
 const zipFile = path.join(rootDir, "afterwork-deployment.zip");
 
-// 1. Determine and normalize target subpath (defaults to root domain '/')
+// 1. Determine and normalize target subpath (defaults to '/afterwork-1' for live deployment)
 const argPath = process.argv[2];
-let targetSubpath = "";
+let targetSubpath = "/afterwork-1";
 
 if (argPath !== undefined && argPath !== null) {
   const trimmed = argPath.trim();
@@ -44,7 +44,7 @@ process.env.NEXT_PUBLIC_BASE_PATH = targetSubpath;
 console.log("\n=======================================================");
 console.log("  AFTERWORK - DYNAMIC PRODUCTION BUILD & PACKAGER");
 console.log(`  Target Subpath: ${targetSubpath ? targetSubpath : "/ (root domain)"}`);
-console.log(`  Example URL:    http://103.103.22.15${targetSubpath ? targetSubpath : ""}/`);
+console.log(`  Example URL:    http://103.103.22.15:5555${targetSubpath ? targetSubpath : ""}/`);
 console.log("=======================================================\n");
 
 // 2. Run Next.js static export
@@ -135,44 +135,45 @@ const readmeContent = `=========================================================
              AFTERWORK CAFFEINE - PRODUCTION DEPLOYMENT GUIDE
 ========================================================================
 
-Target Deployment : Root Domain / Subfolder (Standard Web Server)
+Target Deployment : ${destSubpath ? `Subpath '${destSubpath}'` : "Root Domain '/'"}
+Target Server URL : http://103.103.22.15:5555${destSubpath}/
 Format Arsip      : Static HTML5 / CSS3 / Next.js React 19 Client Hydration
 Build Timestamp   : ${new Date().toISOString()}
 
 ------------------------------------------------------------------------
-1. CARA DEPLOY DI SERVER LINUX (NGINX / UBUNTU / DEBIAN)
+1. CARA DEPLOY DI SERVER LINUX (NGINX / UBUNTU / DEBIAN / SERVE)
 ------------------------------------------------------------------------
 
 Langkah 1: Upload file 'afterwork-deployment.zip' ke server Anda.
 Langkah 2: Jalankan perintah berikut di terminal server:
 
    # Buat direktori web jika belum ada
-   sudo mkdir -p /var/www/html/
+   sudo mkdir -p ${serverDir}
 
    # Ekstrak file dan timpa versi lama secara otomatis (-o)
-   sudo unzip -o afterwork-deployment.zip -d /var/www/html/
+   sudo unzip -o afterwork-deployment.zip -d ${serverDir}
 
-   # Berikan hak akses kepemilikan kepada web server (www-data / nginx)
-   sudo chown -R www-data:www-data /var/www/html/
+   # Berikan hak akses kepemilikan kepada web server
+   sudo chown -R www-data:www-data ${serverDir}
 
    # Atur izin akses file standar
-   sudo chmod -R 755 /var/www/html/
+   sudo chmod -R 755 ${serverDir}
 
-Langkah 3: Konfigurasi Nginx (/etc/nginx/sites-available/default):
+Langkah 3: Jika menggunakan Nginx (/etc/nginx/sites-available/default):
    
    server {
        listen 80;
-       server_name _; # Ganti dengan domain Anda atau biarkan default IP
+       server_name _;
 
        root /var/www/html;
        index index.html;
 
-       location / {
-           try_files $uri $uri/ $uri.html /index.html;
+       location ${destSubpath ? destSubpath : "/"} {
+           try_files $uri $uri/ $uri.html ${destSubpath}/index.html;
        }
 
        # Cache control untuk file statis Next.js
-       location /_next/static/ {
+       location ${destSubpath ? `${destSubpath}/_next/static/` : "/_next/static/"} {
            expires 1y;
            add_header Cache-Control "public, max-age=31536000, immutable";
        }
