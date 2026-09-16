@@ -32,11 +32,11 @@ export default function Hero() {
       gsap.set(imageWrapper, {
         opacity: 0,
         clipPath: "polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%)",
-        x: 35,
-        filter: "brightness(0.55) contrast(1.15) blur(4px)",
+        x: 45,
+        filter: "brightness(0.4) contrast(1.2) blur(8px)",
       });
-      if (wordAfter) gsap.set(wordAfter, { y: 50, opacity: 0, scale: 0.96 });
-      if (wordWork) gsap.set(wordWork, { y: 50, opacity: 0, scale: 0.96 });
+      if (wordAfter) gsap.set(wordAfter, { y: 65, opacity: 0, scale: 0.94, filter: "blur(8px)" });
+      if (wordWork) gsap.set(wordWork, { y: 65, opacity: 0, scale: 0.94, filter: "blur(8px)" });
       return;
     }
 
@@ -47,15 +47,15 @@ export default function Hero() {
     gsap.set(imageWrapper, {
       opacity: 0,
       clipPath: "polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%)",
-      x: 35,
-      filter: "brightness(0.55) contrast(1.15) blur(4px)",
+      x: 45,
+      filter: "brightness(0.4) contrast(1.2) blur(8px)",
     });
-    if (wordAfter) gsap.set(wordAfter, { y: 50, opacity: 0, scale: 0.96 });
-    if (wordWork) gsap.set(wordWork, { y: 50, opacity: 0, scale: 0.96 });
+    if (wordAfter) gsap.set(wordAfter, { y: 65, opacity: 0, scale: 0.94, filter: "blur(8px)" });
+    if (wordWork) gsap.set(wordWork, { y: 65, opacity: 0, scale: 0.94, filter: "blur(8px)" });
 
-    // Cinematic & Tangible Entrance Sequence:
-    // Starts immediately as the splash screen overlay begins dissolving
-    const introTl = gsap.timeline();
+    // Cinematic & Stately Entrance Sequence:
+    // Paced calmly with gentle delay so the visual composition unfolds gracefully after veil dissolves
+    const introTl = gsap.timeline({ delay: 0.15 });
 
     introTl.to(
       imageWrapper,
@@ -64,8 +64,8 @@ export default function Hero() {
         clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
         x: 0,
         filter: "brightness(1) contrast(1) blur(0px)",
-        duration: 1.25,
-        ease: "power3.inOut",
+        duration: 1.6,
+        ease: "power2.out",
       },
       0
     );
@@ -77,10 +77,11 @@ export default function Hero() {
           y: 0,
           opacity: 1,
           scale: 1,
-          duration: 0.85,
+          filter: "blur(0px)",
+          duration: 1.2,
           ease: "power3.out",
         },
-        0.65
+        0.35
       );
     }
 
@@ -91,10 +92,11 @@ export default function Hero() {
           y: 0,
           opacity: 1,
           scale: 1,
-          duration: 0.85,
+          filter: "blur(0px)",
+          duration: 1.2,
           ease: "power3.out",
         },
-        0.85
+        0.6
       );
     }
 

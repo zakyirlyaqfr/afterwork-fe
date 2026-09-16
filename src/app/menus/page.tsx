@@ -9,6 +9,7 @@ import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { menuItems, menuCategories, MenuItem } from "@/data/menu";
 import MenuDetailModal from "@/components/menus/MenuDetailModal";
 import { getAssetPath } from "@/utils/asset";
+import { useUI } from "@/context/UIContext";
 
 // Abstract shape profiles matching user's sketch:
 // - Left-column cards shifted to the RIGHT (with .menu-left-shift)
@@ -73,6 +74,7 @@ export default function MenusPage() {
   const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const isMobile = useMediaQuery("(max-width: 767px)");
+  const { hasSeenSplash, isPageTransitioning } = useUI();
 
   const sectionRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
@@ -85,29 +87,79 @@ export default function MenusPage() {
       ? menuItems
       : menuItems.filter((item) => item.category === activeCategory);
 
+  // Coordinated Entrance Animation: Plays every time user enters /menus
   useEffect(() => {
-    window.scrollTo(0, 0);
     if (prefersReduced) return;
-    gsap.registerPlugin(ScrollTrigger);
 
-    // Title entrance
+    const cards = gridRef.current?.querySelectorAll(".menu-card");
+
+    if (!hasSeenSplash || isPageTransitioning) {
+      if (titleRef.current) {
+        gsap.set(titleRef.current, { opacity: 0, y: 40, filter: "blur(8px)" });
+      }
+      if (filterRef.current) {
+        gsap.set(filterRef.current, { opacity: 0, y: 25 });
+      }
+      if (cards && cards.length > 0) {
+        gsap.set(cards, { opacity: 0, y: 35 });
+      }
+      return;
+    }
+
+    gsap.registerPlugin(ScrollTrigger);
+    gsap.killTweensOf([titleRef.current, filterRef.current].filter(Boolean));
+    if (cards && cards.length > 0) {
+      gsap.killTweensOf(cards);
+    }
+
+    // 1. Page Title Entrance
     if (titleRef.current) {
       gsap.fromTo(
         titleRef.current,
-        { opacity: 0, y: 35, filter: "blur(6px)" },
-        { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.9, ease: "power3.out" }
+        { opacity: 0, y: 40, filter: "blur(8px)" },
+        {
+          opacity: 1,
+          y: 0,
+          filter: "blur(0px)",
+          duration: 1.2,
+          ease: "power3.out",
+          delay: 0.1,
+        }
       );
     }
 
-    // Filter entrance
+    // 2. Category Filter Buttons Entrance
     if (filterRef.current) {
       gsap.fromTo(
         filterRef.current,
-        { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, duration: 0.7, ease: "power2.out", delay: 0.15 }
+        { opacity: 0, y: 25 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.9,
+          ease: "power2.out",
+          delay: 0.28,
+        }
       );
     }
-  }, [prefersReduced]);
+
+    // 3. Initial Menu Cards Entrance
+    if (cards && cards.length > 0) {
+      gsap.fromTo(
+        cards,
+        { opacity: 0, y: 35 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 1.0,
+          ease: "power3.out",
+          stagger: 0.08,
+          delay: 0.22,
+          clearProps: "y,opacity",
+        }
+      );
+    }
+  }, [prefersReduced, hasSeenSplash, isPageTransitioning]);
 
   const isFilterTransitioningRef = useRef(false);
 

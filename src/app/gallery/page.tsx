@@ -8,9 +8,11 @@ import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { bentoGalleryItems } from "@/data/gallery";
 import { getAssetPath } from "@/utils/asset";
+import { useUI } from "@/context/UIContext";
 
 export default function GalleryPage() {
   const isMobile = useMediaQuery("(max-width: 767px)");
+  const { hasSeenSplash, isPageTransitioning } = useUI();
 
   const sectionRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
@@ -18,19 +20,82 @@ export default function GalleryPage() {
   const watermarkRef = useRef<HTMLDivElement>(null);
   const prefersReduced = useReducedMotion();
 
+  // Coordinated Entrance Animation: Plays every time user enters /gallery
   useEffect(() => {
-    window.scrollTo(0, 0);
     if (prefersReduced) return;
-    gsap.registerPlugin(ScrollTrigger);
 
-    // Title entrance animation matching menus logic
+    const items = gridRef.current?.querySelectorAll(".bento-item");
+
+    if (!hasSeenSplash || isPageTransitioning) {
+      if (titleRef.current) {
+        gsap.set(titleRef.current, { opacity: 0, y: 40, filter: "blur(8px)" });
+      }
+      if (watermarkRef.current) {
+        gsap.set(watermarkRef.current, { opacity: 0, scale: 0.95 });
+      }
+      if (items && items.length > 0) {
+        gsap.set(items, { opacity: 0, y: 40 });
+      }
+      return;
+    }
+
+    gsap.registerPlugin(ScrollTrigger);
+    gsap.killTweensOf([titleRef.current, watermarkRef.current].filter(Boolean));
+
+    // 1. Page Title Entrance
     if (titleRef.current) {
       gsap.fromTo(
         titleRef.current,
-        { opacity: 0, y: 35, filter: "blur(6px)" },
-        { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.9, ease: "power3.out" }
+        { opacity: 0, y: 40, filter: "blur(8px)" },
+        {
+          opacity: 1,
+          y: 0,
+          filter: "blur(0px)",
+          duration: 1.2,
+          ease: "power3.out",
+          delay: 0.1,
+        }
       );
     }
+
+    // 2. Watermark Entrance
+    if (watermarkRef.current) {
+      gsap.fromTo(
+        watermarkRef.current,
+        { opacity: 0, scale: 0.95 },
+        {
+          opacity: 1,
+          scale: 1,
+          duration: 1.4,
+          ease: "power2.out",
+          delay: 0.15,
+        }
+      );
+    }
+
+    // 3. Top initial Bento Items entrance
+    if (items && items.length > 0) {
+      // Reveal initial top cards on screen
+      const initialCards = Array.from(items).slice(0, 4);
+      gsap.fromTo(
+        initialCards,
+        { opacity: 0, y: 40 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 1.0,
+          ease: "power3.out",
+          stagger: 0.09,
+          delay: 0.22,
+        }
+      );
+    }
+  }, [prefersReduced, hasSeenSplash, isPageTransitioning]);
+
+  // Parallax watermark scroll
+  useEffect(() => {
+    if (prefersReduced) return;
+    gsap.registerPlugin(ScrollTrigger);
 
     if (watermarkRef.current) {
       gsap.to(watermarkRef.current, {

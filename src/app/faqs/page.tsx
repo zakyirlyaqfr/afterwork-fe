@@ -5,33 +5,78 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { faqItems } from "@/data/faq";
+import { useUI } from "@/context/UIContext";
 
 export default function FaqsPage() {
   const sectionRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
   const prefersReduced = useReducedMotion();
+  const { hasSeenSplash, isPageTransitioning } = useUI();
+
+  // Coordinated Entrance Animation: Plays every time user enters /faqs
+  useEffect(() => {
+    if (prefersReduced) return;
+
+    const initialContainers = listRef.current?.querySelectorAll(".faq-item-container");
+    const topItems = initialContainers ? Array.from(initialContainers).slice(0, 3) : [];
+
+    if (!hasSeenSplash || isPageTransitioning) {
+      if (titleRef.current) {
+        gsap.set(titleRef.current, { opacity: 0, y: 40, filter: "blur(8px)" });
+      }
+      if (topItems.length > 0) {
+        gsap.set(topItems, { opacity: 0, y: 35 });
+      }
+      return;
+    }
+
+    gsap.registerPlugin(ScrollTrigger);
+    gsap.killTweensOf([titleRef.current, ...topItems].filter(Boolean));
+
+    // 1. Page Title Entrance
+    if (titleRef.current) {
+      gsap.fromTo(
+        titleRef.current,
+        { opacity: 0, y: 40, filter: "blur(8px)" },
+        {
+          opacity: 1,
+          y: 0,
+          filter: "blur(0px)",
+          duration: 1.2,
+          ease: "power3.out",
+          delay: 0.1,
+        }
+      );
+    }
+
+    // 2. Initial visible FAQ items entrance
+    if (topItems.length > 0) {
+      gsap.fromTo(
+        topItems,
+        { opacity: 0, y: 35 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 1.0,
+          ease: "power3.out",
+          stagger: 0.1,
+          delay: 0.22,
+        }
+      );
+    }
+  }, [prefersReduced, hasSeenSplash, isPageTransitioning]);
 
   useEffect(() => {
-    window.scrollTo(0, 0);
     if (prefersReduced) return;
     gsap.registerPlugin(ScrollTrigger);
 
     const ctx = gsap.context(() => {
-      // 1. Title entrance matching Menus & Contact logic
-      if (titleRef.current) {
-        gsap.fromTo(
-          titleRef.current,
-          { opacity: 0, y: 35, filter: "blur(6px)" },
-          { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.9, ease: "power3.out" }
-        );
-      }
-
-
-      // 3. Scroll reveal animations on FAQ content items
+      // Scroll reveal animations on remaining FAQ content items
       if (listRef.current) {
         const itemContainers = listRef.current.querySelectorAll(".faq-item-container");
-        itemContainers.forEach((container) => {
+        itemContainers.forEach((container, idx) => {
+          if (idx < 3) return; // Top 3 already handled by page entrance
           const text = container.querySelector(".faq-item");
           const divider = container.querySelector(".faq-divider");
 

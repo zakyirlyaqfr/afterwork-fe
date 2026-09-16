@@ -53,6 +53,8 @@ export function UIProvider({ children }: { children: React.ReactNode }) {
       if (seen && !forceSplash) {
         setHasSeenSplash(true);
         document.documentElement.classList.remove("showing-splash");
+        // Crucial: On reload, a refresh loader plays. Keep isPageTransitioning = true until PageLoader veil lifts!
+        setIsPageTransitioning(true);
       } else {
         setHasSeenSplash(false);
       }

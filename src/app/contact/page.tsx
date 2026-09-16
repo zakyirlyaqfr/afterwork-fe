@@ -7,7 +7,7 @@ import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { useUI } from "@/context/UIContext";
 
 export default function ContactPage() {
-  const { openLocationModal } = useUI();
+  const { openLocationModal, hasSeenSplash, isPageTransitioning } = useUI();
   const mainRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
   const venuesRef = useRef<HTMLDivElement>(null);
@@ -27,24 +27,100 @@ export default function ContactPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
+  // Coordinated Page Entrance Animation: Plays every time user enters /contact
   useEffect(() => {
-    window.scrollTo(0, 0);
+    if (prefersReduced) return;
+
+    if (!hasSeenSplash || isPageTransitioning) {
+      if (titleRef.current) {
+        gsap.set(titleRef.current, { opacity: 0, y: 40, filter: "blur(8px)" });
+      }
+      if (venuesRef.current) {
+        gsap.set(venuesRef.current, { opacity: 0, y: 30 });
+      }
+      if (channelsRef.current) {
+        gsap.set(channelsRef.current, { opacity: 0, y: 25 });
+      }
+      if (formRef.current) {
+        gsap.set(formRef.current, { opacity: 0, y: 35, filter: "blur(6px)" });
+      }
+      return;
+    }
+
+    gsap.registerPlugin(ScrollTrigger);
+    gsap.killTweensOf([titleRef.current, venuesRef.current, channelsRef.current, formRef.current].filter(Boolean));
+
+    // 1. Page Title Entrance
+    if (titleRef.current) {
+      gsap.fromTo(
+        titleRef.current,
+        { opacity: 0, y: 40, filter: "blur(8px)" },
+        {
+          opacity: 1,
+          y: 0,
+          filter: "blur(0px)",
+          duration: 1.2,
+          ease: "power3.out",
+          delay: 0.1,
+        }
+      );
+    }
+
+    // 2. Venue locations entrance
+    if (venuesRef.current) {
+      gsap.fromTo(
+        venuesRef.current,
+        { opacity: 0, y: 30 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 1.0,
+          ease: "power3.out",
+          delay: 0.22,
+        }
+      );
+    }
+
+    // 3. WhatsApp & Instagram links entrance
+    if (channelsRef.current) {
+      gsap.fromTo(
+        channelsRef.current,
+        { opacity: 0, y: 25 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.9,
+          ease: "power2.out",
+          delay: 0.32,
+        }
+      );
+    }
+
+    // 4. Contact Form entrance
+    if (formRef.current) {
+      gsap.fromTo(
+        formRef.current,
+        { opacity: 0, y: 35, filter: "blur(6px)" },
+        {
+          opacity: 1,
+          y: 0,
+          filter: "blur(0px)",
+          duration: 1.1,
+          ease: "power3.out",
+          delay: 0.26,
+        }
+      );
+    }
+  }, [prefersReduced, hasSeenSplash, isPageTransitioning]);
+
+  // Watermark Parallax Scroll
+  useEffect(() => {
     if (prefersReduced) return;
     gsap.registerPlugin(ScrollTrigger);
 
     const main = mainRef.current;
     if (!main) return;
 
-    // 1. Title entrance matching Menus logic exactly
-    if (titleRef.current) {
-      gsap.fromTo(
-        titleRef.current,
-        { opacity: 0, y: 35, filter: "blur(6px)" },
-        { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.9, ease: "power3.out" }
-      );
-    }
-
-    // 2. Parallax scroll animation on watermark matching gallery logic
     if (watermarkRef.current) {
       gsap.to(watermarkRef.current, {
         y: -60,
@@ -56,68 +132,6 @@ export default function ContactPage() {
           scrub: 1.6,
         },
       });
-    }
-
-    // 3. Venue rows reveal animation
-    if (venuesRef.current) {
-      const rows = venuesRef.current.children;
-      gsap.fromTo(
-        rows,
-        { opacity: 0, y: 30, filter: "blur(4px)" },
-        {
-          opacity: 1,
-          y: 0,
-          filter: "blur(0px)",
-          duration: 0.8,
-          ease: "power2.out",
-          stagger: 0.12,
-          scrollTrigger: {
-            trigger: venuesRef.current,
-            start: "top 85%",
-            toggleActions: "play none none reverse",
-          },
-        }
-      );
-    }
-
-    // 4. WhatsApp & Instagram reveal animation
-    if (channelsRef.current) {
-      gsap.fromTo(
-        channelsRef.current,
-        { opacity: 0, y: 30, filter: "blur(4px)" },
-        {
-          opacity: 1,
-          y: 0,
-          filter: "blur(0px)",
-          duration: 0.8,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: channelsRef.current,
-            start: "top 85%",
-            toggleActions: "play none none reverse",
-          },
-        }
-      );
-    }
-
-    // 5. Contact Form entrance reveal
-    if (formRef.current) {
-      gsap.fromTo(
-        formRef.current,
-        { opacity: 0, y: 35, filter: "blur(4px)" },
-        {
-          opacity: 1,
-          y: 0,
-          filter: "blur(0px)",
-          duration: 0.85,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: formRef.current,
-            start: "top 80%",
-            toggleActions: "play none none reverse",
-          },
-        }
-      );
     }
   }, [prefersReduced]);
 
