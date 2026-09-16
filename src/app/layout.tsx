@@ -10,6 +10,7 @@ import NavigationOverlay from "@/components/layout/NavigationOverlay";
 import Footer from "@/components/layout/Footer";
 import LocationModal from "@/components/layout/LocationModal";
 import CustomCursor from "@/components/animation/CustomCursor";
+import { getAssetPath } from "@/utils/asset";
 
 const alteHaasGrotesk = localFont({
   src: [
@@ -60,7 +61,7 @@ export const metadata: Metadata = {
     siteName: "AFTERWORK",
     images: [
       {
-        url: "/images/default.jpg",
+        url: getAssetPath("/images/default.jpg"),
         width: 1200,
         height: 630,
         alt: "Afterwork Caffeine Surabaya",
@@ -71,11 +72,17 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: "/favicon.ico", sizes: "any" },
-      { url: "/brand/logo-short-black.png", type: "image/png" },
+      { url: getAssetPath("/favicon.ico"), sizes: "any" },
+      { url: getAssetPath("/brand/logo-short-black.png"), type: "image/png" },
     ],
-    shortcut: "/brand/logo-short-black.png",
-    apple: "/brand/logo-short-black.png",
+    shortcut: getAssetPath("/brand/logo-short-black.png"),
+    apple: getAssetPath("/brand/logo-short-black.png"),
+  },
+  manifest: getAssetPath("/manifest.json"),
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "AFTERWORK",
   },
 };
 

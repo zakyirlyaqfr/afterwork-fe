@@ -1,3 +1,5 @@
+import { getAssetPath } from "@/utils/asset";
+
 export interface AssetMeta {
   src: string;
   alt: string;
@@ -8,19 +10,19 @@ export interface AssetMeta {
   aspectRatio?: string;
 }
 
-export const DEFAULT_IMAGE = "/images/default.jpg";
+export const DEFAULT_IMAGE = getAssetPath("/images/default.jpg");
 
 export const brandAssets = {
   // Primary brand logos
   logoWhitePng: {
-    src: "/brand/logo-short-white.png",
+    src: getAssetPath("/brand/logo-short-white.png"),
     alt: "Afterwork Caffeine Logo White",
     width: 1024,
     height: 1024,
     category: "brand" as const,
   },
   logoBlackPng: {
-    src: "/brand/logo-short-black.png",
+    src: getAssetPath("/brand/logo-short-black.png"),
     alt: "Afterwork Caffeine Logo Black",
     width: 1024,
     height: 1024,
@@ -94,28 +96,28 @@ export const homeAssets = {
 
 export const aboutAssets = {
   hero: {
-    src: "/images/afterwork-glutton-1.jpg",
+    src: getAssetPath("/images/afterwork-glutton-1.jpg"),
     alt: "Artisanal Afterwork brew bar and craft table setting",
     width: 2000,
     height: 1300,
     category: "about" as const,
   },
   interior: {
-    src: "/images/afterwork-seating.jpg",
+    src: getAssetPath("/images/afterwork-seating.jpg"),
     alt: "Afterwork Exterior Portal and Seating Space",
     width: 1400,
     height: 1800,
     category: "about" as const,
   },
   detail: {
-    src: "/images/afterwork-interior-lounge.jpg",
+    src: getAssetPath("/images/afterwork-interior-lounge.jpg"),
     alt: "Afterwork Lounge Architecture and Craft Atmosphere",
     width: 1200,
     height: 1600,
     category: "about" as const,
   },
   night: {
-    src: "/images/afterwork-cafe-hall.jpg",
+    src: getAssetPath("/images/afterwork-cafe-hall.jpg"),
     alt: "Afterwork High-Ceiling Architecture & Brewing Bar",
     width: 1800,
     height: 1200,

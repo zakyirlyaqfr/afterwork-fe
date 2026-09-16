@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useUI } from "@/context/UIContext";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { getAssetPath } from "@/utils/asset";
 
 export default function PageLoader() {
   const pathname = usePathname();
@@ -116,7 +117,7 @@ export default function PageLoader() {
     }
 
     // Hold duration: breathing peacefully
-    const holdDuration = isRefresh ? 1400 : 1250;
+    const holdDuration = isRefresh ? 800 : 600;
     const exitTimer = setTimeout(() => {
       // Remove the static CSS class so GSAP controls opacity
       if (typeof document !== "undefined") {
@@ -125,10 +126,13 @@ export default function PageLoader() {
 
       gsap.set(container, { opacity: 1 });
 
+      // Trigger finishPageTransition at start of dissolution so new page entrance animation plays as veil lifts
+      finishPageTransition();
+
       // Silky gentle dissolution revealing the new page
       gsap.to(container, {
         opacity: 0,
-        duration: 0.65,
+        duration: 0.5,
         ease: "power2.inOut",
         onComplete: () => {
           setIsRefreshLoaderActive(false);
@@ -136,7 +140,6 @@ export default function PageLoader() {
           if (auraTween) auraTween.kill();
           gsap.killTweensOf([container, logo, aura].filter(Boolean));
           ScrollTrigger.refresh();
-          finishPageTransition();
         },
       });
     }, holdDuration);
@@ -176,7 +179,7 @@ export default function PageLoader() {
           }}
         />
         <Image
-          src="/brand/logo-short-white.png"
+          src={getAssetPath("/brand/logo-short-white.png")}
           alt="Afterwork Caffeine"
           width={200}
           height={200}

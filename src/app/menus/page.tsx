@@ -8,6 +8,7 @@ import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { menuItems, menuCategories, MenuItem } from "@/data/menu";
 import MenuDetailModal from "@/components/menus/MenuDetailModal";
+import { getAssetPath } from "@/utils/asset";
 
 // Abstract shape profiles matching user's sketch:
 // - Left-column cards shifted to the RIGHT (with .menu-left-shift)
@@ -310,7 +311,7 @@ export default function MenusPage() {
                   {/* Photo Layer — Vivid authentic image, zooms on hover */}
                   <div className="absolute inset-0 w-full h-full overflow-hidden">
                     <Image
-                      src={item.previewImage || "/images/default.jpg"}
+                      src={getAssetPath(item.previewImage || "/images/default.jpg")}
                       alt={item.name}
                       fill
                       sizes="(max-width: 768px) 100vw, 580px"

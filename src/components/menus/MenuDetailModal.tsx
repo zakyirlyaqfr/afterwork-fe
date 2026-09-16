@@ -5,6 +5,7 @@ import Image from "next/image";
 import gsap from "gsap";
 import { MenuItem } from "@/data/menu";
 import { useUI } from "@/context/UIContext";
+import { getAssetPath } from "@/utils/asset";
 
 interface MenuDetailModalProps {
   item: MenuItem | null;
@@ -174,7 +175,7 @@ export default function MenuDetailModal({
           className="absolute inset-0 w-full h-[65%] sm:h-[68%] bg-[#141414] overflow-hidden z-0 pointer-events-none rounded-t-[6px]"
         >
           <Image
-            src={item.previewImage || "/images/default.jpg"}
+            src={getAssetPath(item.previewImage || "/images/default.jpg")}
             alt={item.name}
             fill
             sizes="(max-width: 640px) 100vw, 430px"

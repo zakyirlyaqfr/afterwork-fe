@@ -5,12 +5,13 @@ import { useUI } from "@/context/UIContext";
 import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { getAssetPath } from "@/utils/asset";
 
 export default function SplashScreen() {
   const { completeSplash } = useUI();
   const [isVisible, setIsVisible] = useState(true);
   const [isMounted, setIsMounted] = useState(false);
-  const [shouldPlayVideo, setShouldPlayVideo] = useState(false);
+  const [shouldPlayVideo, setShouldPlayVideo] = useState(true);
   const phaseRef = useRef<"video" | "loading" | "done">("video");
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -297,8 +298,8 @@ export default function SplashScreen() {
               filter: "contrast(1.2) brightness(1.0) grayscale(1)",
             }}
           >
-            <source src="/brand/afterwork-splash-final.webm" type="video/webm" />
-            <source src="/brand/afterwork-splash-final.mp4" type="video/mp4" />
+            <source src={getAssetPath("/brand/afterwork-splash-final.webm")} type="video/webm" />
+            <source src={getAssetPath("/brand/afterwork-splash-final.mp4")} type="video/mp4" />
           </video>
         )}
       </div>
@@ -323,7 +324,7 @@ export default function SplashScreen() {
             }}
           />
           <Image
-            src="/brand/logo-short-white.png"
+            src={getAssetPath("/brand/logo-short-white.png")}
             alt="Afterwork Caffeine"
             width={200}
             height={200}

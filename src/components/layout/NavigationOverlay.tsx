@@ -7,6 +7,13 @@ import { usePathname } from "next/navigation";
 import { useUI } from "@/context/UIContext";
 import { navigationItems } from "@/data/navigation";
 import gsap from "gsap";
+import { getAssetPath } from "@/utils/asset";
+
+const normalizePath = (p: string | null | undefined) => {
+  if (!p) return "/";
+  const clean = p.replace(/\/+$/, "");
+  return clean === "" ? "/" : clean;
+};
 
 export default function NavigationOverlay() {
   const { isMenuOpen, closeMenu, navigateTo, isPageTransitioning } = useUI();
@@ -20,7 +27,7 @@ export default function NavigationOverlay() {
 
   const handleNavClick = (e: React.MouseEvent, href: string) => {
     e.preventDefault();
-    if (pathname === href) {
+    if (normalizePath(pathname) === normalizePath(href)) {
       closeMenu();
       return;
     }
@@ -207,7 +214,7 @@ export default function NavigationOverlay() {
             aria-label="Main Navigation"
           >
             {navigationItems.map((item) => {
-              const isActive = pathname === item.href;
+              const isActive = normalizePath(pathname) === normalizePath(item.href);
               const isHovered = hoveredId === item.id;
               const isClicked = clickedHref === item.href;
               const isOrange = isActive || isHovered || isClicked;
@@ -263,7 +270,7 @@ export default function NavigationOverlay() {
               {/* Primary Image Container: sharp corners (rounded-none) */}
               <div className="relative w-full h-full overflow-hidden rounded-none bg-neutral-950">
                 <Image
-                  src="/images/afterwork-seating.jpg"
+                  src={getAssetPath("/images/afterwork-seating.jpg")}
                   alt="Afterwork Caffeine Architecture"
                   fill
                   sizes="(max-width: 768px) 50vw, (max-width: 1024px) 40vw, 440px"

@@ -8,6 +8,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { useUI } from "@/context/UIContext";
 import CircularWatermark from "@/components/menus/CircularWatermark";
+import { getAssetPath } from "@/utils/asset";
 
 export default function EditorialStory() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -201,7 +202,7 @@ export default function EditorialStory() {
               className="self-end lg:self-auto relative lg:absolute lg:right-0 lg:-top-6 -mr-4 sm:-mr-8 lg:mr-0 top-0 lg:-top-6 w-[44vw] max-w-[170px] sm:max-w-[240px] lg:w-full lg:max-w-[460px] aspect-[4/5] sm:aspect-[3/4] lg:aspect-[16/10] overflow-hidden bg-neutral-950 border border-r-0 border-white/10 lg:border-0 shadow-2xl lg:shadow-[0_20px_50px_rgba(0,0,0,0.9)] rotate-0 lg:-rotate-1 z-20 lg:z-10 select-none mt-0 lg:mt-0"
             >
               <Image
-                src="/images/afterwork-gofood.jpg"
+                src={getAssetPath("/images/afterwork-gofood.jpg")}
                 alt="Afterwork Signature Bottled Formulas"
                 fill
                 sizes="(max-width: 1024px) 50vw, 35vw"
@@ -241,7 +242,7 @@ export default function EditorialStory() {
                 className="relative w-[54vw] max-w-[215px] sm:max-w-[280px] lg:max-w-[460px] lg:w-full aspect-[328/355] lg:aspect-[4/5] overflow-hidden bg-neutral-950 border border-white/10 lg:border-0 shadow-2xl lg:shadow-[0_20px_50px_rgba(0,0,0,0.9)] rotate-0 lg:-rotate-2 z-10 lg:z-40 mt-0 lg:mt-0"
               >
                 <Image
-                  src="/images/afterwork-glutton-1.jpg"
+                  src={getAssetPath("/images/afterwork-glutton-1.jpg")}
                   alt="Afterwork Caffeine Craft Serving"
                   fill
                   sizes="(max-width: 1024px) 75vw, 40vw"

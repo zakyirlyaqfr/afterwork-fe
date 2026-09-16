@@ -6,9 +6,11 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { aboutAssets } from "@/data/assets";
+import { useUI } from "@/context/UIContext";
 
 export default function AboutPage() {
   const mainRef = useRef<HTMLElement>(null);
+  const { hasSeenSplash, isPageTransitioning } = useUI();
 
   // Section 1 refs
   const sec1Ref = useRef<HTMLDivElement>(null);
@@ -29,43 +31,61 @@ export default function AboutPage() {
 
   const prefersReduced = useReducedMotion();
 
+  // -------------------------------------------------------------
+  // SECTION 1 ENTRANCE ANIMATION: Plays every time user enters /about
+  // -------------------------------------------------------------
+  useEffect(() => {
+    if (prefersReduced) return;
+
+    if (!hasSeenSplash || isPageTransitioning) {
+      if (sec1ImgRef.current) {
+        gsap.set(sec1ImgRef.current, { opacity: 0, scale: 0.92, filter: "blur(8px)" });
+      }
+      if (sec1TitleRef.current) {
+        gsap.set(sec1TitleRef.current, { opacity: 0, y: 35, filter: "blur(10px)" });
+      }
+      return;
+    }
+
+    gsap.killTweensOf([sec1ImgRef.current, sec1TitleRef.current].filter(Boolean));
+
+    if (sec1ImgRef.current) {
+      gsap.fromTo(
+        sec1ImgRef.current,
+        { opacity: 0, scale: 0.92, filter: "blur(8px)" },
+        {
+          opacity: 1,
+          scale: 1,
+          filter: "blur(0px)",
+          duration: 1.25,
+          ease: "power2.out",
+          delay: 0.05,
+        }
+      );
+    }
+
+    if (sec1TitleRef.current) {
+      gsap.fromTo(
+        sec1TitleRef.current,
+        { opacity: 0, y: 35, filter: "blur(10px)" },
+        {
+          opacity: 1,
+          y: 0,
+          filter: "blur(0px)",
+          duration: 1.25,
+          delay: 0.25,
+          ease: "power3.out",
+        }
+      );
+    }
+  }, [prefersReduced, hasSeenSplash, isPageTransitioning]);
+
   useEffect(() => {
     if (prefersReduced) return;
     gsap.registerPlugin(ScrollTrigger);
 
     const ctx = gsap.context(() => {
-      // -------------------------------------------------------------
-      // SECTION 1 ANIMATIONS: Centered Image + Joined Title Overlay
-      // -------------------------------------------------------------
-      if (sec1ImgRef.current) {
-        gsap.fromTo(
-          sec1ImgRef.current,
-          { opacity: 0, scale: 0.92, filter: "blur(8px)" },
-          {
-            opacity: 1,
-            scale: 1,
-            filter: "blur(0px)",
-            duration: 1.4,
-            ease: "power2.out",
-            delay: 0.1,
-          }
-        );
-      }
-
-      if (sec1TitleRef.current) {
-        gsap.fromTo(
-          sec1TitleRef.current,
-          { opacity: 0, y: 35, filter: "blur(10px)" },
-          {
-            opacity: 1,
-            y: 0,
-            filter: "blur(0px)",
-            duration: 1.4,
-            delay: 0.35,
-            ease: "power3.out",
-          }
-        );
-      }
+      // Parallax scroll on Section 1 Image
 
       // Parallax scroll on Section 1
       if (sec1Ref.current && sec1ImgRef.current) {
@@ -280,10 +300,7 @@ export default function AboutPage() {
               </span>
               <span className="hidden lg:flex items-baseline justify-center -mt-6 drop-shadow-[0_25px_50px_rgba(0,0,0,0.98)]">
                 <span className="text-8xl xl:text-[8.5rem] font-black uppercase text-white tracking-tight leading-[0.85]">
-                  AFTER
-                </span>
-                <span className="text-8xl xl:text-[8.5rem] font-black uppercase text-white tracking-tight leading-[0.85]">
-                  WORK
+                  AFTERWORK
                 </span>
               </span>
             </h1>

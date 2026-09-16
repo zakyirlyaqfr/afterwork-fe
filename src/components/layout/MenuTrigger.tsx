@@ -6,6 +6,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useUI } from "@/context/UIContext";
 import gsap from "gsap";
+import { getAssetPath } from "@/utils/asset";
 
 export default function MenuTrigger() {
   const { isMenuOpen, toggleMenu, closeMenu, navigateTo, hasSeenSplash, isPageTransitioning } = useUI();
@@ -81,7 +82,7 @@ export default function MenuTrigger() {
             aria-label="Afterwork Caffeine Homepage"
           >
             <Image
-              src="/brand/logo-short-white.png"
+              src={getAssetPath("/brand/logo-short-white.png")}
               alt="AFTERWORK CAFFEINE"
               fill
               sizes="72px"
@@ -219,7 +220,7 @@ export default function MenuTrigger() {
           aria-label="Afterwork Caffeine Homepage"
         >
           <Image
-            src="/brand/logo-short-white.png"
+            src={getAssetPath("/brand/logo-short-white.png")}
             alt="AFTERWORK CAFFEINE"
             fill
             sizes="64px"

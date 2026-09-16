@@ -7,6 +7,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { bentoGalleryItems } from "@/data/gallery";
+import { getAssetPath } from "@/utils/asset";
 
 export default function GalleryPage() {
   const isMobile = useMediaQuery("(max-width: 767px)");
@@ -150,7 +151,7 @@ export default function GalleryPage() {
               >
                 <div className="w-full h-full relative overflow-hidden bg-[#0a0a0a] border border-[#262626] rounded-none">
                   <Image
-                    src={item.src}
+                    src={getAssetPath(item.src)}
                     alt={item.alt}
                     fill
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"

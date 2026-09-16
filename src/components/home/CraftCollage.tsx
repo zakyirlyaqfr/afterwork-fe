@@ -8,31 +8,32 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { useUI } from "@/context/UIContext";
+import { getAssetPath } from "@/utils/asset";
 
 const galleryItems = [
   {
     id: "01",
-    src: "/images/afterwork-seating.jpg",
+    src: getAssetPath("/images/afterwork-seating.jpg"),
     alt: "Afterwork Caffeine Exterior Portal & Graffiti",
   },
   {
     id: "02",
-    src: "/images/afterwork-glutton-1.jpg",
+    src: getAssetPath("/images/afterwork-glutton-1.jpg"),
     alt: "Afterwork Custom Wood Board Craft Serving",
   },
   {
     id: "03",
-    src: "/images/afterwork-cafe-hall.jpg",
+    src: getAssetPath("/images/afterwork-cafe-hall.jpg"),
     alt: "Afterwork High-Ceiling Cafe Hall & Bar",
   },
   {
     id: "04",
-    src: "/images/afterwork-gofood.jpg",
+    src: getAssetPath("/images/afterwork-gofood.jpg"),
     alt: "Afterwork Signature Bottled Formulas Series",
   },
   {
     id: "05",
-    src: "/images/afterwork-acrylic-menu.jpg",
+    src: getAssetPath("/images/afterwork-acrylic-menu.jpg"),
     alt: "Afterwork Authentic Acrylic Graffiti Menu",
   },
 ];

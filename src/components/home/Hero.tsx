@@ -6,6 +6,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { useUI } from "@/context/UIContext";
+import { getAssetPath } from "@/utils/asset";
 
 export default function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -14,7 +15,7 @@ export default function Hero() {
   const wordAfterRef = useRef<HTMLDivElement>(null);
   const wordWorkRef = useRef<HTMLDivElement>(null);
   const prefersReduced = useReducedMotion();
-  const { hasSeenSplash } = useUI();
+  const { hasSeenSplash, isPageTransitioning } = useUI();
 
   useEffect(() => {
     if (prefersReduced) return;
@@ -26,8 +27,8 @@ export default function Hero() {
 
     if (!container || !textContainer || !imageWrapper) return;
 
-    // Pre-initialize elements to their starting state before splash completes to prevent any blink/flash
-    if (!hasSeenSplash) {
+    // Pre-initialize elements to their starting state before splash completes or during transition
+    if (!hasSeenSplash || isPageTransitioning) {
       gsap.set(imageWrapper, {
         opacity: 0,
         clipPath: "polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%)",
@@ -40,6 +41,7 @@ export default function Hero() {
     }
 
     gsap.registerPlugin(ScrollTrigger);
+    gsap.killTweensOf([imageWrapper, wordAfter, wordWork].filter(Boolean));
 
     // Explicitly lock initial starting values at time 0 to avoid any frame glitch
     gsap.set(imageWrapper, {
@@ -153,7 +155,7 @@ export default function Hero() {
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseleave", handleMouseLeave);
     };
-  }, [prefersReduced, hasSeenSplash]);
+  }, [prefersReduced, hasSeenSplash, isPageTransitioning]);
 
   return (
     <section
@@ -212,7 +214,7 @@ export default function Hero() {
         >
           <div className="relative w-full h-full">
             <Image
-              src="/images/hero-art.jpg"
+              src={getAssetPath("/images/hero-art.jpg")}
               alt="AFTERWORK Caffeine Artwork"
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"
