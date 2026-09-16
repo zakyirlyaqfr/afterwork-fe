@@ -38,8 +38,8 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL("https://afterworkcaffeine.com"),
   title: {
-    default: "AFTERWORK CAFFEINE — Surabaya",
-    template: "%s | AFTERWORK CAFFEINE",
+    default: "AFTERWORK",
+    template: "%s | AFTERWORK",
   },
   description:
     "Damn good bottled drinks. Comfort food, morning to midnight. 9AM–2AM everyday in Surabaya, Indonesia.",
@@ -53,11 +53,11 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "Afterwork Caffeine" }],
   openGraph: {
-    title: "AFTERWORK CAFFEINE — Surabaya",
+    title: "AFTERWORK",
     description:
       "Damn good bottled drinks. Comfort food, morning to midnight. 9AM–2AM everyday.",
     url: "https://afterworkcaffeine.com",
-    siteName: "Afterwork Caffeine",
+    siteName: "AFTERWORK",
     images: [
       {
         url: "/images/default.jpg",
@@ -70,8 +70,12 @@ export const metadata: Metadata = {
     type: "website",
   },
   icons: {
-    icon: "/brand/logo-short-white.png",
-    apple: "/brand/logo-short-white.png",
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/brand/logo-short-black.png", type: "image/png" },
+    ],
+    shortcut: "/brand/logo-short-black.png",
+    apple: "/brand/logo-short-black.png",
   },
 };
 

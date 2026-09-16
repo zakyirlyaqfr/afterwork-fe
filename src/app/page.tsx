@@ -4,9 +4,9 @@ import CraftCollage from "@/components/home/CraftCollage";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "AFTERWORK — Artisanal Viennoiserie & Specialty Bottled Drinks",
-  description:
-    "An institution solely dedicated to the creation of croissants and specialty coffee formulas. All day, all night.",
+  title: {
+    absolute: "AFTERWORK",
+  },
 };
 
 export default function HomePage() {

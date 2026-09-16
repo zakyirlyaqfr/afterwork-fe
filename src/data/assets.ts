@@ -9,37 +9,21 @@ export interface AssetMeta {
 }
 
 export const DEFAULT_IMAGE = "/images/default.jpg";
-export const DEFAULT_PLACEHOLDER_WEBP = "/images/default.webp";
-export const DEFAULT_PLACEHOLDER_PNG = "/images/default.png";
 
 export const brandAssets = {
   // Primary brand logos
   logoWhitePng: {
-    src: "/brand/logo short white afterwork caffeine.PNG",
+    src: "/brand/logo-short-white.png",
     alt: "Afterwork Caffeine Logo White",
     width: 1024,
     height: 1024,
     category: "brand" as const,
   },
   logoBlackPng: {
-    src: "/brand/logo short black afterwork caffeine.PNG",
+    src: "/brand/logo-short-black.png",
     alt: "Afterwork Caffeine Logo Black",
     width: 1024,
     height: 1024,
-    category: "brand" as const,
-  },
-  logoWhiteSvg: {
-    src: "/brand/logo-short-white-placeholder.svg",
-    alt: "Afterwork Caffeine Logo White SVG",
-    width: 400,
-    height: 120,
-    category: "brand" as const,
-  },
-  logoBlackSvg: {
-    src: "/brand/logo-short-black-placeholder.svg",
-    alt: "Afterwork Caffeine Logo Black SVG",
-    width: 400,
-    height: 120,
     category: "brand" as const,
   },
 };
