@@ -57,49 +57,45 @@ export default function NavigationOverlay() {
       if (!isMenuOpen) {
         gsap.set(container, {
           visibility: "hidden",
-          clipPath: "inset(0% 100% 0% 0%)",
+          clipPath: isLandscapeLaptop
+            ? "inset(0% 100% 0% 0%)"
+            : "inset(0% 0% 100% 0%)",
         });
         return;
       }
     }
 
-    // Kill any active tweens on the container, image card, and links
+    // Kill any active tweens on the container and image card
     gsap.killTweensOf([container, imageCardRef.current].filter(Boolean));
-    const navLinks = container.querySelectorAll(".nav-link-hover");
-    if (navLinks.length > 0) {
-      gsap.killTweensOf(navLinks);
-    }
 
     if (isMenuOpen) {
       // Reveal container with slow-at-start, slow-at-end easing (power4.inOut)
-      // Applied consistently across desktop landscape and mobile non-landscape
       gsap.set(container, { visibility: "visible", opacity: 1 });
 
-      // Horizontal sweep curtain from left to right with smooth easeInOut deceleration at the end
-      gsap.fromTo(
-        container,
-        {
-          clipPath: "inset(0% 100% 0% 0%)",
-        },
-        {
-          clipPath: "inset(0% 0% 0% 0%)",
-          duration: 0.85,
-          ease: "power4.inOut",
-        }
-      );
-
-      // Staggered decelerating entrance for navigation links ("diakhirnya lambat")
-      if (navLinks.length > 0) {
+      if (isLandscapeLaptop) {
+        // Desktop landscape: Sweep curtain from left to right with smooth easeInOut
         gsap.fromTo(
-          navLinks,
-          { opacity: 0, x: -30 },
+          container,
           {
-            opacity: 1,
-            x: 0,
+            clipPath: "inset(0% 100% 0% 0%)",
+          },
+          {
+            clipPath: "inset(0% 0% 0% 0%)",
             duration: 0.85,
-            delay: 0.18,
-            stagger: 0.06,
-            ease: "power3.out",
+            ease: "power4.inOut",
+          }
+        );
+      } else {
+        // Non-landscape (mobile/tablet): Open menu dari atas ke bawah dengan perlambatan pelan di akhir
+        gsap.fromTo(
+          container,
+          {
+            clipPath: "inset(0% 0% 100% 0%)",
+          },
+          {
+            clipPath: "inset(0% 0% 0% 0%)",
+            duration: 0.9,
+            ease: "power4.inOut",
           }
         );
       }
@@ -110,9 +106,9 @@ export default function NavigationOverlay() {
           imageCardRef.current,
           {
             opacity: 0,
-            x: 45,
-            y: 0,
-            scale: 0.94,
+            x: isLandscapeLaptop ? 60 : 30,
+            y: isLandscapeLaptop ? 0 : 20,
+            scale: 0.92,
           },
           {
             opacity: 1,
@@ -129,56 +125,64 @@ export default function NavigationOverlay() {
       if (isPageTransitioning) {
         gsap.set(container, {
           visibility: "hidden",
-          clipPath: "inset(0% 100% 0% 0%)",
+          clipPath: isLandscapeLaptop
+            ? "inset(0% 100% 0% 0%)"
+            : "inset(0% 0% 100% 0%)",
         });
         if (imageCardRef.current) {
           gsap.set(imageCardRef.current, { opacity: 0 });
         }
-        if (navLinks.length > 0) {
-          gsap.set(navLinks, { opacity: 0 });
-        }
         setClickedHref(null);
         return;
-      }
-
-      // Normal Exit Animation: Navigation links glide out smoothly
-      if (navLinks.length > 0) {
-        gsap.to(navLinks, {
-          opacity: 0,
-          x: -18,
-          duration: 0.45,
-          ease: "power2.in",
-        });
       }
 
       // Normal Exit Animation: Image card glides out with smooth easeInOut
       if (imageCardRef.current) {
         gsap.to(imageCardRef.current, {
           opacity: 0,
-          x: 25,
-          y: 0,
-          scale: 0.96,
-          duration: 0.6,
+          x: isLandscapeLaptop ? 35 : 15,
+          y: isLandscapeLaptop ? 0 : -15,
+          scale: 0.94,
+          duration: 0.65,
           ease: "power3.inOut",
         });
       }
 
-      // Horizontal sweep curtain back to left with calm power4.inOut deceleration
-      gsap.fromTo(
-        container,
-        {
-          clipPath: "inset(0% 0% 0% 0%)",
-        },
-        {
-          clipPath: "inset(0% 100% 0% 0%)",
-          duration: 0.85,
-          ease: "power4.inOut",
-          onComplete: () => {
-            gsap.set(container, { visibility: "hidden" });
-            setClickedHref(null);
+      if (isLandscapeLaptop) {
+        // Desktop landscape: Sweep curtain back to left
+        gsap.fromTo(
+          container,
+          {
+            clipPath: "inset(0% 0% 0% 0%)",
           },
-        }
-      );
+          {
+            clipPath: "inset(0% 100% 0% 0%)",
+            duration: 0.85,
+            ease: "power4.inOut",
+            onComplete: () => {
+              gsap.set(container, { visibility: "hidden" });
+              setClickedHref(null);
+            },
+          }
+        );
+      } else {
+        // Non-landscape (mobile/tablet): Close dari bawah ke atas dengan perlambatan pelan di akhir
+        gsap.fromTo(
+          container,
+          {
+            clipPath: "inset(0% 0% 0% 0%)",
+          },
+          {
+            clipPath: "inset(0% 0% 100% 0%)",
+            duration: 0.85,
+            ease: "power4.inOut",
+            onComplete: () => {
+              gsap.set(container, { visibility: "hidden" });
+              setClickedHref(null);
+            },
+          }
+        );
+      }
     }
   }, [isMenuOpen, isPageTransitioning]);
 
@@ -202,9 +206,10 @@ export default function NavigationOverlay() {
         {/*
           Menu links column:
           - Sits on the left side of the split layout.
-          - Text animation & hover color restored: Brand Orange (#E05D29) transition.
+          - Font list diperbesar pada tampilan non-landscape (text-4xl xs:text-[42px] sm:text-5xl).
+          - Tanpa animasi entrance/exit, warna oranye aktif tetap berfungsi.
         */}
-        <div className="w-[48%] sm:w-[48%] md:w-[52%] lg:w-[55%] h-full flex flex-col justify-center select-none py-4 md:py-0">
+        <div className="w-[50%] sm:w-[50%] md:w-[52%] lg:w-[55%] h-full flex flex-col justify-center select-none py-4 md:py-0">
           <nav
             className="flex flex-col justify-center space-y-3.5 sm:space-y-4 md:space-y-6 lg:space-y-6 xl:space-y-7"
             aria-label="Main Navigation"
@@ -225,9 +230,9 @@ export default function NavigationOverlay() {
                     className={`nav-link-hover group inline-flex items-center py-0.5 sm:py-1 md:py-1.5 focus:outline-none ${isActive ? "active" : ""
                       }`}
                   >
-                    {/* Bold Stark Typography with Brand Orange Hover State Animation */}
+                    {/* Enlarged typography on mobile non-landscape with Brand Orange active/hover color */}
                     <span
-                      className="text-3xl xs:text-[34px] sm:text-5xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-[76px] font-black tracking-tighter uppercase leading-[0.96]"
+                      className="text-4xl xs:text-[42px] sm:text-5xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-[76px] font-black tracking-tighter uppercase leading-[0.94]"
                       style={{
                         color: isOrange ? "#E05D29" : "rgba(255, 255, 255, 0.85)",
                         transition: "color 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
@@ -247,10 +252,10 @@ export default function NavigationOverlay() {
           - Mobile: Visible on right (prominent, enlarged ~210px max-width), sharp corners (rounded-none), tetap miring (-rotate-[3deg])
           - Desktop (>= md): Preserves original asymmetric tilt, corner brackets & styling
         */}
-        <div className="flex w-[52%] sm:w-[52%] md:w-[48%] lg:w-[45%] h-full flex-col justify-center items-end select-none pr-0 sm:pr-4 md:pr-8 lg:pr-12 xl:pr-16 py-4 md:py-0">
+        <div className="flex w-[50%] sm:w-[50%] md:w-[48%] lg:w-[45%] h-full flex-col justify-center items-end select-none pr-0 sm:pr-4 md:pr-8 lg:pr-12 xl:pr-16 py-4 md:py-0">
           <div
             ref={imageCardRef}
-            className="relative w-full max-w-[210px] sm:max-w-[270px] md:max-w-[340px] lg:max-w-[400px] xl:max-w-[440px] mr-0 md:mr-2 lg:mr-4 select-none float-ambient-a"
+            className="relative w-full max-w-[200px] sm:max-w-[260px] md:max-w-[340px] lg:max-w-[400px] xl:max-w-[440px] mr-0 md:mr-2 lg:mr-4 select-none float-ambient-a"
           >
             {/* Main Image Frame: sharp corners (rounded-none), tetap miring (-rotate-[3deg]) */}
             <div className="relative w-full aspect-[3/4] bg-[#0c0c0c] border border-neutral-700 rounded-none -rotate-[3deg] shadow-[0_25px_60px_rgba(0,0,0,0.9)] overflow-visible z-10 transition-transform duration-500 ease-out hover:scale-[1.02] hover:-rotate-[1.5deg]">

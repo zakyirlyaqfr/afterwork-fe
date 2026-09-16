@@ -87,6 +87,9 @@ export default function MenusPage() {
       ? menuItems
       : menuItems.filter((item) => item.category === activeCategory);
 
+  const isFilterTransitioningRef = useRef(false);
+  const hasAnimatedInitialRef = useRef(false);
+
   // Coordinated Entrance Animation: Plays every time user enters /menus
   useEffect(() => {
     if (prefersReduced) return;
@@ -95,13 +98,13 @@ export default function MenusPage() {
 
     if (!hasSeenSplash || isPageTransitioning) {
       if (titleRef.current) {
-        gsap.set(titleRef.current, { opacity: 0, y: 40, filter: "blur(8px)" });
+        gsap.set(titleRef.current, { opacity: 0, y: 35, filter: "blur(6px)" });
       }
       if (filterRef.current) {
-        gsap.set(filterRef.current, { opacity: 0, y: 25 });
+        gsap.set(filterRef.current, { opacity: 0, y: 20 });
       }
       if (cards && cards.length > 0) {
-        gsap.set(cards, { opacity: 0, y: 35 });
+        gsap.set(cards, { opacity: 0, y: 30 });
       }
       return;
     }
@@ -116,12 +119,12 @@ export default function MenusPage() {
     if (titleRef.current) {
       gsap.fromTo(
         titleRef.current,
-        { opacity: 0, y: 40, filter: "blur(8px)" },
+        { opacity: 0, y: 35, filter: "blur(6px)" },
         {
           opacity: 1,
           y: 0,
           filter: "blur(0px)",
-          duration: 1.2,
+          duration: 1.1,
           ease: "power3.out",
           delay: 0.1,
         }
@@ -132,13 +135,13 @@ export default function MenusPage() {
     if (filterRef.current) {
       gsap.fromTo(
         filterRef.current,
-        { opacity: 0, y: 25 },
+        { opacity: 0, y: 20 },
         {
           opacity: 1,
           y: 0,
-          duration: 0.9,
+          duration: 0.85,
           ease: "power2.out",
-          delay: 0.28,
+          delay: 0.22,
         }
       );
     }
@@ -147,25 +150,31 @@ export default function MenusPage() {
     if (cards && cards.length > 0) {
       gsap.fromTo(
         cards,
-        { opacity: 0, y: 35 },
+        { opacity: 0, y: 30 },
         {
           opacity: 1,
           y: 0,
-          duration: 1.0,
+          duration: 0.95,
           ease: "power3.out",
-          stagger: 0.08,
-          delay: 0.22,
+          stagger: 0.07,
+          delay: 0.24,
           clearProps: "y,opacity",
+          onComplete: () => {
+            hasAnimatedInitialRef.current = true;
+          },
         }
       );
     }
   }, [prefersReduced, hasSeenSplash, isPageTransitioning]);
 
-  const isFilterTransitioningRef = useRef(false);
-
-  // Smooth easeInOut entrance animation for cards upon category change and mount
+  // Smooth easeInOut entrance animation for cards upon category change ONLY
   useEffect(() => {
-    if (prefersReduced || !gridRef.current) return;
+    if (prefersReduced || !gridRef.current || !hasAnimatedInitialRef.current) return;
+
+    // Release locked minHeight now that scroll is safely at 0 and new cards are ready
+    if (gridRef.current) {
+      gridRef.current.style.minHeight = "60vh";
+    }
 
     const ctx = gsap.context(() => {
       const cards = gridRef.current?.querySelectorAll(".menu-card");
@@ -177,13 +186,13 @@ export default function MenusPage() {
       // Reveal cards smoothly with a slow-at-start, slow-at-end staggered curve
       gsap.fromTo(
         cards,
-        { opacity: 0, y: 28 },
+        { opacity: 0, y: 25 },
         {
           opacity: 1,
           y: 0,
           duration: 0.8,
           ease: "power3.out",
-          stagger: 0.07,
+          stagger: 0.06,
           clearProps: "y,opacity",
           onComplete: () => {
             isFilterTransitioningRef.current = false;
@@ -191,8 +200,11 @@ export default function MenusPage() {
         }
       );
 
-      // Recalculate ScrollTrigger positions
+      // Recalculate ScrollTrigger positions and Lenis dimensions
       const refreshTimeout = setTimeout(() => {
+        if (typeof window !== "undefined" && (window as any).lenis) {
+          (window as any).lenis.resize();
+        }
         ScrollTrigger.refresh();
       }, 150);
 
@@ -206,27 +218,39 @@ export default function MenusPage() {
     if (cat === activeCategory || isFilterTransitioningRef.current) return;
     isFilterTransitioningRef.current = true;
 
+    // Lock current grid height so document height never collapses and clamps viewport to the footer
+    if (gridRef.current) {
+      gridRef.current.style.minHeight = `${gridRef.current.offsetHeight}px`;
+    }
+
     // Smooth easeInOut dissolution of current cards before switching category
     const currentCards = gridRef.current?.querySelectorAll(".menu-card");
     if (currentCards && currentCards.length > 0) {
       gsap.to(currentCards, {
         opacity: 0,
         y: -14,
-        duration: 0.32,
+        duration: 0.25,
         ease: "power2.inOut",
         onComplete: () => {
-          // If scrolled far down, gently glide up with smooth easing rather than harsh snapping
-          if (typeof window !== "undefined" && window.scrollY > 220) {
+          // Immediately reset scroll to 0 BEFORE switching category so the viewport never clamps to the footer
+          if (typeof window !== "undefined" && window.scrollY > 0) {
             if ((window as any).lenis) {
-              (window as any).lenis.scrollTo(0, { duration: 0.8 });
-            } else {
-              window.scrollTo({ top: 0, behavior: "smooth" });
+              (window as any).lenis.scrollTo(0, { immediate: true });
+              (window as any).lenis.resize();
             }
+            window.scrollTo({ top: 0, left: 0, behavior: "instant" as ScrollBehavior });
           }
           setActiveCategory(cat);
         },
       });
     } else {
+      if (typeof window !== "undefined" && window.scrollY > 0) {
+        if ((window as any).lenis) {
+          (window as any).lenis.scrollTo(0, { immediate: true });
+          (window as any).lenis.resize();
+        }
+        window.scrollTo({ top: 0, left: 0, behavior: "instant" as ScrollBehavior });
+      }
       setActiveCategory(cat);
     }
   };
@@ -244,7 +268,7 @@ export default function MenusPage() {
   return (
     <main
       ref={sectionRef}
-      className="min-h-screen bg-black text-[#F5F5F5] pt-20 sm:pt-24 md:pt-32 px-4 sm:px-10 md:px-12 lg:px-16 selection:bg-[#E05D29] selection:text-black overflow-x-visible relative"
+      className="min-h-screen bg-black text-[#F5F5F5] pt-28 sm:pt-32 md:pt-32 px-4 sm:px-10 md:px-12 lg:px-16 selection:bg-[#E05D29] selection:text-black overflow-x-visible relative"
       style={{ paddingBottom: "clamp(4rem, 8vw, 8rem)" }}
     >
       {/* Main Content Container — with pb-[40vh] so sticky header stays pinned all the way past the bottom cards */}
@@ -254,12 +278,12 @@ export default function MenusPage() {
             - Sticky dan transparan: tetap di posisi saat di-scroll
             - Geser ke bawah sedikit (.menu-sticky-header)
             - Kartu menu meluncur di layer bawahnya (z-10 < z-78) */}
-        <div className="menu-sticky-header mb-6 sm:mb-10 md:mb-24 lg:mb-28">
+        <div className="menu-sticky-header mb-14 sm:mb-18 md:mb-24 lg:mb-28">
           {/* 1. Page Title — Purely "MENUS." */}
           <div
             ref={titleRef}
             className="relative pointer-events-none"
-            style={{ marginBottom: "clamp(0.8rem, 1.4vw, 1.3rem)" }}
+            style={{ marginBottom: "clamp(0.8rem, 1.4vw, 1.3rem)", opacity: 0 }}
           >
             <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black tracking-tighter uppercase leading-[0.88] text-[#F5F5F5]">
               MENUS<span className="text-[#E05D29]">.</span>
@@ -269,6 +293,7 @@ export default function MenusPage() {
           {/* 2. Category Filters — Translucent buttons, stays clearly above content */}
           <div
             ref={filterRef}
+            style={{ opacity: 0 }}
             className="flex flex-wrap items-center gap-2 sm:gap-3.5 select-none relative menu-sticky-interactive"
           >
             {/* ALL Button */}

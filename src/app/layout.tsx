@@ -73,10 +73,14 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       { url: getAssetPath("/favicon.ico"), sizes: "any" },
-      { url: getAssetPath("/brand/logo-short-black.png"), type: "image/png" },
+      { url: getAssetPath("/brand/favicon-32x32.png"), sizes: "32x32", type: "image/png" },
+      { url: getAssetPath("/brand/favicon-16x16.png"), sizes: "16x16", type: "image/png" },
+      { url: getAssetPath("/brand/logo-badge.png"), sizes: "512x512", type: "image/png" },
     ],
-    shortcut: getAssetPath("/brand/logo-short-black.png"),
-    apple: getAssetPath("/brand/logo-short-black.png"),
+    shortcut: getAssetPath("/favicon.ico"),
+    apple: [
+      { url: getAssetPath("/brand/apple-touch-icon.png"), sizes: "180x180", type: "image/png" },
+    ],
   },
   manifest: getAssetPath("/manifest.json"),
   appleWebApp: {
@@ -98,6 +102,11 @@ export default function RootLayout({
       className={`${alteHaasGrotesk.variable} bg-black text-[#F5F5F5] antialiased`}
     >
       <head>
+        <link rel="icon" href={getAssetPath("/favicon.ico")} sizes="any" />
+        <link rel="icon" href={getAssetPath("/brand/favicon-32x32.png")} type="image/png" sizes="32x32" />
+        <link rel="icon" href={getAssetPath("/brand/favicon-16x16.png")} type="image/png" sizes="16x16" />
+        <link rel="apple-touch-icon" href={getAssetPath("/brand/apple-touch-icon.png")} sizes="180x180" />
+        <link rel="shortcut icon" href={getAssetPath("/favicon.ico")} />
         <script
           dangerouslySetInnerHTML={{
             __html: `

@@ -88,7 +88,7 @@ export default function EditorialStory() {
         );
       }
 
-      // 2. Primary Left Image (Authentic Craft Serving) glides up with gentle blur clearing
+      // 2. Primary Left Image (Authentic Craft Serving) glides up first with gentle blur clearing
       if (image1Ref.current) {
         enterTl.fromTo(
           image1Ref.current,

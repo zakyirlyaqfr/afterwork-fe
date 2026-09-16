@@ -16,16 +16,16 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
   useEffect(() => {
     if (!hasSeenSplash) return;
     
-    // Immediate and staged refreshes to ensure mobile viewport height and element offsets are calibrated
+    // Multi-staged refreshes ensuring mobile viewport height, dynamic address bar, and element offsets calibrate
     ScrollTrigger.refresh();
     const timer1 = setTimeout(() => {
       if (lenisRef.current) lenisRef.current.resize();
       ScrollTrigger.refresh();
-    }, 300);
+    }, 250);
     const timer2 = setTimeout(() => {
       if (lenisRef.current) lenisRef.current.resize();
       ScrollTrigger.refresh();
-    }, 900);
+    }, 850);
 
     return () => {
       clearTimeout(timer1);

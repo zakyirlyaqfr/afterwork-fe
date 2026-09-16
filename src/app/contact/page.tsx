@@ -35,6 +35,9 @@ export default function ContactPage() {
       if (titleRef.current) {
         gsap.set(titleRef.current, { opacity: 0, y: 40, filter: "blur(8px)" });
       }
+      if (watermarkRef.current) {
+        gsap.set(watermarkRef.current, { opacity: 0, scale: 0.95 });
+      }
       if (venuesRef.current) {
         gsap.set(venuesRef.current, { opacity: 0, y: 30 });
       }
@@ -48,7 +51,22 @@ export default function ContactPage() {
     }
 
     gsap.registerPlugin(ScrollTrigger);
-    gsap.killTweensOf([titleRef.current, venuesRef.current, channelsRef.current, formRef.current].filter(Boolean));
+    gsap.killTweensOf([titleRef.current, watermarkRef.current, venuesRef.current, channelsRef.current, formRef.current].filter(Boolean));
+
+    // Watermark Entrance
+    if (watermarkRef.current) {
+      gsap.fromTo(
+        watermarkRef.current,
+        { opacity: 0, scale: 0.95 },
+        {
+          opacity: 1,
+          scale: 1,
+          duration: 1.4,
+          ease: "power2.out",
+          delay: 0.15,
+        }
+      );
+    }
 
     // 1. Page Title Entrance
     if (titleRef.current) {
@@ -113,7 +131,7 @@ export default function ContactPage() {
     }
   }, [prefersReduced, hasSeenSplash, isPageTransitioning]);
 
-  // Watermark Parallax Scroll
+  // Watermark Parallax Scroll — active on landscape screens only
   useEffect(() => {
     if (prefersReduced) return;
     gsap.registerPlugin(ScrollTrigger);
@@ -121,18 +139,26 @@ export default function ContactPage() {
     const main = mainRef.current;
     if (!main) return;
 
-    if (watermarkRef.current) {
-      gsap.to(watermarkRef.current, {
-        y: -60,
-        ease: "none",
-        scrollTrigger: {
-          trigger: main,
-          start: "top bottom",
-          end: "bottom top",
-          scrub: 1.6,
-        },
-      });
-    }
+    const mm = gsap.matchMedia();
+
+    // Only on landscape screens (>= 768px): smooth cinematic parallax glide on scroll
+    mm.add("(min-width: 768px)", () => {
+      if (watermarkRef.current && main) {
+        gsap.to(watermarkRef.current, {
+          y: -180,
+          x: -60,
+          ease: "none",
+          scrollTrigger: {
+            trigger: main,
+            start: "top top",
+            end: "bottom bottom",
+            scrub: 1.4,
+          },
+        });
+      }
+    });
+
+    return () => mm.revert();
   }, [prefersReduced]);
 
   const handleSubmit = (e: FormEvent) => {
@@ -165,7 +191,7 @@ export default function ContactPage() {
           lineHeight: 0.85,
           whiteSpace: "nowrap",
           color: "transparent",
-          WebkitTextStroke: "1.2px rgba(255, 255, 255, 0.045)",
+          WebkitTextStroke: "1.5px rgba(255, 255, 255, 0.10)",
         }}
       >
         CONTACT
@@ -183,8 +209,8 @@ export default function ContactPage() {
         <div className="menu-sticky-header mb-4 sm:mb-6">
           <div
             ref={titleRef}
+            style={{ opacity: 0, marginBottom: "clamp(0.4rem, 0.8vw, 0.8rem)" }}
             className="relative pointer-events-none"
-            style={{ marginBottom: "clamp(0.4rem, 0.8vw, 0.8rem)" }}
           >
             <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black tracking-tighter uppercase leading-[0.88] text-[#F5F5F5]">
               COME AFTERWORK<span className="text-[#E05D29]">.</span>
@@ -209,7 +235,7 @@ export default function ContactPage() {
             <div
               ref={venuesRef}
               className="w-full flex flex-col"
-              style={{ gap: "clamp(16px, 2vw, 24px)" }}
+              style={{ gap: "clamp(16px, 2vw, 24px)", opacity: 0 }}
             >
               {/* Location 1: G-Walk Citraland */}
               <div
@@ -338,7 +364,7 @@ export default function ContactPage() {
             <div
               ref={channelsRef}
               className="w-full"
-              style={{ paddingTop: "clamp(24px, 3vw, 40px)", paddingBottom: "clamp(24px, 3vw, 40px)" }}
+              style={{ paddingTop: "clamp(24px, 3vw, 40px)", paddingBottom: "clamp(24px, 3vw, 40px)", opacity: 0 }}
             >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-10 sm:gap-14 md:gap-18 text-left">
                 {/* WhatsApp Concierge */}
@@ -367,26 +393,26 @@ export default function ContactPage() {
                   </div>
                 </div>
 
-                {/* Instagram Feed */}
+                {/* Instagram Direct */}
                 <div className="flex flex-col" style={{ gap: "10px" }}>
                   <h2 className="text-2xl sm:text-3xl font-black uppercase tracking-tight text-white">
                     INSTAGRAM FEED
                   </h2>
                   <p className="text-sm sm:text-base text-neutral-300 lg:text-neutral-400 font-light leading-relaxed tracking-wide max-w-lg">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam gravida tellus vel nisl finibus in porta.
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore.
                   </p>
                   <p className="text-lg sm:text-xl font-mono text-white font-bold tracking-wider pt-0.5">
-                    @afterworkcaffeine
+                    @afterwork.caffeine
                   </p>
                   <div className="pt-1">
                     <a
-                      href="https://www.instagram.com/afterworkcaffeine?stkn=djZoeWhnNWptcWFi"
+                      href="https://instagram.com/afterwork.caffeine"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-2 text-xs font-mono font-bold tracking-widest text-[#E05D29] hover:text-white uppercase transition-colors cursor-pointer group"
                     >
                       <span className="border-b border-neutral-700 group-hover:border-white pb-0.5 transition-colors">
-                        FOLLOW FEED
+                        FOLLOW OUR PAGE
                       </span>
                       <span>↗</span>
                     </a>
@@ -396,12 +422,12 @@ export default function ContactPage() {
             </div>
 
             {/* =============================================================== */}
-            {/* 3. Direct Contact Form (Lune Minimal Underline Inputs)          */}
+            {/* 3. Contact Form: Clean Architectural Inputs                     */}
             {/* =============================================================== */}
             <div
               ref={formRef}
               className="w-full"
-              style={{ paddingTop: "clamp(24px, 3vw, 40px)", paddingBottom: "clamp(24px, 3vw, 40px)" }}
+              style={{ paddingTop: "clamp(24px, 3vw, 40px)", paddingBottom: "clamp(24px, 3vw, 40px)", opacity: 0 }}
             >
               {isSubmitted ? (
                 <div className="p-8 sm:p-12 border border-[#E05D29]/40 bg-[#0A0A0A] space-y-4 shadow-2xl w-full text-left">

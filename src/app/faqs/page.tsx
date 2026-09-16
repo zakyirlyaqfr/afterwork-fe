@@ -136,8 +136,8 @@ export default function FaqsPage() {
         <div className="menu-sticky-header mb-4 sm:mb-6">
           <div
             ref={titleRef}
+            style={{ opacity: 0, marginBottom: "clamp(0.4rem, 0.8vw, 0.8rem)" }}
             className="relative pointer-events-none"
-            style={{ marginBottom: "clamp(0.4rem, 0.8vw, 0.8rem)" }}
           >
             <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black tracking-tighter uppercase leading-[0.88] text-[#F5F5F5]">
               FAQS<span className="text-[#E05D29]">.</span>
